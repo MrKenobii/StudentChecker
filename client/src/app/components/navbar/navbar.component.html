@@ -1,0 +1,55 @@
+<nav class="navbar navbar-expand-lg  bg-primary bg-gradient text-white">
+
+  <div class="container-fluid text-white">
+
+    <a class="navbar-brand text-white" [routerLink]="''" routerLinkActive="active">Student Application</a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active text-white" [routerLink]="''" routerLinkActive="active">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" [routerLink]="'students'" routerLinkActive="active">Students</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link text-white" [routerLink]="'companies'" routerLinkActive="active">Companies</a>
+        </li>
+        <li class="nav-item ms-5">
+          <form class="d-flex input-group w-auto">
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-danger text-white" type="button">
+              Search
+            </button>
+          </form>
+
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex">
+      <div ngbDropdown class="d-inline-block">
+        <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic1" ngbDropdownToggle>
+          Actions
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button ngbDropdownItem [routerLink]="'/login'">Login</button>
+          <button ngbDropdownItem [routerLink]="'/sign-up'">Signup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
