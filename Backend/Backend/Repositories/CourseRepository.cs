@@ -39,27 +39,26 @@ public class CourseRepository : ICourseRepository
         return _context.Courses.Any(c => c.Id == courseId);
     }
 
-    public string CreateCourse(CourseDto courseDto)
+    public Course CreateCourse(CourseDto courseDto)
     {
         var course = new Course(courseDto.Name);
         Console.WriteLine(course);
         _context.Courses.Add(course);
         _context.SaveChanges();
-        return course.Name + " was saved";
+        return course;
     }
 
     public void DeleteCourse(int courseId)
     {
         _context.Courses.Remove(this.GetCourse(courseId));
         _context.SaveChanges();
-        throw new NotImplementedException();
     }
 
-    public Course? UpdateCourse(int courseId, CourseDto courseDto)
+    public Course UpdateCourse(int courseId, CourseDto courseDto)
     {
         Course course = this.GetCourse(courseId);
         course.Name = courseDto.Name;
-        Console.WriteLine("Course Name Updatecours() " + course.Name);
+        Console.WriteLine("Course Name UpdateCourse() " + course.Name);
         _context.Update(course);
         _context.SaveChanges();
         return course;

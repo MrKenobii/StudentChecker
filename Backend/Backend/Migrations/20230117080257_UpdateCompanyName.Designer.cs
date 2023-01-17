@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230117080257_UpdateCompanyName")]
+    partial class UpdateCompanyName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,23 +124,24 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("HireDate")
+                    b.Property<DateTime>("HireDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<byte[]>("Image")
                         .IsRequired()
                         .HasColumnType("longblob");
 
-                    b.Property<bool?>("IsActivated")
+                    b.Property<bool>("IsActivated")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
@@ -154,9 +157,7 @@ namespace Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Token")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -186,35 +187,38 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("CityId")
+                    b.Property<int>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CollegeId")
+                    b.Property<int>("CollegeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Department")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("EnrollDate")
+                    b.Property<DateTime>("EnrollDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<byte[]>("Image")
                         .IsRequired()
                         .HasColumnType("longblob");
 
-                    b.Property<bool?>("IsActivated")
+                    b.Property<bool>("IsActivated")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Languages")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("LastName")
@@ -230,12 +234,11 @@ namespace Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Skills")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Token")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -307,11 +310,15 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Models.City", "City")
                         .WithMany("Students")
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Backend.Models.College", "College")
                         .WithMany("Students")
-                        .HasForeignKey("CollegeId");
+                        .HasForeignKey("CollegeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("City");
 

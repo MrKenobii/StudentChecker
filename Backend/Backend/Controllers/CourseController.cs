@@ -5,6 +5,8 @@ using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers;
 
+[Route("/[controller]")]
+[ApiController]
 public class CourseController : Controller
 {
     private readonly ICourseRepository _courseRepository;
@@ -16,12 +18,12 @@ public class CourseController : Controller
         _mapper = mapper;
     }
 
-    [HttpGet("/")]
+    [HttpGet]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Course>))]
     public IActionResult GetCourses()
     {
-        // var courses = _mapper.Map<List<CourseDto>>(_courseRepository.GetCourses());
-        var courses = _courseRepository.GetCourses();
+        var courses = _mapper.Map<List<CourseDto>>(_courseRepository.GetCourses());
+        //var courses = _courseRepository.GetCourses();
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         return Ok(courses);
@@ -33,8 +35,8 @@ public class CourseController : Controller
     {
         if (!_courseRepository.CourseExists(courseId))
             return NotFound();
-        // var course = _mapper.Map<CourseDto>( _courseRepository.GetCourse((courseId)));
-        var course = _courseRepository.GetCourse(courseId);
+        var course = _mapper.Map<CourseDto>( _courseRepository.GetCourse((courseId)));
+        //var course = _courseRepository.GetCourse(courseId);
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         return Ok(course);
@@ -43,20 +45,22 @@ public class CourseController : Controller
     [ProducesResponseType(200, Type = typeof(IEnumerable<Student>))]
     [ProducesResponseType(400)]
     public IActionResult GetStudentByCourse(int courseId)
-    {
-        // var students = _mapper.Map<List<StudentDto>>(_courseRepository.GetStudents(courseId));
-        var students = _courseRepository.GetStudents(courseId);
+    { 
+        var students = _mapper.Map<List<StudentDto>>(_courseRepository.GetStudents(courseId));
+        //var students = _courseRepository.GetStudents(courseId);
         if (!ModelState.IsValid)
             return BadRequest();
         return Ok(students);
     }
 
-    [HttpPost("/")]
+    [HttpPost]
     [ProducesResponseType(201, Type = typeof(Course))]
     public IActionResult CreateCourse([FromBody] CourseDto courseDto)
     {
         // Console.WriteLine(courseDto.Name);
-        return Ok(_courseRepository.CreateCourse(courseDto));
+        var course = _mapper.Map<Course>(_courseRepository.CreateCourse(courseDto));
+        return Created("HttpStatusCode.Created",course);
+        //return Ok(_courseRepository.CreateCourse(courseDto));
     }
 
     [HttpDelete("{courseId}")]
@@ -71,9 +75,13 @@ public class CourseController : Controller
     [ProducesResponseType(201, Type = typeof(Course))]
     public IActionResult UpdateCourse(int courseId, [FromBody] CourseDto courseDto)
     {
+        var course = _mapper.Map<Course>(_courseRepository.UpdateCourse(courseId, courseDto));
+        return Ok(course);
+        
+        
         // Console.WriteLine(courseDto.Name);
-        Console.WriteLine("Course Id: " + courseId);
-        Console.WriteLine("Name: " + courseDto.Name);
-        return Ok(_courseRepository.UpdateCourse(courseId, courseDto));
+        // Console.WriteLine("Course Id: " + courseId);
+        // Console.WriteLine("Name: " + courseDto.Name);
+        // return Ok(_courseRepository.UpdateCourse(courseId, courseDto));
     }
 }

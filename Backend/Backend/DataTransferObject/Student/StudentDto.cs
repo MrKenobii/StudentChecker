@@ -16,8 +16,8 @@ public class StudentDto
     public string Skills { get; set; }
     public string Phone { get; set; }
     public string Department { get; set; }
-    public College College { get; set; } // College
+    public string CollegeName { get; set; } // College
     public string Image { get; set; } 
-    public City City { get; set; } // City
+    public string CityName { get; set; } // City
     public bool IsActivated { get; set; }
 }

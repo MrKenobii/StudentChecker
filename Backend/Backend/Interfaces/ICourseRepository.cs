@@ -10,7 +10,7 @@ public interface ICourseRepository
     Company GetCompanyCity(int city);
     ICollection<Student> GetStudents(int id);
     bool CourseExists(int id);
-    string CreateCourse(CourseDto courseDto);
+    Course CreateCourse(CourseDto courseDto);
     void DeleteCourse(int courseId);
-    Course? UpdateCourse(int courseId, CourseDto courseDto);
+    Course UpdateCourse(int courseId, CourseDto courseDto);
 }

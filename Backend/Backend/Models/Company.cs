@@ -9,11 +9,13 @@ public class Company
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public string CompanyType { get; set; }
+    public string Name { get; set; }
     public string Email { get; set; }
     public DateTime FoundationDate { get; set; }
     public string Address { get; set; }
     public string Phone { get; set; }
     public City City { get; set; }
-    public String CompanyKey { get; set; }
+    public string CompanyKey { get; set; }
     public ICollection<RecruiterCompany> RecruiterCompanies { get; set; }
+    
 }
