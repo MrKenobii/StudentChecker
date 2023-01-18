@@ -7,16 +7,17 @@ public interface IStudentRepository
 {
     ICollection<Student> GetStudents();
     Student GetStudent(int id);
-    Student GetStudentCity(int city);
-    ICollection<Course> GetCourses(int id);
+    CityDto GetStudentCity(int studentId);
+    CollegeDto GetStudentCollege(int studentId);
+    ICollection<CourseDto> GetCourses(int id);
     bool StudentExists(int studentId);
     Student CreateStudent(StudentDto studentDto);
-    Student UpdateStudent(int studentId, StudentDto studentDto);
-    void DeleteStudent(int studentId);
-    Student AddCourses(int studentId, AddCourseToStudent addCourseToStudent);
-    Student UpdateStudentProfile(int studentId, StudentUpdateProfile studentUpdateProfile);
-    Student Signup(StudentSignUpRequest signUpRequest);
+    StudentResponse UpdateStudent(int studentId, StudentDto studentDto);
+    string DeleteStudent(int studentId);
+    string AddCourses(int studentId, AddCourseToStudent addCourseToStudent);
+    StudentResponse UpdateStudentProfile(int studentId, StudentUpdateProfile studentUpdateProfile);
+    StudentResponse Signup(StudentSignUpRequest signUpRequest);
     StudentLoginReponse Login(StudentLoginRequest loginRequest);
-    void SendEmail(StudentSignUpRequest signUpRequest);
+    string SendEmail(StudentSignUpRequest signUpRequest);
     StudentVerifyAccountResponse VerifyAccount(int studentId, StudentVerifyAccountRequest studentVerifyAccountRequest);
 }

@@ -22,9 +22,25 @@ public class CompanyRepository : ICompanyRepository
         return _context.Companies.Where(c => c.Id == id).FirstOrDefault();
     }
 
-    public Company GetCompanyCity(int city)
+    public CityDto GetCompanyCity(int companyId)
     {
-        return _context.Companies.Where(o => o.City.Id == city).FirstOrDefault();
+        var company = this.GetCompany(companyId);
+        Console.WriteLine("Company NAme " + company.Name);
+        var city = _context.Companies.Where(o => o.Id == companyId).Select(c => c.City).FirstOrDefault();
+        if (city != null)
+        {
+            Console.WriteLine("City : " + city.Name);
+            return new CityDto()
+            {
+                Name = city.Name,
+                Id = city.Id
+            };
+        }
+
+        return new CityDto()
+        {
+
+        };
     }
 
     public ICollection<Recruiter> GetRecruiters(int id)

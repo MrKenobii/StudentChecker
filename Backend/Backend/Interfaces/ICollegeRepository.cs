@@ -7,7 +7,7 @@ public interface ICollegeRepository
 {
     ICollection<College> GetColleges();
     College GetCollege(int id);
-    College GetCollegeByCity(int cityId);
+    CityDto GetCityByCollege(int college);
     ICollection<Student> GetStudentsByCollege(int id);
     bool CollegeExists(int collegeId);
     College CreateCollege(CollegeDto collegeDto);

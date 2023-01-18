@@ -30,11 +30,25 @@ public class CollegeRepository : ICollegeRepository
         return _context.Colleges.Where(c => c.Id == id).FirstOrDefault();
     }
 
-    public College GetCollegeByCity(int cityId)
+    public CityDto GetCityByCollege(int collegeId)
     {
-        return _context.Colleges.Where(o => o.City.Id == cityId).FirstOrDefault();
-        //return _context.Cities.Where(e => e.Id == city).Select(c => c.Colleges).ToList();
-        return null;
+        var college = this.GetCollege(collegeId);
+        Console.WriteLine("College Name " + college.Name);
+        var city = _context.Companies.Where(o => o.Id == collegeId).Select(c => c.City).FirstOrDefault();
+        if (city != null)
+        {
+            Console.WriteLine("City : " + city.Name);
+            return new CityDto()
+            {
+                Name = city.Name,
+                Id = city.Id
+            };
+        }
+
+        return new CityDto()
+        {
+
+        };
     }
 
     public ICollection<Student> GetStudentsByCollege(int id)

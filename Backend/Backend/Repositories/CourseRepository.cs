@@ -41,7 +41,11 @@ public class CourseRepository : ICourseRepository
 
     public Course CreateCourse(CourseDto courseDto)
     {
-        var course = new Course(courseDto.Name);
+        var course = new Course()
+        {
+            Name = courseDto.Name
+        };
+        
         Console.WriteLine(course);
         _context.Courses.Add(course);
         _context.SaveChanges();

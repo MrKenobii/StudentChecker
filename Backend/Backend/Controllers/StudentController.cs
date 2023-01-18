@@ -42,6 +42,36 @@ public class StudentController : Controller
             return BadRequest(ModelState);
         return Ok(student);
     }
+    [HttpGet("{studentId}/courses")]
+    [ProducesResponseType(200, Type=typeof(IEnumerable<CourseDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCoursesByStudentId(int studentId)
+    {
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var collection = _studentRepository.GetCourses(studentId);
+        return Ok(collection);
+    }
+    [HttpGet("{studentId}/city")]
+    [ProducesResponseType(200, Type=typeof(IEnumerable<CityDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCityByStudentId(int studentId)
+    {
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var city = _studentRepository.GetStudentCity(studentId);
+        return Ok(city);
+    }
+    [HttpGet("{studentId}/college")]
+    [ProducesResponseType(200, Type=typeof(IEnumerable<CollegeDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCollegeByStudentId(int studentId)
+    {
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var college = _studentRepository.GetStudentCollege(studentId);
+        return Ok(college);
+    }
     [HttpPost]
     [ProducesResponseType(201, Type = typeof(Student))]
     public IActionResult CreateStudent([FromBody] StudentDto studentDto)
@@ -50,7 +80,7 @@ public class StudentController : Controller
         return Created("HttpStatusCode.Created",student);
     }
     [HttpPut("{studentId}")]
-    [ProducesResponseType(200, Type = typeof(Student))]
+    [ProducesResponseType(200, Type = typeof(StudentResponse))]
     public IActionResult UpdateStudent(int studentId, [FromBody] StudentDto studentDto)
     {
         var student = _mapper.Map<Student>(_studentRepository.UpdateStudent(studentId, studentDto));

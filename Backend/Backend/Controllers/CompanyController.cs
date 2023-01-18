@@ -63,6 +63,17 @@ public class CompanyController : Controller
     {
         _companyRepository.DeleteCompany(companyId);
     }
+    [HttpGet("{companyId}/city")]
+    [ProducesResponseType(200, Type=typeof(IEnumerable<CityDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCityByCompanyId(int companyId)
+    {
+        Console.WriteLine(companyId);
+        if (!_companyRepository.CompanyExists(companyId))
+            return NotFound();
+        var city = _companyRepository.GetCompanyCity(companyId);
+        return Ok(city);
+    }
     [HttpPut("{companyId}/add-recruiter")]
     [ProducesResponseType(200, Type = typeof(Company))]
     public IActionResult AddCourseStudent(int companyId, [FromBody] AddRecruiterToCompany addRecruiterToCompany)

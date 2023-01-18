@@ -40,6 +40,17 @@ public class CollegeController : Controller
             return BadRequest(ModelState);
         return Ok(college);
     }
+    [HttpGet("{collegeId}/city")]
+    [ProducesResponseType(200, Type=typeof(IEnumerable<CityDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCityByCollegeId(int collegeId)
+    {
+        Console.WriteLine(collegeId);
+        if (!_collegeRepository.CollegeExists(collegeId))
+            return NotFound();
+        var city = _collegeRepository.GetCityByCollege(collegeId);
+        return Ok(city);
+    }
     [HttpPost]
     [ProducesResponseType(201, Type = typeof(College))]
     public IActionResult CreateCollege([FromBody] CollegeDto collegeDto)
