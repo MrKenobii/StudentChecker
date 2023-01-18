@@ -23,7 +23,8 @@ public class Student
     public string? Token { get; set; }
     public byte[] Image { get; set; } 
     public City? City { get; set; } // City
-    public bool? IsActivated { get; set; }
+    public bool IsActivated { get; set; }
+    public string? VerifyToken { get; set; }
     public ICollection<StudentCourse>? StudentCourses { get; set; }
     
 }

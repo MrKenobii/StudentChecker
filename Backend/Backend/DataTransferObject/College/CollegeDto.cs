@@ -6,4 +6,5 @@ public class CollegeDto
     public string Name { get; set; }
     public DateTime FoundationDate { get; set; }
     public string CityName { get; set; }
+    public string EmailExtension { get; set; }
 }

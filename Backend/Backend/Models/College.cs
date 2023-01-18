@@ -10,6 +10,7 @@ public class College
     public int Id { get; set; }
     public string Name { get; set; }
     public DateTime FoundationDate { get; set; }
+    public string EmailExtension { get; set; }
     public City City { get; set; }
     public ICollection<Student> Students { get; set; }
 }

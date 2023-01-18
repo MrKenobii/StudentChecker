@@ -56,6 +56,7 @@ public class CollegeRepository : ICollegeRepository
         {
             Name = collegeDto.Name,
             FoundationDate = collegeDto.FoundationDate,
+            EmailExtension = collegeDto.EmailExtension
         };
         Console.WriteLine("COLLEGE: " + college.Name + " " + college.Id + " " + college.FoundationDate);
         if (cityByName != null)
@@ -96,6 +97,11 @@ public class CollegeRepository : ICollegeRepository
         if (collegeDto.CityName != null)
         {
             college.City = cityByName;
+        }
+
+        if (collegeDto.EmailExtension != null)
+        {
+            college.EmailExtension = collegeDto.EmailExtension;
         }
         
         

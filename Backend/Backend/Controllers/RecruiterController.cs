@@ -48,7 +48,7 @@ public class RecruiterController : Controller
         return Created("HttpStatusCode.Created",recruiter);
     }
     [HttpPut("{recruiterId}")]
-    [ProducesResponseType(200, Type = typeof(College))]
+    [ProducesResponseType(200, Type = typeof(Recruiter))]
     public IActionResult UpdateCollege(int recruiterId, [FromBody] RecruiterDto recruiterDto)
     {
         var recruiter = _mapper.Map<Recruiter>(_recruiterRepository.UpdateRecruiter(recruiterId, recruiterDto));

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using AutoMapper;
 using Backend.DataTransferObject;
 using Backend.Interfaces;
@@ -20,7 +21,7 @@ public class StudentController : Controller
         _mapper = mapper;
     }
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Student>))]
     public IActionResult GetStudents()
     {
@@ -81,17 +82,26 @@ public class StudentController : Controller
     public IActionResult SignUp(StudentSignUpRequest signUpRequest)
     {
         var student = _studentRepository.Signup(signUpRequest);
+        _studentRepository.SendEmail(signUpRequest);
         return Ok(student);
     }
     [HttpPost("login")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(200 , Type = typeof(StudentLoginReponse))]
     public IActionResult Login(StudentLoginRequest loginRequest)
     {
-        var student = _studentRepository.Login(loginRequest);
-        if (student == null)
+        StudentLoginReponse studentLogin = _studentRepository.Login(loginRequest);
+        if (studentLogin == null)
         {
             return BadRequest(new { message = "Username or password is incorrect" });
         }
-        return Ok(student);
+        return Ok(studentLogin);
+    }
+
+    [HttpPost("{studentId}/verify-account")]
+    [ProducesResponseType(200, Type = typeof(StudentVerifyAccountResponse))]
+    public IActionResult VerifyAccount(int studentId, StudentVerifyAccountRequest verifyAccountRequest)
+    {
+        var studentVerify = _studentRepository.VerifyAccount(studentId, verifyAccountRequest);
+        return Ok(studentVerify);
     }
 }

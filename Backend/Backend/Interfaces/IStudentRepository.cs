@@ -17,4 +17,6 @@ public interface IStudentRepository
     Student UpdateStudentProfile(int studentId, StudentUpdateProfile studentUpdateProfile);
     Student Signup(StudentSignUpRequest signUpRequest);
     StudentLoginReponse Login(StudentLoginRequest loginRequest);
+    void SendEmail(StudentSignUpRequest signUpRequest);
+    StudentVerifyAccountResponse VerifyAccount(int studentId, StudentVerifyAccountRequest studentVerifyAccountRequest);
 }
