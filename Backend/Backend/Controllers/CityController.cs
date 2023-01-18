@@ -21,10 +21,9 @@ public class CityController : Controller
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<City>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CityResponse>))]
     public IActionResult GetCities()
     {
-        // var cities = _mapper.Map<List<CityDto>>(_cityRepository.GetCities());
         var cities = _cityRepository.GetCities();
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -32,18 +31,57 @@ public class CityController : Controller
     }
 
     [HttpGet("{cityId}")]
-    [ProducesResponseType(200, Type = typeof(City))]
+    [ProducesResponseType(200, Type = typeof(CityResponse))]
     [ProducesResponseType(400)]
     public IActionResult GetCityById(int cityId)
     {
         if (!_cityRepository.CityExists(cityId))
             return NotFound();
-        var city = _cityRepository.GetCity(cityId);
+        var city = _cityRepository.GetCityResponse(cityId);
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         return Ok(city);
     }
-
+    
+    [HttpGet("{cityId}/colleges")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CompanyDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetColleges(int cityId)
+    {
+        if (!_cityRepository.CityExists(cityId))
+            return NotFound();
+        var city = _cityRepository.GetCollegesByCity(cityId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(city);
+    }
+    
+    [HttpGet("{cityId}/students")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<StudentDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetStudents(int cityId)
+    {
+        if (!_cityRepository.CityExists(cityId))
+            return NotFound();
+        var city = _cityRepository.GetStudentsByCity(cityId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(city);
+    }
+    
+    [HttpGet("{cityId}/companies")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CollegeDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCompanies(int cityId)
+    {
+        if (!_cityRepository.CityExists(cityId))
+            return NotFound();
+        var city = _cityRepository.GetCompaniesByCity(cityId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(city);
+    }
+    
     [HttpPost]
     [ProducesResponseType(201, Type = typeof(City))]
     public IActionResult CreateCity([FromBody] CityDto cityDto)

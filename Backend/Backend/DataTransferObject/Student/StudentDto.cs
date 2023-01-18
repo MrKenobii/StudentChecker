@@ -17,7 +17,7 @@ public class StudentDto
     public string Phone { get; set; }
     public string Department { get; set; }
     public string CollegeName { get; set; } // College
-    public string Image { get; set; } 
+    public byte[] Image { get; set; } 
     public string CityName { get; set; } // City
     public bool IsActivated { get; set; }
 }

@@ -9,13 +9,6 @@ namespace Backend.Repositories;
 public class CollegeRepository : ICollegeRepository
 {
     private readonly DataContext _context;
-    // private readonly ICityRepository _cityRepository;
-
-    // public CollegeRepository(ICityRepository cityRepository, DataContext dataContext)
-    // {
-    //     this._context = dataContext;
-    //     this._cityRepository = cityRepository;
-    // }
     public CollegeRepository(DataContext dataContext)
     {
         this._context = dataContext;
@@ -34,7 +27,8 @@ public class CollegeRepository : ICollegeRepository
     {
         var college = this.GetCollege(collegeId);
         Console.WriteLine("College Name " + college.Name);
-        var city = _context.Companies.Where(o => o.Id == collegeId).Select(c => c.City).FirstOrDefault();
+        
+        var city = _context.Colleges.Where(o => o.Id == collegeId).Select(c => c.City).FirstOrDefault();
         if (city != null)
         {
             Console.WriteLine("City : " + city.Name);

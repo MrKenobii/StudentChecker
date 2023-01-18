@@ -5,12 +5,13 @@ namespace Backend.Interfaces;
 
 public interface ICityRepository
 {
-    ICollection<City> GetCities();
+    ICollection<CityResponse> GetCities();
     City GetCity(int id);
+    CityResponse GetCityResponse(int id);
     bool CityExists(int id);
-    ICollection<Company> GetCompaniesByCity(int id);
-    ICollection<College> GetCollegesByCity(int id);
-    ICollection<Student> GetStudentsByCity(int id);
+    List<CompanyDto> GetCompaniesByCity(int id);
+    List<CollegeDto> GetCollegesByCity(int id);
+    List<StudentDto> GetStudentsByCity(int id);
     City CreateCity(CityDto cityDto);
     City UpdateCity(int cityId, CityDto cityDto);
     void DeleteCity(int cityId);

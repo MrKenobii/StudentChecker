@@ -285,7 +285,8 @@ public class StudentRepository : IStudentRepository
             student.Skills = studentUpdateProfile.Skills;
             student.Phone = studentUpdateProfile.Phone;
             student.Department = studentUpdateProfile.Department;
-            // student.Image = studentUpdateProfile.Image,
+            student.Languages = studentUpdateProfile.Languages;
+            student.Image = studentUpdateProfile.Image;
             student.IsActivated = true;
         
             var courses = new List<StudentCourse>();
@@ -354,7 +355,7 @@ public class StudentRepository : IStudentRepository
                 Name = student.Name,
                 LastName = student.LastName,
                 Email = student.Email,
-                Message = "Student "+student.Name+" "+student.LastName+"has successfully registered"
+                Message = "Student "+student.Name+" "+student.LastName+" has successfully registered"
             };
         }
 
@@ -363,8 +364,6 @@ public class StudentRepository : IStudentRepository
     public StudentLoginReponse Login(StudentLoginRequest loginRequest)
     {
         var student = _context.Students.Where(s => s.Email == loginRequest.Email).FirstOrDefault();
-        
-        Console.WriteLine("Password2: " +  BCrypt.Net.BCrypt.HashPassword(loginRequest.Password));
         
         if (student != null)
         {
@@ -441,7 +440,7 @@ public class StudentRepository : IStudentRepository
             email.From.Add(MailboxAddress.Parse("arely93@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(student.Email));
             email.Subject = "Test Email Subject";
-            email.Body = new TextPart(TextFormat.Html) { Text = "<h1>Dear Student "+student.Name +" "+student.LastName +"HTML Message Body</h1><h2>Thanks for registering.</h2> <h3>Your Verify Token: " + verifyToken+"</h3> " };
+            email.Body = new TextPart(TextFormat.Html) { Text = "<h1>Dear Student "+student.Name +" "+student.LastName +"</h1><h2>Thanks for registering.</h2> <h3>Your Verify Token: " + verifyToken+"</h3> " };
         
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
@@ -453,7 +452,7 @@ public class StudentRepository : IStudentRepository
             return "Email was successfully send";
         }
 
-        return "Student "+student.Name+" "+student.LastName+" does not found";
+        return "Student "+student.Name+" "+student.LastName+" was not found";
 
     }
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using Backend.Data;
 using Backend.DataTransferObject;
 using Backend.Interfaces;
@@ -13,15 +14,52 @@ public class CityRepository : ICityRepository
     {
         this._context = _context;
     }
-    public ICollection<City> GetCities()
+    public ICollection<CityResponse> GetCities()
     {
-        return _context.Cities.ToList();
+        var _cities = new List<CityResponse>();
+        var cities = _context.Cities.ToList();
+        if (cities.Count > 0)
+        {
+            foreach (var city in cities)
+            {
+                _cities.Add(new CityResponse()
+                {
+                    Name = city.Name,
+                    Id = city.Id,
+                    Colleges = this.GetCollegesInside(city.Id),
+                    Companies = this.GetCompaniesInside(city.Id),
+                    Students = this.GetStudentsInside(city.Id)
+                });
+            }    
+        }
+
+        return _cities;
+
     }
 
     public City GetCity(int id)
     {
         return _context.Cities.Where(e => e.Id == id).FirstOrDefault();
     }
+
+    public CityResponse GetCityResponse(int id)
+    {
+        var city = _context.Cities.Where(e => e.Id == id).FirstOrDefault();
+        if (city != null)
+        {
+            return new CityResponse()
+            {
+                Name = city.Name,
+                Id = city.Id,
+                Colleges = this.GetCollegesInside(city.Id),
+                Companies = this.GetCompaniesInside(city.Id),
+                Students = this.GetStudentsInside(city.Id)
+            };
+        }
+
+        return new CityResponse();
+    }
+
     public City GetCityByName(string collegeName)
     {
         return _context.Cities.Where(e => e.Name == collegeName).FirstOrDefault();
@@ -32,22 +70,239 @@ public class CityRepository : ICityRepository
         return _context.Cities.Any(c => c.Id == id);
     }
 
-    public ICollection<Company> GetCompaniesByCity(int id)
+    public List<CompanyDto> GetCompaniesByCity(int id)
     {
-        return _context.Companies.Where(c => c.City.Id == id).ToList();
-        
+        Console.WriteLine("Inside GetCompaniesByCity()");
+        var companies = _context.Companies.ToList();
+        var _companies = new List<CompanyDto>();
+        foreach (var company in companies)
+        {
+            Console.WriteLine("Iteration 1" + " " + company.Name);
+            var _city = _context.Companies.Where(o => o.Id == company.Id).Select(c => c.City).FirstOrDefault();
+            if (_city != null)
+            {
+                if (_city.Id == id)
+                {
+                    _companies.Add(new CompanyDto()
+                    {
+                        CityName = _city.Name,
+                        Id = company.Id,
+                        Name = company.Name,
+                        CompanyType = company.CompanyType,
+                        Email = company.Email,
+                        FoundationDate = company.FoundationDate,
+                        Address = company.Address,
+                        Phone = company.Phone,
+                        CompanyKey = company.CompanyKey
+                        
+                    });
+                    Console.WriteLine(company.Name);
+                }    
+            }
+            else
+            {
+                Console.WriteLine("City is null");
+            }
+            
+        }
+        return _companies;
+
     }
 
-    public ICollection<College> GetCollegesByCity(int id)
+    private ICollection<CompanyDto> GetCompaniesInside(int id)
     {
-        return _context.Colleges.Where(c => c.City.Id == id).ToList();
+        Console.WriteLine("Inside GetCompaniesByCity()");
+        var companies = _context.Companies.ToList();
+        var _companies = new List<CompanyDto>();
+        foreach (var company in companies)
+        {
+            Console.WriteLine("Iteration 1" + " " + company.Name);
+            var _city = _context.Companies.Where(o => o.Id == company.Id).Select(c => c.City).FirstOrDefault();
+            if (_city != null)
+            {
+                if (_city.Id == id)
+                {
+                    _companies.Add(new CompanyDto()
+                    {
+                        CityName = _city.Name, // City Name
+                        Id = company.Id,
+                        Name = company.Name,
+                        CompanyType = company.CompanyType,
+                        Email = company.Email,
+                        FoundationDate = company.FoundationDate,
+                        Address = company.Address,
+                        Phone = company.Phone,
+                        CompanyKey = company.CompanyKey
+                        
+                    });
+                    Console.WriteLine(company.Name);
+                }    
+            }
+            else
+            {
+                Console.WriteLine("City is null");
+            }
+            
+        }
+        return _companies;
     }
 
-    public ICollection<Student> GetStudentsByCity(int id)
+    private ICollection<CollegeResponse> GetCollegesInside(int id)
     {
-        return _context.Students.Where(c => c.City.Id == id).ToList();
+        Console.WriteLine("Inside GetCollegesByCity()");
+        var colleges = _context.Colleges.ToList();
+        var _colleges = new List<CollegeResponse>();
+        foreach (var college in colleges)
+        {
+            Console.WriteLine("Iteration 1" + " " + college.Name);
+            var _city = _context.Colleges.Where(o => o.Id == college.Id).Select(c => c.City).FirstOrDefault();
+            if (_city != null)
+            {
+                if (_city.Id == id)
+                {
+                    _colleges.Add(new CollegeResponse()
+                    {
+                        EmailExtension = college.EmailExtension,
+                        FoundationDate = college.FoundationDate,
+                        Id = college.Id,
+                        Name = college.Name, // Student Count and City Name
+                        CityName = _city.Name,
+                        StudentCount = 23
+                    });
+                    Console.WriteLine(college.Name);
+                }    
+            }
+            else
+            {
+                Console.WriteLine("City is null");
+            }
+            
+        }
+        return _colleges;
+    }
+    
+    private ICollection<StudentDto> GetStudentsInside(int id)
+    {
+        Console.WriteLine("Inside GetStudentsByCity()");
+        var students = _context.Students.ToList();
+        var _students = new List<StudentDto>();
+        foreach (var student in students)
+        {
+            Console.WriteLine("Iteration 1" + " " + student.Name);
+            var _city = _context.Students.Where(o => o.Id == student.Id).Select(c => c.City).FirstOrDefault();
+            var _college = _context.Students.Where(o => o.Id == student.Id).Select(c => c.College).FirstOrDefault();
+            if (_city != null)
+            {
+                if (_city.Id == id)
+                {
+                    _students.Add(new StudentDto()
+                    {
+                        Name = student.Name,
+                        LastName = student.LastName,
+                        Address = student.Address,
+                        CityName = _city.Name, //City Name
+                        CollegeName = _college.Name, // CollegeName
+                        Phone = student.Phone,
+                        Skills = student.Skills,
+                        Languages = student.Languages,
+                        DateOfBirth = student.DateOfBirth,
+                        Department = student.Department,
+                        Email = student.Email,
+                        EnrollDate = student.EnrollDate,
+                        Id = student.Id,
+                        Image = student.Image,
+                        IsActivated = student.IsActivated
+                        
+                    });
+                    Console.WriteLine(student.Name);
+                }    
+            }
+            else
+            {
+                Console.WriteLine("City is null");
+            }
+            
+        }
+        return _students;
+    }
+    public List<CollegeDto> GetCollegesByCity(int id)
+    {
+        Console.WriteLine("Inside GetCollegesByCity()");
+        var colleges = _context.Colleges.ToList();
+        var _colleges = new List<CollegeDto>();
+        foreach (var college in colleges)
+        {
+            Console.WriteLine("Iteration 1" + " " + college.Name);
+            var _city = _context.Colleges.Where(o => o.Id == college.Id).Select(c => c.City).FirstOrDefault();
+            if (_city != null)
+            {
+                if (_city.Id == id)
+                {
+                    _colleges.Add(new CollegeDto()
+                    {
+                        CityName = _city.Name,
+                        EmailExtension = college.EmailExtension,
+                        FoundationDate = college.FoundationDate,
+                        Id = college.Id,
+                        Name = college.Name
+                    });
+                    Console.WriteLine(college.Name);
+                }    
+            }
+            else
+            {
+                Console.WriteLine("City is null");
+            }
+            
+        }
+        return _colleges;
     }
 
+    public List<StudentDto> GetStudentsByCity(int id)
+    {
+        Console.WriteLine("Inside GetStudentsByCity()");
+        var students = _context.Students.ToList();
+        var _students = new List<StudentDto>();
+        foreach (var student in students)
+        {
+            Console.WriteLine("Iteration 1" + " " + student.Name);
+            var _city = _context.Students.Where(o => o.Id == student.Id).Select(c => c.City).FirstOrDefault();
+            if (_city != null)
+            {
+                if (_city.Id == id)
+                {
+                    _students.Add(new StudentDto()
+                    {
+                        Name = student.Name,
+                        LastName = student.LastName,
+                        Address = student.Address,
+                        CityName = _city.Name,
+                        CollegeName = "",
+                        Phone = student.Phone,
+                        Skills = student.Skills,
+                        Languages = student.Languages,
+                        DateOfBirth = student.DateOfBirth,
+                        Department = student.Department,
+                        Email = student.Email,
+                        EnrollDate = student.EnrollDate,
+                        Id = student.Id,
+                        Image = student.Image,
+                        IsActivated = student.IsActivated
+                        
+                    });
+                    Console.WriteLine(student.Name);
+                }    
+            }
+            else
+            {
+                Console.WriteLine("City is null");
+            }
+            
+        }
+        return _students;
+    }
+
+    
     public City CreateCity(CityDto cityDto)
     {
         var city = new City()
