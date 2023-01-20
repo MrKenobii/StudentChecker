@@ -40,13 +40,26 @@
       </ul>
     </div>
     <div class="d-flex">
-      <div ngbDropdown class="d-inline-block">
+      <div *ngIf="!student" ngbDropdown class="d-inline-block">
         <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic1" ngbDropdownToggle>
           Actions
         </button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
           <button ngbDropdownItem [routerLink]="'/login'">Login</button>
           <button ngbDropdownItem [routerLink]="'/sign-up'">Signup</button>
+        </div>
+      </div>
+      <div *ngIf="student" class="example-button-row">
+        <div class="example-flex-container">
+          <div ngbDropdown  class="example-button-container d-inline-block">
+            <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic2" ngbDropdownToggle>
+              <mat-icon>{{student.name.charAt(0).toUpperCase()}}</mat-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+              <button ngbDropdownItem [routerLink]="'/login'">Profile</button>
+              <button ngbDropdownItem (click)="logout()">Logout</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

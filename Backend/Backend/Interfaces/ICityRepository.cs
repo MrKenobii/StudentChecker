@@ -12,8 +12,8 @@ public interface ICityRepository
     List<CompanyDto> GetCompaniesByCity(int id);
     List<CollegeDto> GetCollegesByCity(int id);
     List<StudentDto> GetStudentsByCity(int id);
-    City CreateCity(CityDto cityDto);
-    City UpdateCity(int cityId, CityDto cityDto);
+    CityPostResponse CreateCity(CityPostRequest cityDto);
+    CityPostResponse UpdateCity(int cityId, CityPostRequest cityDto);
     void DeleteCity(int cityId);
     City GetCityByName(string cityName);
 }

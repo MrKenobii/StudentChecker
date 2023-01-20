@@ -5,13 +5,15 @@ namespace Backend.Interfaces;
 
 public interface ICompanyRepository
 {
-    ICollection<Company> GetCompanies();
+    ICollection<CompanyGetResponse> GetCompanies();
     Company GetCompany(int id);
+
+    CompanyGetResponse GetCompanyById(int companyId);
     CityDto GetCompanyCity(int city);
-    ICollection<Recruiter> GetRecruiters(int id);
+    ICollection<RecruiterDto> GetRecruitersByCompanyId(int id);
     bool CompanyExists(int companyId);
     void DeleteCompany(int companyId);
-    Company UpdateCompany(int companyId, CompanyDto companyDto);
-    Company CreateCompany(CompanyDto companyDto);
+    CompanyDto UpdateCompany(int companyId, CompanyPostRequest companyDto);
+    CompanyDto CreateCompany(CompanyPostRequest companyDto);
     Company AddRecruiter(int companyId, AddRecruiterToCompany addRecruiterToCompany);
 }

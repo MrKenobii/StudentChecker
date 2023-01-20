@@ -12,14 +12,61 @@ public class CompanyRepository : ICompanyRepository
     {
         this._context = context;
     }
-    public ICollection<Company> GetCompanies()
+    public ICollection<CompanyGetResponse> GetCompanies()
     {
-        return _context.Companies.ToList();
-    }
+        var _companies = new List<CompanyGetResponse>();
+        var companies = _context.Companies.ToList();
+        if (companies.Count > 0)
+        {
+            foreach (var company in companies)
+            {
+                _companies.Add(new CompanyGetResponse()
+                {
+                    Address = company.Address,
+                    City = this.GetCompanyCity(company.Id),
+                    CompanyKey = company.CompanyKey,
+                    CompanyType = company.CompanyType,
+                    Email = company.Email,
+                    FoundationDate = company.FoundationDate,
+                    Id = company.Id,
+                    Name = company.Name,
+                    Phone = company.Phone
+                });
+            }
 
+            return _companies;
+        }
+
+        return new List<CompanyGetResponse>();
+
+    }
+    
     public Company GetCompany(int id)
     {
         return _context.Companies.Where(c => c.Id == id).FirstOrDefault();
+    }
+
+    public CompanyGetResponse GetCompanyById(int companyId)
+    {
+        var company = this.GetCompany(companyId);
+        if (company != null)
+        {
+            return new CompanyGetResponse()
+            {
+                Address = company.Address,
+                City = this.GetCompanyCity(company.Id),
+                CompanyKey = company.CompanyKey,
+                CompanyType = company.CompanyType,
+                Email = company.Email,
+                FoundationDate = company.FoundationDate,
+                Id = company.Id,
+                Name = company.Name,
+                Phone = company.Phone
+            };    
+        }
+
+        return new CompanyGetResponse();
+
     }
 
     public CityDto GetCompanyCity(int companyId)
@@ -43,10 +90,49 @@ public class CompanyRepository : ICompanyRepository
         };
     }
 
-    public ICollection<Recruiter> GetRecruiters(int id)
+    public ICollection<RecruiterDto> GetRecruitersByCompanyId(int id)
     {
-        return _context.Recruiters.Where(c => c.Id == id).ToList();
-        //return _context.Cities.Where(o => o.Id == id).Select(c => c.).FirstOrDefault(); // One - Many
+        var company = this.GetCompany(id);
+        ICollection<RecruiterDto> recruiters = new List<RecruiterDto>();
+        if (company != null)
+        {
+            var recruiterCompanies = _context.RecruiterCompanies.Where(e => e.CompanyId == id).ToList();
+            Console.WriteLine("RecruiterCompanies Length: " + recruiterCompanies.Count);
+            foreach (var recruiterCompany in recruiterCompanies)
+            {
+                Console.WriteLine("Companies Length: " + recruiterCompany.CompanyId);
+                if (recruiterCompany.RecruiterId != null)
+                {
+                    var firstOrDefault = _context.Recruiters.Where(e => e.Id == recruiterCompany.RecruiterId).FirstOrDefault();
+                    Console.WriteLine("Recruiter Name: " + firstOrDefault.Name);
+                    if (firstOrDefault != null)
+                    {
+                        // var college = _context.Students.Where(o => o.Id == firstOrDefault.Id).Select(c => c.College).FirstOrDefault();
+                        var city = _context.Companies.Where(o => o.Id == firstOrDefault.Id).Select(c => c.City).FirstOrDefault();
+                        recruiters.Add(new RecruiterDto()
+                        {
+                            Name = firstOrDefault.Name,
+                            LastName = firstOrDefault.LastName,
+                            DateOfBirth = (DateTime)firstOrDefault.DateOfBirth,
+                            Password = firstOrDefault.Password,
+                            HireDate = (DateTime)firstOrDefault.HireDate,
+                            Address = firstOrDefault.Address,
+                            Email = firstOrDefault.Email,
+                            Id = firstOrDefault.Id,
+                            Phone = firstOrDefault.Phone,
+                            IsActivated = (bool)firstOrDefault.IsActivated,
+                        });
+                        
+                    }
+                    
+                }
+            }
+            
+            return recruiters;
+        }
+        return new List<RecruiterDto>();
+        
+        
     }
 
     public bool CompanyExists(int companyId)
@@ -60,54 +146,40 @@ public class CompanyRepository : ICompanyRepository
         _context.SaveChanges();
     }
 
-    public Company UpdateCompany(int companyId, CompanyDto companyDto)
+    public CompanyDto UpdateCompany(int companyId, CompanyPostRequest companyDto)
     {
-        Console.WriteLine("COMPANYDTO : " + companyDto.Name + " " + companyDto.Id + " " + companyDto.FoundationDate);
+        Console.WriteLine("COMPANYDTO : " + companyDto.Name + " " + companyId + " " + companyDto.FoundationDate);
         var cityByName = _context.Cities.Where(e => e.Name == companyDto.CityName).FirstOrDefault();
         var company = this.GetCompany(companyId);
         Console.WriteLine("COMPANY: " + company.Name + " " + company.Id + " " + company.FoundationDate);
-        if (companyDto.Name != null)
+        if (companyDto != null && company != null)
         {
-            company.Name = companyDto.Name;    
-        }
-
-        if (companyDto.CompanyKey != null)
-        {
-            company.CompanyKey = companyDto.CompanyKey;   
-        }
-
-        if (companyDto.CityName != null)
-        {
-            company.City = cityByName;
-        }
-
-        if (companyDto.FoundationDate != null)
-        {
+            company.Name = companyDto.Name;
             company.FoundationDate = companyDto.FoundationDate;
-        }
-        if (companyDto.Address != null)
-        {
-            company.Address = companyDto.Address;
-        }
-        if (companyDto.CompanyType != null)
-        {
-            company.CompanyType = companyDto.CompanyType;
-        }
-        if (companyDto.Phone != null)
-        {
             company.Phone = companyDto.Phone;
-        }
-        if (companyDto.Email != null)
-        {
+            company.Address = companyDto.Address;
+            company.CompanyKey = companyDto.CompanyKey;
             company.Email = companyDto.Email;
+            company.CompanyType = companyDto.CompanyType;
+            company.City = cityByName;
+            _context.Companies.Update(company);
+            _context.SaveChanges();
+            return new  CompanyDto()
+            {
+                Name = companyDto.Name,
+                FoundationDate = companyDto.FoundationDate,
+                Phone = companyDto.Phone,
+                Address = companyDto.Address,
+                CompanyKey = companyDto.CompanyKey,
+                Email = companyDto.Email,
+                CompanyType = companyDto.CompanyType,
+                CityName = cityByName.Name,
+            };
         }
-        
-        _context.Companies.Update(company);
-        _context.SaveChanges();
-        return company;
+        return new CompanyDto();
     }
 
-    public Company CreateCompany(CompanyDto companyDto)
+    public CompanyDto CreateCompany(CompanyPostRequest companyDto)
     {
         Console.WriteLine("Company DTO:  " + companyDto.CityName);
         var cityByName = _context.Cities.Where(e => e.Name == companyDto.CityName).FirstOrDefault();
@@ -130,17 +202,24 @@ public class CompanyRepository : ICompanyRepository
             company.Email = companyDto.Email;
             company.CompanyType = companyDto.CompanyType;
             company.City = cityByName;
-            // cityByName.Colleges.Add(college);
             _context.Companies.Add(company);
+            _context.SaveChanges();
+            return new CompanyDto()
+            {
+                Name = companyDto.Name,
+                FoundationDate = companyDto.FoundationDate,
+                Phone = companyDto.Phone,
+                Address = companyDto.Address,
+                CompanyKey = companyDto.CompanyKey,
+                Email = companyDto.Email,
+                CompanyType = companyDto.CompanyType,
+                CityName = cityByName.Name,
+            };
         }
-        else
-        {
-            Console.WriteLine("City Not Found");
-            _context.Companies.Add(company);
-            
-        }
-        _context.SaveChanges();
-        return company;
+
+        Console.WriteLine("City Not Found");
+        
+        return new CompanyDto();
     }
 
     public Company AddRecruiter(int companyId, AddRecruiterToCompany addRecruiterToCompany)

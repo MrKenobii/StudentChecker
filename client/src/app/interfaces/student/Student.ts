@@ -1,5 +1,5 @@
-import {College} from "./College";
-import {City} from "./City";
+import {College} from "../college/College";
+import {City} from "../city/City";
 
 export interface Student{
   name: string;

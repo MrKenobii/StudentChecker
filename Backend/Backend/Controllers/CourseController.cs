@@ -19,7 +19,7 @@ public class CourseController : Controller
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Course>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CourseDto>))]
     public IActionResult GetCourses()
     {
         var courses = _mapper.Map<List<CourseDto>>(_courseRepository.GetCourses());
@@ -42,11 +42,11 @@ public class CourseController : Controller
         return Ok(course);
     }
     [HttpGet("student/{courseId}")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Student>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<StudentDto>))]
     [ProducesResponseType(400)]
     public IActionResult GetStudentByCourse(int courseId)
     { 
-        var students = _mapper.Map<List<StudentDto>>(_courseRepository.GetStudents(courseId));
+        var students = _courseRepository.GetStudents(courseId);
         //var students = _courseRepository.GetStudents(courseId);
         if (!ModelState.IsValid)
             return BadRequest();
@@ -54,11 +54,11 @@ public class CourseController : Controller
     }
 
     [HttpPost]
-    [ProducesResponseType(201, Type = typeof(Course))]
-    public IActionResult CreateCourse([FromBody] CourseDto courseDto)
+    [ProducesResponseType(201, Type = typeof(CoursePostResponse))]
+    public IActionResult CreateCourse([FromBody] CoursePostRequest courseDto)
     {
         // Console.WriteLine(courseDto.Name);
-        var course = _mapper.Map<Course>(_courseRepository.CreateCourse(courseDto));
+        var course = _courseRepository.CreateCourse(courseDto);
         return Created("HttpStatusCode.Created",course);
         //return Ok(_courseRepository.CreateCourse(courseDto));
     }
@@ -72,16 +72,10 @@ public class CourseController : Controller
     }
 
     [HttpPut("{courseId}")]
-    [ProducesResponseType(201, Type = typeof(Course))]
-    public IActionResult UpdateCourse(int courseId, [FromBody] CourseDto courseDto)
+    [ProducesResponseType(201, Type = typeof(CourseDto))]
+    public IActionResult UpdateCourse(int courseId, [FromBody] CoursePostRequest courseDto)
     {
-        var course = _mapper.Map<Course>(_courseRepository.UpdateCourse(courseId, courseDto));
+        var course = _courseRepository.UpdateCourse(courseId, courseDto);
         return Ok(course);
-        
-        
-        // Console.WriteLine(courseDto.Name);
-        // Console.WriteLine("Course Id: " + courseId);
-        // Console.WriteLine("Name: " + courseDto.Name);
-        // return Ok(_courseRepository.UpdateCourse(courseId, courseDto));
     }
 }

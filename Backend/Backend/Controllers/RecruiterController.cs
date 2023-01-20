@@ -31,7 +31,7 @@ public class RecruiterController : Controller
     [HttpGet("{recruiterId}")]
     [ProducesResponseType(200, Type = typeof(Recruiter))]
     [ProducesResponseType(400)]
-    public IActionResult GetCollegeById(int recruiterId)
+    public IActionResult GetRecruiterById(int recruiterId)
     {
         if (!_recruiterRepository.RecruiterExists(recruiterId))
             return NotFound();
@@ -40,23 +40,35 @@ public class RecruiterController : Controller
             return BadRequest(ModelState);
         return Ok(recruiter);
     }
-    [HttpPost]
-    [ProducesResponseType(201, Type = typeof(Recruiter))]
-    public IActionResult CreateCollege([FromBody] RecruiterDto recruiterDto)
+    [HttpGet("{recruiterId}/companies")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CompanyDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetCountriesByRecruiterId(int recruiterId)
     {
-        var recruiter = _mapper.Map<Recruiter>(_recruiterRepository.CreateRecruiter(recruiterDto));
+        if (!_recruiterRepository.RecruiterExists(recruiterId))
+            return NotFound();
+        var companies =  _recruiterRepository.GetCompanies(recruiterId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(companies);
+    }    
+    [HttpPost]
+    [ProducesResponseType(201, Type = typeof(RecruiterPostResponse))]
+    public IActionResult CreateRecruiter([FromBody] RecruiterPostRequest recruiterDto)
+    {
+        var recruiter = _recruiterRepository.CreateRecruiter(recruiterDto);
         return Created("HttpStatusCode.Created",recruiter);
     }
     [HttpPut("{recruiterId}")]
-    [ProducesResponseType(200, Type = typeof(Recruiter))]
-    public IActionResult UpdateCollege(int recruiterId, [FromBody] RecruiterDto recruiterDto)
+    [ProducesResponseType(200, Type = typeof(RecruiterPostRequest))]
+    public IActionResult UpdateRecruiter(int recruiterId, [FromBody] RecruiterPostRequest recruiterDto)
     {
-        var recruiter = _mapper.Map<Recruiter>(_recruiterRepository.UpdateRecruiter(recruiterId, recruiterDto));
+        var recruiter = _recruiterRepository.UpdateRecruiter(recruiterId, recruiterDto);
         return Ok(recruiter);
     }
     [HttpDelete("{recruiterId}")]
     [ProducesResponseType(200)]
-    public void DeleteCollege(int recruiterId)
+    public void DeleteRecruiter(int recruiterId)
     {
         _recruiterRepository.DeleteRecruiter(recruiterId);
     }

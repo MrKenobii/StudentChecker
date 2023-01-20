@@ -26,14 +26,73 @@ public class StudentRepository : IStudentRepository
         this._context = _context;
         _appSettings = appSettings.Value;
     }
-    public ICollection<Student> GetStudents()
+    public ICollection<StudentDto> GetStudents()
     {
-        return _context.Students.ToList();
-    }
+        var _students = new List<StudentDto>();
+        var students = _context.Students.ToList();
+        if (students.Count > 0)
+        {
+            foreach (var student in students)
+            {
+                _students.Add(new StudentDto()
+                {
+                    Address = student.Address,
+                    CityName = this.GetStudentCity(student.Id).Name,
+                    CollegeName = this.GetStudentCollege(student.Id).Name,
+                    DateOfBirth = student.DateOfBirth,
+                    Department = student.Department,
+                    Email = student.Email,
+                    EnrollDate = student.EnrollDate,
+                    Id = student.Id,
+                    Image = student.Image,
+                    IsActivated = student.IsActivated,
+                    Name = student.Name,
+                    LastName = student.LastName,
+                    Languages = student.Languages,
+                    Skills = student.Skills,
+                    Password = student.Password
+                });
+            }
 
+            return _students;
+        }
+
+        return new List<StudentDto>();
+
+    }
+    
     public Student GetStudent(int id)
     {
         return _context.Students.Where(e => e.Id == id).FirstOrDefault();
+    }
+
+    public StudentDto GetStudentById(int studentId)
+    {
+        var student = this.GetStudent(studentId);
+        if (student != null)
+        {
+            return new StudentDto()
+            {
+                Address = student.Address,
+                CityName = this.GetStudentCity(student.Id).Name,
+                CollegeName = this.GetStudentCollege(student.Id).Name,
+                DateOfBirth = student.DateOfBirth,
+                Department = student.Department,
+                Email = student.Email,
+                EnrollDate = student.EnrollDate,
+                Id = student.Id,
+                Image = student.Image,
+                IsActivated = student.IsActivated,
+                Name = student.Name,
+                LastName = student.LastName,
+                Languages = student.Languages,
+                Skills = student.Skills,
+                Password = student.Password,
+                Phone = student.Phone
+            };
+        }
+
+        return new StudentDto();
     }
 
     public CityDto GetStudentCity(int studentId)
@@ -117,29 +176,98 @@ public class StudentRepository : IStudentRepository
         return _context.Students.Any(c => c.Id == studentId);
     }
 
-    public Student CreateStudent(StudentDto studentDto)
+    public StudentPostResponse CreateStudent(StudentPostRequest studentDto)
     {
-        var course = _context.Courses.Where(e => e.Id == 2).FirstOrDefault();
-        
-        Console.WriteLine("Student DTO:  " + studentDto.CityName);
-        var cityByName = _context.Cities.Where(e => e.Name == studentDto.CityName).FirstOrDefault();
-        var collegeByName = _context.Colleges.Where(e => e.Name == studentDto.CollegeName).FirstOrDefault();
-        string someUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-        using (var webClient = new WebClient())
+        if (studentDto != null)
         {
-            byte[] imageBytes = webClient.DownloadData(someUrl);
-            var student = new Student()
+            Console.WriteLine("Student DTO:  " + studentDto.CityName);
+            var cityByName = _context.Cities.Where(e => e.Name == studentDto.CityName).FirstOrDefault();
+            var collegeByName = _context.Colleges.Where(e => e.Name == studentDto.CollegeName).FirstOrDefault();
+            string someUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            using (var webClient = new WebClient())
             {
-                Name = studentDto.Name,
-                LastName = studentDto.LastName,
-                Email = studentDto.Email,
-                Password = studentDto.Password
-            };
+                byte[] imageBytes = webClient.DownloadData(someUrl);
+                var student = new Student()
+                {
+                    Name = studentDto.Name,
+                    LastName = studentDto.LastName,
+                    Email = studentDto.Email,
+                    Password = studentDto.Password
+                };
+
+                Console.WriteLine("COLLEGE: " + collegeByName.Name + " " + collegeByName.Id + " " +
+                                  collegeByName.FoundationDate);
+                if (cityByName != null && collegeByName != null)
+                {
+                    Console.WriteLine("CITY: " + cityByName.Name + " " + cityByName.Id);
+                    student.EnrollDate = studentDto.EnrollDate;
+                    student.DateOfBirth = studentDto.DateOfBirth;
+                    student.Address = studentDto.Address;
+                    student.Languages = studentDto.Languages;
+                    student.Skills = studentDto.Skills;
+                    student.Phone = studentDto.Phone;
+                    student.Department = studentDto.Department;
+                    student.Image = imageBytes;
+                    student.IsActivated = studentDto.IsActivated;
+                    student.City = cityByName;
+                    student.College = collegeByName;
+
+                    _context.Students.Add(student);
+                    cityByName.Students.Add(student);
+                    collegeByName.Students.Add(student);
+                    _context.SaveChanges();
+                    return new StudentPostResponse()
+                    {
+                        Email = student.Email,
+                        Id = student.Id,
+                        LastName = student.LastName,
+                        Message = "Student " + student.Name + " " + student.LastName + " was successfully added",
+                        Name = student.Name
+                    };
+                }
+                return new StudentPostResponse()
+                {
+                    Email = null,
+                    Id = 0,
+                    LastName = null,
+                    Message = "Something went wrong!!!",
+                    Name = null
+                };
+            }
             
-            Console.WriteLine("COLLEGE: " + collegeByName.Name + " " + collegeByName.Id + " " + collegeByName.FoundationDate);
-            if (cityByName != null && collegeByName != null)
+        }
+
+        return new StudentPostResponse()
+        {
+            Email = null,
+            Id = 0,
+            LastName = null,
+            Message = "Student is not added. Bad Request!!",
+            Name = null
+        };
+    }
+
+    public StudentPostResponse UpdateStudent(int studentId, StudentPostRequest studentDto)
+    {
+        if (studentDto != null)
+        {
+            var cityByName = _context.Cities.Where(e => e.Name == studentDto.CityName).FirstOrDefault();
+            var collegeByName = _context.Colleges.Where(e => e.Name == studentDto.CollegeName).FirstOrDefault();
+            var student = this.GetStudent(studentId);
+            if (student != null)
             {
-                Console.WriteLine("CITY: " + cityByName.Name + " " + cityByName.Id);
+                if (cityByName != null)
+                {
+                    student.City = cityByName;
+                }
+
+                if (collegeByName != null)
+                {
+                    student.College = collegeByName;
+                }
+
+                student.Name = studentDto.Name;
+                student.LastName = studentDto.LastName;
                 student.EnrollDate = studentDto.EnrollDate;
                 student.DateOfBirth = studentDto.DateOfBirth;
                 student.Address = studentDto.Address;
@@ -147,76 +275,35 @@ public class StudentRepository : IStudentRepository
                 student.Skills = studentDto.Skills;
                 student.Phone = studentDto.Phone;
                 student.Department = studentDto.Department;
-                student.Image = imageBytes;
                 student.IsActivated = studentDto.IsActivated;
-                student.City = cityByName;
-                student.College = collegeByName;
                 
-                _context.Students.Add(student);
-                cityByName.Students.Add(student);
-                collegeByName.Students.Add(student);
-                // _context.Cities.Update(cityByName);
-                // _context.Colleges.Update(collegeByName);
+                _context.Students.Update(student);
+                _context.SaveChanges();
+                return new StudentPostResponse()
+                {
+                    Email = student.Email,
+                    Id = student.Id,
+                    LastName = student.LastName,
+                    Message = "Student " + student.Name + " " + student.LastName + " was successfully updated",
+                    Name = student.Name
+                };
             }
-            else
+            return new StudentPostResponse()
             {
-                Console.WriteLine("City Not Found");
-                _context.Students.Add(student);
-            
-            }
-            _context.SaveChanges();
-            return student;
+                Email = null,
+                Id = 0,
+                LastName = null,
+                Message = "Something went wrong!!!",
+                Name = null
+            };    
         }
-
-        
-    }
-
-    public StudentResponse UpdateStudent(int studentId, StudentDto studentDto)
-    {
-        var cityByName = _context.Cities.Where(e => e.Name == studentDto.CityName).FirstOrDefault();
-        var collegeByName = _context.Colleges.Where(e => e.Name == studentDto.CollegeName).FirstOrDefault();
-        var student = this.GetStudent(studentId);
-        if (student != null)
-        {
-            if (cityByName != null)
-            {
-                student.City = cityByName;
-            }
-
-            if (collegeByName != null)
-            {
-                student.College = collegeByName;
-            }
-
-            student.Name = studentDto.Name;
-            student.LastName = studentDto.LastName;
-            student.EnrollDate = studentDto.EnrollDate;
-            student.DateOfBirth = studentDto.DateOfBirth;
-            student.Address = studentDto.Address;
-            student.Languages = studentDto.Languages;
-            student.Skills = studentDto.Skills;
-            student.Phone = studentDto.Phone;
-            student.Department = studentDto.Department;
-            student.IsActivated = studentDto.IsActivated;
-        
-        
-        
-            _context.Students.Update(student);
-            _context.SaveChanges();
-            return new StudentResponse()
-            {
-                Email = student.Email,
-                Name = student.Name,
-                LastName = student.LastName,
-                Message = "Student " + student.Name + " " + student.LastName +" was successfully updated"
-            };
-        }
-        return new StudentResponse()
+        return new StudentPostResponse()
         {
             Email = null,
-            Name = null,
+            Id = 0,
             LastName = null,
-            Message = "Student " + student.Name + " " + student.LastName +" was not found"
+            Message = "Student is not added. Bad Request!!",
+            Name = null
         };
         
     }
@@ -316,6 +403,7 @@ public class StudentRepository : IStudentRepository
             _context.SaveChanges();
             return new StudentResponse()
             {
+                Id = student.Id,
                 Name = student.Name,
                 LastName = student.LastName,
                 Email = student.Email,
@@ -337,26 +425,61 @@ public class StudentRepository : IStudentRepository
         string someUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
         using (var webClient = new WebClient())
         {
-            
-            byte[] imageBytes = webClient.DownloadData(someUrl);
-            var student = new Student()
+            var studentByEmail = _context.Students.Where(s => s.Email == signUpRequest.Email).FirstOrDefault();
+            if (studentByEmail == null)
             {
-                Name = signUpRequest.Name,
-                LastName = signUpRequest.LastName,
-                Email = signUpRequest.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(signUpRequest.Password),
-                Image = imageBytes,
-                IsActivated = false
-            };
-            _context.Students.Add(student);
-            _context.SaveChanges();
+                byte[] imageBytes = webClient.DownloadData(someUrl);
+                var student = new Student()
+                {
+                    Name = signUpRequest.Name,
+                    LastName = signUpRequest.LastName,
+                    Email = signUpRequest.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(signUpRequest.Password),
+                    Image = imageBytes,
+                    IsActivated = false
+                };
+                _context.Students.Add(student);
+                _context.SaveChanges();
+                return new StudentResponse()
+                {
+                    Id = student.Id,
+                    Name = student.Name,
+                    LastName = student.LastName,
+                    Email = student.Email,
+                    Message = "Student "+student.Name+" "+student.LastName+" has successfully registered"
+                };    
+            }
+            if (studentByEmail != null && !studentByEmail.IsActivated)
+            {
+                byte[] imageBytes = webClient.DownloadData(someUrl);
+                var student = new Student()
+                {
+                    Name = signUpRequest.Name,
+                    LastName = signUpRequest.LastName,
+                    Email = signUpRequest.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(signUpRequest.Password),
+                    Image = imageBytes,
+                    IsActivated = false
+                };
+                _context.Students.Update(student);
+                _context.SaveChanges();
+                return new StudentResponse()
+                {
+                    Name = student.Name,
+                    LastName = student.LastName,
+                    Email = student.Email,
+                    Message = "Student "+student.Name+" "+student.LastName+" has successfully registered"
+                };
+            }
+            
             return new StudentResponse()
             {
-                Name = student.Name,
-                LastName = student.LastName,
-                Email = student.Email,
-                Message = "Student "+student.Name+" "+student.LastName+" has successfully registered"
+                Name = null,
+                LastName = null,
+                Email = null,
+                Message = "Email : " + signUpRequest.Email + " has already been taken"
             };
+
         }
 
     }
@@ -439,8 +562,12 @@ public class StudentRepository : IStudentRepository
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("arely93@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(student.Email));
-            email.Subject = "Test Email Subject";
-            email.Body = new TextPart(TextFormat.Html) { Text = "<h1>Dear Student "+student.Name +" "+student.LastName +"</h1><h2>Thanks for registering.</h2> <h3>Your Verify Token: " + verifyToken+"</h3> " };
+            email.Subject = "Registration for Student Application";
+            email.Body = new TextPart(TextFormat.Html) { Text = "<h1>Dear Student "+student.Name +" "+student.LastName + "</h1>" +
+                                                                "<h2>Thanks for registering.</h2> " +
+                                                                "<h3>Your Verify Token: " + verifyToken+"</h3> " +
+                                                                "<h4>You can directly visit the link below</h4>" +
+                                                                "<a href=\"http://localhost:4200/activate/"+student.Id+"?token="+verifyToken+" \" target=\"_blank\">Activate your Account</a>" };
         
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
@@ -488,5 +615,35 @@ public class StudentRepository : IStudentRepository
             Email = null,
             Name = null
         };
+    }
+
+    public StudentDto GetStudentByKey(string key)
+    {
+        var student = _context.Students.Where(a => a.Token == key).FirstOrDefault();
+        if (student != null)
+        {
+            Console.WriteLine(student.Name);
+            return new StudentDto()
+            {
+                Address = student.Address,
+                CityName = this.GetStudentCity(student.Id).Name,
+                CollegeName = this.GetStudentCollege(student.Id).Name,
+                DateOfBirth = student.DateOfBirth,
+                Department = student.Department,
+                EnrollDate = student.EnrollDate,
+                Email = student.Email,
+                Id = student.Id,
+                Image = student.Image,
+                IsActivated = student.IsActivated,
+                Skills = student.Skills,
+                Languages = student.Languages,
+                Phone = student.Phone,
+                Password = student.Password,
+                Name = student.Name,
+                LastName = student.LastName,
+            };
+        }
+        Console.WriteLine("Student not found");
+        return new StudentDto();
     }
 }

@@ -44,7 +44,7 @@ public class CityController : Controller
     }
     
     [HttpGet("{cityId}/colleges")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<CompanyDto>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CollegeDto>))]
     [ProducesResponseType(400)]
     public IActionResult GetColleges(int cityId)
     {
@@ -70,7 +70,7 @@ public class CityController : Controller
     }
     
     [HttpGet("{cityId}/companies")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<CollegeDto>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CompanyDto>))]
     [ProducesResponseType(400)]
     public IActionResult GetCompanies(int cityId)
     {
@@ -83,18 +83,26 @@ public class CityController : Controller
     }
     
     [HttpPost]
-    [ProducesResponseType(201, Type = typeof(City))]
-    public IActionResult CreateCity([FromBody] CityDto cityDto)
+    [ProducesResponseType(201, Type = typeof(CityPostResponse))]
+    public IActionResult CreateCity([FromBody] CityPostRequest cityDto)
     {
-        var city = _mapper.Map<City>(_cityRepository.CreateCity(cityDto));
+        var city = _cityRepository.CreateCity(cityDto);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         return Created("HttpStatusCode.Created",city);
     }
 
     [HttpPut("{cityId}")]
-    [ProducesResponseType(200, Type = typeof(City))]
-    public IActionResult UpdateCity(int cityId, [FromBody] CityDto cityDto)
+    [ProducesResponseType(200, Type = typeof(CityPostResponse))]
+    public IActionResult UpdateCity(int cityId, [FromBody] CityPostRequest cityDto)
     {
-        var city = _mapper.Map<City>(_cityRepository.UpdateCity(cityId, cityDto));
+        if (!_cityRepository.CityExists(cityId))
+            return NotFound();
+        var city = _cityRepository.UpdateCity(cityId, cityDto);
+        if (!ModelState.IsValid)
+            return BadRequest();
         return Ok(city);
     }
 

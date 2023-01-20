@@ -22,16 +22,54 @@ public class CourseRepository : ICourseRepository
     {
         return _context.Courses.Where(e => e.Id == id).FirstOrDefault();
     }
+    
 
-    public Company GetCompanyCity(int city)
+    public ICollection<StudentDto> GetStudents(int id)
     {
-        return _context.Companies.Where(o => o.City.Id == city).FirstOrDefault();
-    }
-
-    public ICollection<Student> GetStudents(int id)
-    {
-        return null;
-        // return _context.StudentCourses.Where(c => c.CourseId == id).ToList();
+        var course = this.GetCourse(id);
+        ICollection<StudentDto> courses = new List<StudentDto>();
+        if (course != null)
+        {
+            var studentCourses = _context.StudentCourses.Where(e => e.CourseId == id).ToList();
+            Console.WriteLine("Student Length: " + studentCourses.Count);
+            foreach (var studentCourse in studentCourses)
+            {
+                Console.WriteLine("Course Length: " + studentCourse.StudentId);
+                if (studentCourse.StudentId != null)
+                {
+                    var firstOrDefault = _context.Students.Where(e => e.Id == studentCourse.StudentId).FirstOrDefault();
+                    Console.WriteLine("Student Name: " + firstOrDefault.Name);
+                    if (firstOrDefault != null)
+                    {
+                        var college = _context.Students.Where(o => o.Id == firstOrDefault.Id).Select(c => c.College).FirstOrDefault();
+                        var city = _context.Students.Where(o => o.Id == firstOrDefault.Id).Select(c => c.City).FirstOrDefault();
+                        courses.Add(new StudentDto()
+                        {
+                            Name = firstOrDefault.Name,
+                            LastName = firstOrDefault.LastName,
+                            Address = firstOrDefault.Address,
+                            CityName = city.Name,
+                            CollegeName = college.Name,
+                            DateOfBirth = firstOrDefault.DateOfBirth,
+                            Department = firstOrDefault.Department,
+                            Email = firstOrDefault.Email,
+                            EnrollDate = firstOrDefault.EnrollDate,
+                            Id = firstOrDefault.Id,
+                            Image = firstOrDefault.Image,
+                            IsActivated = firstOrDefault.IsActivated,
+                            Languages = firstOrDefault.Languages,
+                            Skills = firstOrDefault.Skills,
+                            Phone = firstOrDefault.Phone,
+                            Password = firstOrDefault.Password
+                        });    
+                    }
+                    
+                }
+            }
+            
+            return courses;
+        }
+        return new List<StudentDto>();
     }
 
     public bool CourseExists(int courseId)
@@ -39,17 +77,34 @@ public class CourseRepository : ICourseRepository
         return _context.Courses.Any(c => c.Id == courseId);
     }
 
-    public Course CreateCourse(CourseDto courseDto)
+    public CoursePostResponse CreateCourse(CoursePostRequest courseDto)
     {
-        var course = new Course()
+        if (courseDto != null)
         {
-            Name = courseDto.Name
-        };
+            var course = new Course()
+            {
+                Name = courseDto.Name
+            };
         
-        Console.WriteLine(course);
-        _context.Courses.Add(course);
-        _context.SaveChanges();
-        return course;
+            Console.WriteLine(course);
+            _context.Courses.Add(course);
+            _context.SaveChanges();
+            
+            return new CoursePostResponse()
+            {
+                Id = _context.Courses.Where(n => n.Name == course.Name).FirstOrDefault().Id,
+                Name = course.Name,
+                Message = "Course: " + course.Name+ " was successfully added"
+                
+            };    
+        }
+
+        return new CoursePostResponse()
+        {
+            Message = "Something went wrong",
+            Id = 0,
+            Name = null,
+        };
     }
 
     public void DeleteCourse(int courseId)
@@ -58,13 +113,35 @@ public class CourseRepository : ICourseRepository
         _context.SaveChanges();
     }
 
-    public Course UpdateCourse(int courseId, CourseDto courseDto)
+    public CoursePostResponse UpdateCourse(int courseId, CoursePostRequest courseDto)
     {
         Course course = this.GetCourse(courseId);
-        course.Name = courseDto.Name;
-        Console.WriteLine("Course Name UpdateCourse() " + course.Name);
-        _context.Update(course);
-        _context.SaveChanges();
-        return course;
+        if (courseDto != null)
+        {
+
+            if (courseDto.Name != null)
+            {
+                course.Name = courseDto.Name;
+            }
+        
+            Console.WriteLine(course);
+            _context.Courses.Update(course);
+            _context.SaveChanges();
+            
+            return new CoursePostResponse()
+            {
+                Id = courseId,
+                Name = course.Name,
+                Message = "Course: " + course.Name+ " was successfully updated"
+                
+            };    
+        }
+
+        return new CoursePostResponse()
+        {
+            Message = "Something went wrong",
+            Id = 0,
+            Name = null,
+        };
     }
 }

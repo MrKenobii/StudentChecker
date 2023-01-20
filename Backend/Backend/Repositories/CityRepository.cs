@@ -154,6 +154,8 @@ public class CityRepository : ICityRepository
         var _colleges = new List<CollegeResponse>();
         foreach (var college in colleges)
         {
+            var students = _context.Students.Where(c => c.College.Id == college.Id).ToList();
+            Console.WriteLine(students.Count);
             Console.WriteLine("Iteration 1" + " " + college.Name);
             var _city = _context.Colleges.Where(o => o.Id == college.Id).Select(c => c.City).FirstOrDefault();
             if (_city != null)
@@ -167,7 +169,7 @@ public class CityRepository : ICityRepository
                         Id = college.Id,
                         Name = college.Name, // Student Count and City Name
                         CityName = _city.Name,
-                        StudentCount = 23
+                        StudentCount = students.Count
                     });
                     Console.WriteLine(college.Name);
                 }    
@@ -303,25 +305,66 @@ public class CityRepository : ICityRepository
     }
 
     
-    public City CreateCity(CityDto cityDto)
+    public CityPostResponse CreateCity(CityPostRequest cityDto)
     {
-        var city = new City()
+        if (cityDto != null)
         {
-            Name = cityDto.Name
+            var city = new City()
+            {
+                Name = cityDto.Name
+            };
+            Console.WriteLine(city);
+            _context.Cities.Add(city);
+            _context.SaveChanges();
+            return new CityPostResponse()
+            {
+                Id = city.Id,
+                Message = "City " + city.Name + " was successfully added",
+                Name = city.Name
+            };    
+        }
+
+        return new CityPostResponse()
+        {
+            Id = 0,
+            Message = "Something went wrong!! Check your request payload",
+            Name = null
         };
-        Console.WriteLine(city);
-        _context.Cities.Add(city);
-        _context.SaveChanges();
-        return city;
+
     }
 
-    public City UpdateCity(int cityId, CityDto cityDto)
+    public CityPostResponse UpdateCity(int cityId, CityPostRequest cityDto)
     {
         var city = this.GetCity(cityId);
-        city.Name = cityDto.Name;
-        _context.Cities.Update(city);
-        _context.SaveChanges();
-        return city;
+        if (city != null)
+        {
+            if (cityDto != null)
+            {
+                city.Name = cityDto.Name;
+                _context.Cities.Update(city);
+                _context.SaveChanges();
+                return new CityPostResponse()
+                {
+                    Id = city.Id,
+                    Message = "City " + city.Name + " was successfully updated",
+                    Name = city.Name
+                };    
+            }
+
+            return new CityPostResponse()
+            {
+                Id = 0,
+                Message = "Something went wrong!! Check your request payload",
+                Name = null
+            };
+        }
+        
+        return new CityPostResponse()
+        {
+            Id = 0,
+            Message = "City id " + cityId + " not exists!!!",
+            Name = null
+        };
     }
 
     public void DeleteCity(int cityId)

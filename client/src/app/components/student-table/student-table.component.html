@@ -59,8 +59,8 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let student of students; let i = index">
-    <th scope="row" *ngIf="student.isActivated">{{ i }}</th>
+  <tr *ngFor="let student of dumbStudents; let i = index">
+    <th scope="row" *ngIf="student.isActivated">{{ i +1 }}</th>
     <td *ngIf="student.isActivated">
 
       <img *ngIf="student.isActivated" [src]="student.image" style="width: 45px; height: 45px" class="rounded-circle"/>
@@ -68,14 +68,14 @@
     </td>
     <td *ngIf="student.isActivated">{{ student.name}}</td>
     <td *ngIf="student.isActivated">{{ student.lastName}}</td>
-    <td *ngIf="student.isActivated">{{ student.college.name}}</td>
+    <td *ngIf="student.isActivated">{{ student.collegeName}}</td>
     <td *ngIf="student.isActivated">{{ student.department}}</td>
     <td *ngIf="student.isActivated">{{ student.email}}</td>
     <td *ngIf="student.isActivated">{{ student.enrollDate}}</td>
     <td *ngIf="student.isActivated">{{ student.dateOfBirth}}</td>
     <td *ngIf="student.isActivated">{{ student.address}}</td>
     <td *ngIf="student.isActivated">{{ student.skills}}</td>
-    <td *ngIf="student.isActivated">{{ student.city.name}}</td>
+    <td *ngIf="student.isActivated">{{ student.cityName}}</td>
     <td *ngIf="student.isActivated">{{ student.phone}}</td>
     <td *ngIf="student.isActivated">
       <button type="button" class="btn btn-primary" (click)="goPageInfo(student)">Connect</button>

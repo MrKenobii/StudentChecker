@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using AutoMapper;
 using Backend.DataTransferObject;
@@ -22,7 +23,8 @@ public class StudentController : Controller
     }
     [HttpGet]
     // [Authorize]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Student>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<StudentDto>))]
+    [SuppressMessage("ReSharper.DPA", "DPA0006: Large number of DB commands", MessageId = "count: 130")]
     public IActionResult GetStudents()
     {
         var students = _studentRepository.GetStudents(); 
@@ -31,13 +33,13 @@ public class StudentController : Controller
         return Ok(students);
     }
     [HttpGet("{studentId}")]
-    [ProducesResponseType(200, Type = typeof(Student))]
+    [ProducesResponseType(200, Type = typeof(StudentDto))]
     [ProducesResponseType(400)]
     public IActionResult GetStudentById(int studentId)
     {
         if (!_studentRepository.StudentExists(studentId))
             return NotFound();
-        var student = _mapper.Map<StudentDto>( _studentRepository.GetStudent((studentId)));
+        var student =  _studentRepository.GetStudentById(studentId);
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         return Ok(student);
@@ -72,18 +74,32 @@ public class StudentController : Controller
         var college = _studentRepository.GetStudentCollege(studentId);
         return Ok(college);
     }
-    [HttpPost]
-    [ProducesResponseType(201, Type = typeof(Student))]
-    public IActionResult CreateStudent([FromBody] StudentDto studentDto)
+    [HttpGet("key/{key}")]
+    [ProducesResponseType(200, Type=typeof(IEnumerable<StudentDto>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetStudentByKey(string key)
     {
-        var student = _mapper.Map<Student>(_studentRepository.CreateStudent(studentDto));
+        // if (!_studentRepository.StudentExists(studentId))
+        //     return NotFound();
+        StudentDto student = _studentRepository.GetStudentByKey(key);
+        return Ok(student);
+    }
+    [HttpPost]
+    [ProducesResponseType(201, Type = typeof(StudentPostResponse))]
+    public IActionResult CreateStudent([FromBody] StudentPostRequest studentDto)
+    {
+        var student = _studentRepository.CreateStudent(studentDto);
         return Created("HttpStatusCode.Created",student);
     }
     [HttpPut("{studentId}")]
-    [ProducesResponseType(200, Type = typeof(StudentResponse))]
-    public IActionResult UpdateStudent(int studentId, [FromBody] StudentDto studentDto)
+    [ProducesResponseType(200, Type = typeof(StudentPostResponse))]
+    public IActionResult UpdateStudent(int studentId, [FromBody] StudentPostRequest studentDto)
     {
-        var student = _mapper.Map<Student>(_studentRepository.UpdateStudent(studentId, studentDto));
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var student = _studentRepository.UpdateStudent(studentId, studentDto);
+        if (!ModelState.IsValid)
+            return BadRequest();
         return Ok(student);
     }
     [HttpDelete("{studentId}")]
@@ -108,7 +124,7 @@ public class StudentController : Controller
     }
 
     [HttpPost("sign-up")]
-    [ProducesResponseType(200, Type = typeof(Student))]
+    [ProducesResponseType(200, Type = typeof(StudentResponse))]
     public IActionResult SignUp(StudentSignUpRequest signUpRequest)
     {
         var student = _studentRepository.Signup(signUpRequest);

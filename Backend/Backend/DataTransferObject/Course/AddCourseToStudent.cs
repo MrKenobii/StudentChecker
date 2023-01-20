@@ -4,6 +4,6 @@ namespace Backend.DataTransferObject;
 
 public class AddCourseToStudent  
 {
-    public IEnumerable<CourseDto> Courses { get; set; }
+    public IEnumerable<CoursePostRequest> Courses { get; set; }
     
 }

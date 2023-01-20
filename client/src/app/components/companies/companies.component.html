@@ -121,8 +121,8 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let company of companies; let i = index">
-    <th scope="row">{{ i }}</th>
+  <tr *ngFor="let company of dumbCompanies; let i = index">
+    <th scope="row">{{ i +1}}</th>
     <td>{{ company.name}}</td>
     <td>{{ company.companyType}}</td>
     <td>{{ company.foundationDate}}</td>
