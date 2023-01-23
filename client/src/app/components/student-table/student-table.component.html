@@ -71,14 +71,24 @@
     <td *ngIf="student.isActivated">{{ student.collegeName}}</td>
     <td *ngIf="student.isActivated">{{ student.department}}</td>
     <td *ngIf="student.isActivated">{{ student.email}}</td>
-    <td *ngIf="student.isActivated">{{ student.enrollDate}}</td>
-    <td *ngIf="student.isActivated">{{ student.dateOfBirth}}</td>
-    <td *ngIf="student.isActivated">{{ student.address}}</td>
-    <td *ngIf="student.isActivated">{{ student.skills}}</td>
-    <td *ngIf="student.isActivated">{{ student.cityName}}</td>
-    <td *ngIf="student.isActivated">{{ student.phone}}</td>
+    <td *ngIf="student.isActivated">{{ student.formattedEnrollDate}}</td>
+
+    <td *ngIf="student.isActivated && student.dateOfBirth">{{ student.formattedDob}}</td>
+    <td *ngIf="student.isActivated && !student.dateOfBirth">N/A</td>
+
+    <td *ngIf="student.isActivated && student.address">{{ student.address}}</td>
+    <td *ngIf="student.isActivated && !student.address">N/A</td>
+
+    <td *ngIf="student.isActivated && student.skills">{{ student.skills}}</td>
+    <td *ngIf="student.isActivated && !student.skills">N/A</td>
+
+    <td *ngIf="student.isActivated && student.cityName">{{ student.cityName}}</td>
+    <td *ngIf="student.isActivated && !student.cityName">N/A</td>
+
+    <td *ngIf="student.isActivated && student.phone">{{ student.phone}}</td>
+    <td *ngIf="student.isActivated && !student.phone">N/A</td>
     <td *ngIf="student.isActivated">
-      <button type="button" class="btn btn-primary" (click)="goPageInfo(student)">Connect</button>
+      <button type="button" class="btn btn-primary" [routerLink]="'/profile/student/' + student.id">Connect</button>
     </td>
   </tr>
   </tbody>

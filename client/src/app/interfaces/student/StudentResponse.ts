@@ -13,4 +13,6 @@ export interface StudentResponse{
   department: string;
   collegeName: string
   image: string;
+  formattedEnrollDate: string;
+  formattedDob: string;
 }

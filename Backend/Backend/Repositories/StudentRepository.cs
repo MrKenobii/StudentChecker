@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -50,7 +51,8 @@ public class StudentRepository : IStudentRepository
                     LastName = student.LastName,
                     Languages = student.Languages,
                     Skills = student.Skills,
-                    Password = student.Password
+                    Password = student.Password,
+                    Phone = student.Phone
                 });
             }
 
@@ -617,6 +619,7 @@ public class StudentRepository : IStudentRepository
         };
     }
 
+    [SuppressMessage("ReSharper.DPA", "DPA0006: Large number of DB commands", MessageId = "count: 346")]
     public StudentDto GetStudentByKey(string key)
     {
         var student = _context.Students.Where(a => a.Token == key).FirstOrDefault();
@@ -645,5 +648,24 @@ public class StudentRepository : IStudentRepository
         }
         Console.WriteLine("Student not found");
         return new StudentDto();
+    }
+
+    public StudentGetKeyResponse GetKeyByStudentId(int id)
+    {
+        var student = this.GetStudent(id);
+        if (student != null && student.Token != null)
+        {
+            return new StudentGetKeyResponse()
+            {
+                Key = student.Token,
+                Message = "Student's token successfully returned;"
+            };
+        }
+
+        return new StudentGetKeyResponse()
+        {
+            Key = null,
+            Message = "Student " + student.Name + " " + student.LastName + " has no active token"
+        };
     }
 }

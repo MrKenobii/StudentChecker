@@ -18,6 +18,6 @@ public class Recruiter
     public string? Phone { get; set; }
     public string? Token { get; set; }
     public byte[] Image { get; set; }
-    public bool? IsActivated { get; set; }
+    public bool IsActivated { get; set; }
     public ICollection<RecruiterCompany>? RecruiterCompanies { get; set; }
 }

@@ -14,6 +14,9 @@ public interface IRecruiterRepository
     RecruiterPostResponse CreateRecruiter(RecruiterPostRequest recruiterDto);
     bool RecruiterExists(int recruiterId);
     Recruiter UpdateRecruiterProfile(int recruiterId, RecruiterUpdateProfile recruiterUpdateProfile);
-    Recruiter Signup(RecruiterSignupRequest signUpRequest);
+    RecruiterSignUpResponse Signup(RecruiterSignupRequest signUpRequest);
     RecruiterLoginResponse Login(RecruiterLoginRequest loginRequest);
+    RecruiterDto GetRecruiterByToken(string token);
+    RecruiterTokenGetResponse GetTokenByRecruiterId(int recruiterId);
+    RecruiterDto AddCompany(int recruiterId, AddCompanyToRecruiter addCompanyToRecruiter);
 }

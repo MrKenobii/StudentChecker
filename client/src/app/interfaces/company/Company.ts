@@ -9,5 +9,6 @@ export interface Company{
   address: string;
   phone: string;
   city: City;
+  formattedDate: string;
 
 }

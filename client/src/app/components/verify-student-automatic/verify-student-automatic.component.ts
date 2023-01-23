@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {StudentService} from "../../services/student.service";
+import {StudentService} from "../../services/student/student.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {VerifyAccountRequest} from "../../interfaces/student/VerifyAccountRequest";
 import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";

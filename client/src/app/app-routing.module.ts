@@ -13,6 +13,17 @@ import {
 import {
   StudentCompleteProfileComponent
 } from "./components/student-complete-profile/student-complete-profile.component";
+import {ProfilePageComponent} from "./components/profile-page/profile-page.component";
+import {
+  RecruiterCompleteProfileComponent
+} from "./components/recruiter-complete-profile/recruiter-complete-profile.component";
+import {RecruiterProfilePageComponent} from "./components/recruiter-profile-page/recruiter-profile-page.component";
+import {
+  StudentProfileEditPageComponent
+} from "./components/student-profile-edit-page/student-profile-edit-page.component";
+import {
+  RecruiterProfileEditPageComponent
+} from "./components/recruiter-profile-edit-page/recruiter-profile-edit-page.component";
 
 
 const routes: Route[] = [
@@ -42,6 +53,21 @@ const routes: Route[] = [
   },
   {
     path: 'complete-profile/:studentId', component: StudentCompleteProfileComponent,
+  },
+  {
+    path: 'recruiter/complete-profile/:recruiterId', component: RecruiterCompleteProfileComponent,
+  },
+  {
+    path: 'profile/student/:studentId', component: ProfilePageComponent,
+  },
+  {
+    path: 'student/edit-profile/:studentId', component: StudentProfileEditPageComponent,
+  },
+  {
+    path: 'profile/recruiter/:recruiterId', component: RecruiterProfilePageComponent,
+  },
+  {
+    path: 'recruiter/edit-profile/:recruiterId', component: RecruiterProfileEditPageComponent,
   },
   {
     path: 'login', component: LoginComponent

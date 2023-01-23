@@ -150,4 +150,16 @@ public class StudentController : Controller
         var studentVerify = _studentRepository.VerifyAccount(studentId, verifyAccountRequest);
         return Ok(studentVerify);
     }
+
+    [HttpGet("{studentId}/token")]
+    [ProducesResponseType(200, Type = typeof(StudentGetKeyResponse))]
+    public IActionResult GetTokenByStudentId(int studentId)
+    {
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var studentGetKeyResponse = _studentRepository.GetKeyByStudentId(studentId);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(studentGetKeyResponse);
+    }
 }

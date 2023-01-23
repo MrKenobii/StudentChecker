@@ -81,7 +81,7 @@ public class RecruiterController : Controller
     }
 
     [HttpPost("sign-up")]
-    [ProducesResponseType(200, Type = typeof(Recruiter))]
+    [ProducesResponseType(200, Type = typeof(RecruiterSignUpResponse))]
     public IActionResult SignUp(RecruiterSignupRequest signUpRequest)
     {
         var recruiter = _recruiterRepository.Signup(signUpRequest);
@@ -93,5 +93,36 @@ public class RecruiterController : Controller
     {
         var recruiterLoginResponse = _recruiterRepository.Login(loginRequest);
         return Ok(recruiterLoginResponse);
+    }
+    [HttpGet("{token}/token")]
+    [ProducesResponseType(200, Type = typeof(RecruiterDto))]
+    public IActionResult GetRecruiterByToken(string token)
+    {
+        var recruiterByToken = _recruiterRepository.GetRecruiterByToken(token);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(recruiterByToken);
+    }
+    [HttpGet("token/{recruiterId}")]
+    [ProducesResponseType(200, Type = typeof(RecruiterTokenGetResponse))]
+    public IActionResult GetTokenByRecruiterId(int recruiterId)
+    {
+        if (!_recruiterRepository.RecruiterExists(recruiterId))
+            return NotFound();
+        var token = _recruiterRepository.GetTokenByRecruiterId(recruiterId);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(token);
+    }
+    [HttpPut("{recruiterId}/add-company")]
+    [ProducesResponseType(200, Type = typeof(RecruiterDto))]
+    public IActionResult AddCompanyToRecruiter(int recruiterId, AddCompanyToRecruiter company)
+    {
+        if (!_recruiterRepository.RecruiterExists(recruiterId))
+            return NotFound();
+        var recruiter = _recruiterRepository.AddCompany(recruiterId, company);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(recruiter);
     }
 }

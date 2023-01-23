@@ -29,6 +29,11 @@ import { StudentCompleteProfileComponent } from './components/student-complete-p
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from '@angular/material/core';
 import { ImageUploadComponent } from './components/image-upload/image-upload.component';
+import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { RecruiterCompleteProfileComponent } from './components/recruiter-complete-profile/recruiter-complete-profile.component';
+import { RecruiterProfilePageComponent } from './components/recruiter-profile-page/recruiter-profile-page.component';
+import { RecruiterProfileEditPageComponent } from './components/recruiter-profile-edit-page/recruiter-profile-edit-page.component';
+import { StudentProfileEditPageComponent } from './components/student-profile-edit-page/student-profile-edit-page.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +49,12 @@ import { ImageUploadComponent } from './components/image-upload/image-upload.com
     VerifyStudentAccountComponent,
     VerifyStudentAutomaticComponent,
     StudentCompleteProfileComponent,
-    ImageUploadComponent
+    ImageUploadComponent,
+    ProfilePageComponent,
+    RecruiterCompleteProfileComponent,
+    RecruiterProfilePageComponent,
+    RecruiterProfileEditPageComponent,
+    StudentProfileEditPageComponent
   ],
     imports: [
         BrowserModule,

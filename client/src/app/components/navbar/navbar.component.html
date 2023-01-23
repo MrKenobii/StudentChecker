@@ -7,23 +7,25 @@
     <button
       class="navbar-toggler"
       type="button"
-      aria-expanded="false"
+      aria-expanded="true"
+      (click)="collapse.toggle()"
+      [attr.aria-expanded]="!isCollapsed"
       aria-label="Toggle navigation"
     >
-      <i class="fas fa-bars"></i>
+      <mat-icon class="text-white border-1">calendar_view_day</mat-icon>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active text-white" [routerLink]="''" routerLinkActive="active">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" [routerLink]="'students'" routerLinkActive="active">Students</a>
+          <a class="nav-link text-white" [routerLink]="'/students'" routerLinkActive="active">Students</a>
         </li>
         <li class="nav-item me-5">
-          <a class="nav-link text-white" [routerLink]="'companies'" routerLinkActive="active">Companies</a>
+          <a class="nav-link text-white" [routerLink]="'/companies'" routerLinkActive="active">Companies</a>
         </li>
-        <li class="nav-item ms-5">
+        <li class="nav-item ms-lg-5">
           <form class="d-flex input-group w-auto">
             <input
               type="search"
@@ -40,7 +42,7 @@
       </ul>
     </div>
     <div class="d-flex">
-      <div *ngIf="!student" ngbDropdown class="d-inline-block">
+      <div *ngIf="!student && !recruiter" ngbDropdown class="d-inline-block">
         <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic1" ngbDropdownToggle>
           Actions
         </button>
@@ -49,14 +51,28 @@
           <button ngbDropdownItem [routerLink]="'/sign-up'">Signup</button>
         </div>
       </div>
-      <div *ngIf="student" class="example-button-row">
+      <div *ngIf="student && !recruiter" class="example-button-row">
         <div class="example-flex-container">
           <div ngbDropdown  class="example-button-container d-inline-block">
-            <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic2" ngbDropdownToggle>
-              <mat-icon>{{student.name.charAt(0).toUpperCase()}}</mat-icon>
+            <button *ngIf="student && !recruiter" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic2" ngbDropdownToggle>
+              {{student.name}} {{student.lastName}}
             </button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-              <button ngbDropdownItem [routerLink]="'/login'">Profile</button>
+              <button ngbDropdownItem (click)="goToStudent(student.id)">Profile</button>
+              <button ngbDropdownItem (click)="logout()">Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="recruiter" class="example-button-row">
+        <div class="example-flex-container">
+          <div ngbDropdown  class="example-button-container d-inline-block">
+            <button *ngIf="!student && recruiter" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic3" ngbDropdownToggle>
+              {{recruiter.name}} {{recruiter.lastName}}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic3">
+              <button ngbDropdownItem (click)="goToRecruiter(recruiter.id)">Profile</button>
               <button ngbDropdownItem (click)="logout()">Logout</button>
             </div>
           </div>

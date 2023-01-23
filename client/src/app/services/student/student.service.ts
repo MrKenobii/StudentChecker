@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {StudentSignupRequest} from "../interfaces/student/signup/StudentSignupRequest";
-import {StudentSignupResponse} from "../interfaces/student/signup/StudentSignupResponse";
+import {StudentSignupRequest} from "../../interfaces/student/signup/StudentSignupRequest";
+import {StudentSignupResponse} from "../../interfaces/student/signup/StudentSignupResponse";
 import {Observable} from "rxjs";
-import {VerifyTokenResponse} from "../interfaces/student/VerifyTokenResponse";
-import {VerifyAccountRequest} from "../interfaces/student/VerifyAccountRequest";
-import {StudentResponse} from "../interfaces/student/StudentResponse";
-import {StudentLoginRequest} from "../interfaces/student/login/StudentLoginRequest";
-import {StudentLoginResponse} from "../interfaces/student/login/StudentLoginResponse";
+import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";
+import {VerifyAccountRequest} from "../../interfaces/student/VerifyAccountRequest";
+import {StudentResponse} from "../../interfaces/student/StudentResponse";
+import {StudentLoginRequest} from "../../interfaces/student/login/StudentLoginRequest";
+import {StudentLoginResponse} from "../../interfaces/student/login/StudentLoginResponse";
+import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class StudentService {
     return this.http.get(`http://localhost:5269/Student/${id}/college`);
   }
   public getCoursesByStudent(id: number){
-    return this.http.get(`http://localhost:5269/Student/${id}/city`);
+    return this.http.get(`http://localhost:5269/Student/${id}/courses`);
   }
   public addCourse(id: number, courses: any){
     return this.http.put(`http://localhost:5269/Student/${id}/add-course`, courses);
@@ -51,6 +52,9 @@ export class StudentService {
   }
   public getStudentByKey(key: string) : Observable<StudentResponse>{
     return this.http.get<StudentResponse>(`http://localhost:5269/Student/key/${key}`)
+  }
+  public getTokenByStudentId(id: number) : Observable<StudentGetTokenResponse> {
+    return this.http.get<StudentGetTokenResponse>(`http://localhost:5269/Student/${id}/token`);
   }
   public updateStudent(id: number, payload: any){
     return this.http.put(`http://localhost:5269/Student/${id}`, payload);

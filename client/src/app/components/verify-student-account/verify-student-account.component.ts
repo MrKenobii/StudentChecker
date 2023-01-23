@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {StudentService} from "../../services/student.service";
+import {StudentService} from "../../services/student/student.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";

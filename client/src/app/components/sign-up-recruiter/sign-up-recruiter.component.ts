@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
+import {RecruiterPostSignupRequest} from "../../interfaces/recruiter/signup/RecruiterPostSignupRequest";
+import {RecruiterPostSignupResponse} from "../../interfaces/recruiter/signup/RecruiterPostSignupResponse";
 
 class SignupPayload {
   name!: string;
@@ -16,7 +20,8 @@ class SignupPayload {
 export class SignUpRecruiterComponent implements OnInit{
   createPostForm!: FormGroup;
   postPayload: SignupPayload;
-  constructor() {
+  requestPayload!: RecruiterPostSignupRequest;
+  constructor(private recruiterService: RecruiterService ,private snackBar: MatSnackBar) {
     this.postPayload = {
       name: '',
       lastName: '',
@@ -40,7 +45,27 @@ export class SignUpRecruiterComponent implements OnInit{
     this.postPayload.email = this.createPostForm.get('email')!.value;
     this.postPayload.confirmPassword = this.createPostForm.get('confirmPassword')!.value;
     this.postPayload.password = this.createPostForm.get('password')!.value;
-    console.log(`${this.postPayload}`);
+    if(this.postPayload.password === this.postPayload.confirmPassword){
+      console.log(this.postPayload);
+
+      this.requestPayload = {
+        name: this.postPayload.name,
+        email: this.postPayload.email,
+        lastName: this.postPayload.lastName,
+        password: this.postPayload.password
+      };
+
+      console.log(this.requestPayload);
+      this.recruiterService.signUp(this.requestPayload).subscribe((data: RecruiterPostSignupResponse) => {
+        this.snackBar.open(data.message, "Ok", {
+          duration: 3000
+        });
+      });
+    }
+    else
+      this.snackBar.open("Password are not matching", "Ok", {
+        duration: 3000
+      })
   }
 
 }

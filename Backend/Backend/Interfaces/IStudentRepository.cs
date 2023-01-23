@@ -22,4 +22,6 @@ public interface IStudentRepository
     string SendEmail(StudentSignUpRequest signUpRequest);
     StudentVerifyAccountResponse VerifyAccount(int studentId, StudentVerifyAccountRequest studentVerifyAccountRequest);
     StudentDto GetStudentByKey(string key);
+
+    StudentGetKeyResponse GetKeyByStudentId(int id);
 }

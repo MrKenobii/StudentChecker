@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {StudentService} from "../../services/student.service";
+import {StudentService} from "../../services/student/student.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
-import {CollegeService} from "../../services/college.service";
+import {CollegeService} from "../../services/college/college.service";
 import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {CompleteStudentProfile} from "../../interfaces/student/CompleteStudentProfile";
 import {Course} from "../../interfaces/course/Course";
-import {CoursesService} from "../../services/courses.service";
-import {ImageUploadService} from "../../services/image-upload.service";
+import {CoursesService} from "../../services/course/courses.service";
+import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 
 
 
@@ -113,7 +113,7 @@ export class StudentCompleteProfileComponent implements OnInit{
     const reader = new FileReader();
     reader.readAsDataURL(this.file); //FileStream response from .NET core backend
     reader.onload = _event => {
-      // console.log(reader.result);
+
       const obj = {
         department: this.createPostForm.get('department')!.value,
         collegeName: this.college.name,
@@ -130,7 +130,7 @@ export class StudentCompleteProfileComponent implements OnInit{
       console.log(obj);
       this.studentService.updateProfile(this.studentId, obj).subscribe((data: any) => {
         console.log(data);
-        this.router.navigateByUrl("login");
+        this.router.navigate(['/login?role=recruiter']);
       });
     };
   }

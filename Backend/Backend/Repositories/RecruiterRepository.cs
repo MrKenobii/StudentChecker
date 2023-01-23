@@ -191,7 +191,7 @@ public class RecruiterRepository : IRecruiterRepository
         return recruiter;
     }
 
-    public Recruiter Signup(RecruiterSignupRequest signUpRequest)
+    public RecruiterSignUpResponse Signup(RecruiterSignupRequest signUpRequest)
     {
         string someUrl =
             "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/271deea8-e28c-41a3-aaf5-2913f5f48be6/de7834s-6515bd40-8b2c-4dc6-a843-5ac1a95a8b55.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzI3MWRlZWE4LWUyOGMtNDFhMy1hYWY1LTI5MTNmNWY0OGJlNlwvZGU3ODM0cy02NTE1YmQ0MC04YjJjLTRkYzYtYTg0My01YWMxYTk1YThiNTUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.BopkDn1ptIwbmcKHdAOlYHyAOOACXW0Zfgbs0-6BY-E";
@@ -209,7 +209,13 @@ public class RecruiterRepository : IRecruiterRepository
             };
             _context.Recruiters.Add(recruiter);
             _context.SaveChanges();
-            return recruiter;
+            return new RecruiterSignUpResponse()
+            {
+                Message = "Recruiter " +recruiter.Name +" " +recruiter.LastName+" has created",
+                Name = recruiter.Name,
+                LastName = recruiter.LastName,
+                Email = recruiter.Email
+            };
         }
     }
 
@@ -259,7 +265,49 @@ public class RecruiterRepository : IRecruiterRepository
         };
     }
 
-    public Recruiter AddCompany(int recruiterId, AddCompanyToRecruiter addCompanyToRecruiter)
+    public RecruiterDto GetRecruiterByToken(string token)
+    {
+        var recruiter = _context.Recruiters.Where(r => r.Token == token).FirstOrDefault();
+        if (recruiter != null)
+        {
+            return new RecruiterDto()
+            {
+                Address = recruiter.Address,
+                DateOfBirth = recruiter.DateOfBirth,
+                Email = recruiter.Email,
+                HireDate = recruiter.HireDate,
+                Id = recruiter.Id,
+                IsActivated = recruiter.IsActivated,
+                LastName = recruiter.LastName,
+                Name = recruiter.Name,
+                Password = recruiter.Password,
+                Phone = recruiter.Phone,
+                Image = recruiter.Image
+            };
+        }
+        else return new RecruiterDto();
+    }
+
+    public RecruiterTokenGetResponse GetTokenByRecruiterId(int recruiterId)
+    {
+        var recruiter = this.GetRecruiter(recruiterId);
+        if (recruiterId != null && recruiter.Token != null)
+        {
+            return new RecruiterTokenGetResponse()
+            {
+                Key = recruiter.Token,
+                Message = "Recruiter's token successfully returned;"
+            };
+        }
+
+        return new RecruiterTokenGetResponse()
+        {
+            Key = null,
+            Message = "Recruiter  " + recruiter.Name + " " + recruiter.LastName + " has no active token"
+        };
+    }
+
+    public RecruiterDto AddCompany(int recruiterId, AddCompanyToRecruiter addCompanyToRecruiter)
     {
         var recruiter = this.GetRecruiter(recruiterId);
         var companies = new List<RecruiterCompany>();
@@ -275,7 +323,20 @@ public class RecruiterRepository : IRecruiterRepository
         }
         _context.RecruiterCompanies.AddRange(companies);
         _context.SaveChanges();
-        
-        return this.GetRecruiter(recruiterId);
+        return new RecruiterDto()
+        {
+            Address = recruiter.Address,
+            DateOfBirth = recruiter.DateOfBirth,
+            Email = recruiter.Email,
+            HireDate = recruiter.HireDate,
+            Id = recruiter.Id,
+            IsActivated = recruiter.IsActivated,
+            LastName = recruiter.LastName,
+            Name = recruiter.Name,
+            Password = recruiter.Password,
+            Phone = recruiter.Phone,
+            Image = recruiter.Image
+        };
+
     }
 }

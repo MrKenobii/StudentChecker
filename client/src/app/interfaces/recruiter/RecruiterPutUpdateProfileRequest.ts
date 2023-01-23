@@ -3,9 +3,9 @@
 // PUT /Recruiter/id/update-profile
 export interface RecruiterPutUpdateProfileRequest {
   address: string;
-  hireDate: string;
+  hireDate: Date;
   phone: string;
   dateOfBirth: Date;
   companyName: string;
-  image: string; // ?????????  ----------> Write a Response Classes for Backend and Frontend !!!!!!!!
+  image: ArrayBuffer | string | null
 }

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {CollegeService} from "../../services/college.service";
+import {CollegeService} from "../../services/college/college.service";
 import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
-import {StudentService} from "../../services/student.service";
+import {StudentService} from "../../services/student/student.service";
 import {StudentSignupRequest} from "../../interfaces/student/signup/StudentSignupRequest";
 import {StudentSignupResponse} from "../../interfaces/student/signup/StudentSignupResponse";
 import {Router} from "@angular/router";
@@ -79,4 +79,5 @@ export class SignUpComponent implements OnInit{
       });
     }
   }
+
 }

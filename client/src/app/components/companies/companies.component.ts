@@ -1,10 +1,21 @@
 import {Component, OnInit} from '@angular/core';
 import {Company} from "../../interfaces/company/Company";
-import {CompanyService} from "../../services/company.service";
+import {CompanyService} from "../../services/company/company.service";
+import {City} from "../../interfaces/city/City";
 
 
 
+interface DumbCompany{
+  id: number,
+  name: string;
+  companyType: string;
+  email: string;
+  foundationDate: string;
+  address: string;
+  phone: string;
+  city: City;
 
+}
 
 
 @Component({
@@ -18,6 +29,25 @@ export class CompaniesComponent implements OnInit{
     //this.refreshCompanies();
 
   }
+  format(inputDate: Date) {
+    let date, month, year;
+
+    date = inputDate.getDate();
+    month = inputDate.getMonth() + 1;
+    year = inputDate.getFullYear();
+
+    date = date
+      .toString()
+      .padStart(2, '0');
+
+    month = month
+      .toString()
+      .padStart(2, '0');
+
+    return `${date}/${month}/${year}`;
+  }
+
+
   ngOnInit(): void {
     this.companyService.getCompanies().subscribe((data: any) =>{
       this.companies = data;
@@ -33,7 +63,10 @@ export class CompaniesComponent implements OnInit{
   collectionSize!: number;
   public refreshCompanies() {
     this.dumbCompanies = this.companies;
-    this.dumbCompanies = this.dumbCompanies.map((company ) => ( {...company})).slice(
+    this.dumbCompanies.map((c, i) => {
+      c.formattedDate =this.format(new Date(c.foundationDate));
+    });
+    this.dumbCompanies = this.dumbCompanies.map((company ) => ( { ...company})).slice(
       (this.page -1) * this.pageSize,
       (this.page -1) * this.pageSize + this.pageSize
     );
