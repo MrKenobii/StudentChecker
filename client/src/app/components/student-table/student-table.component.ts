@@ -3,8 +3,45 @@ import {StudentService} from "../../services/student/student.service";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 
 
+interface StudentDto {
+  id: number,
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+  enrollDate: Date;
+  dateOfBirth: Date;
+  address: string;
+  skills: string;
+  phone: string;
+  department: string;
+  collegeName: string
+  image: ArrayBuffer | string | null;
+  cityName: string;
+  isActivated: boolean;
+  formattedDob: string;
+  formattedEnrollDate: string;
+}
 
-
+interface FormattedStudents {
+  id: number,
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+  enrollDate: Date;
+  dateOfBirth: Date;
+  address: string;
+  skills: string;
+  phone: string;
+  department: string;
+  collegeName: string
+  image: ArrayBuffer | string | null;
+  cityName: string;
+  isActivated: boolean,
+  formattedDob: string;
+  formattedEnrollDate: string;
+}
 
 @Component({
   selector: 'app-student-table',
@@ -16,8 +53,9 @@ export class StudentTableComponent implements OnInit {
   pageSize = 4;
 
   students!: StudentResponse[];
-  dumbStudents!: StudentResponse[];
+  dumbStudents: FormattedStudents[] = [];
   collectionSize!: number;
+
   constructor(private studentService: StudentService) {
     this.studentService.getStudents().subscribe((data: any) => {
       this.students = data;
@@ -26,7 +64,10 @@ export class StudentTableComponent implements OnInit {
       this.students.map(student => {
         student.image = "data:image/png;base64," + student.image;
       });
-      console.log(this.students);
+      this.students.map((student: StudentResponse, index: number) => {
+        this.dumbStudents[index] = {...student, formattedDob: this.format(new Date(student.dateOfBirth)) , formattedEnrollDate: this.format(new Date(student.enrollDate)) };
+      });
+      console.log(this.dumbStudents);
       this.refreshStudents();
 
     })
@@ -51,11 +92,13 @@ export class StudentTableComponent implements OnInit {
     return `${date}/${month}/${year}`;
   }
   public refreshStudents() {
-    this.dumbStudents = this.students;
-    this.dumbStudents.map((s, i) => {
-      s.formattedDob =this.format(new Date(s.dateOfBirth));
-      s.formattedEnrollDate =this.format(new Date(s.enrollDate));
+    this.students.map((student: StudentResponse, index: number) => {
+      this.dumbStudents[index] = {...student, formattedDob: this.format(new Date(student.dateOfBirth)) , formattedEnrollDate: this.format(new Date(student.enrollDate)) };
     });
+    // this.dumbStudents
+    //   .map((student: StudentResponse) =>
+    //     ({formattedDob: this.format(new Date(student.dateOfBirth)) , formattedEnrollDate: this.format(new Date(student.enrollDate)) ,...student}));
+
     this.dumbStudents = this.dumbStudents.map((student ) => ({ ...student})).slice(
       (this.page -1) * this.pageSize,
       (this.page -1) * this.pageSize + this.pageSize

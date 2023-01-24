@@ -9,6 +9,8 @@ import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {StudentLoginRequest} from "../../interfaces/student/login/StudentLoginRequest";
 import {StudentLoginResponse} from "../../interfaces/student/login/StudentLoginResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
+import {Course} from "../../interfaces/course/Course";
+
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +33,8 @@ export class StudentService {
   public getCollegeByStudent(id: number){
     return this.http.get(`http://localhost:5269/Student/${id}/college`);
   }
-  public getCoursesByStudent(id: number){
-    return this.http.get(`http://localhost:5269/Student/${id}/courses`);
+  public getCoursesByStudent(id: number) : Observable<Course[]>{
+    return this.http.get<Course[]>(`http://localhost:5269/Student/${id}/courses`);
   }
   public addCourse(id: number, courses: any){
     return this.http.put(`http://localhost:5269/Student/${id}/add-course`, courses);
@@ -64,5 +66,9 @@ export class StudentService {
   }
   public verifyAccount(studentId: number, payload: VerifyAccountRequest) : Observable<VerifyTokenResponse> {
     return this.http.post<VerifyTokenResponse>(`http://localhost:5269/Student/${studentId}/verify-account`, payload);
+  }
+
+  public  editProfile(id: number, payload: any) : Observable<any> {
+    return this.http.put(`http://localhost:5269/Student/${id}/update-profile`, payload);
   }
 }

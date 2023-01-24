@@ -49,7 +49,7 @@ export class CompaniesComponent implements OnInit{
 
 
   ngOnInit(): void {
-    this.companyService.getCompanies().subscribe((data: any) =>{
+    this.companyService.getCompanies().subscribe((data: Company[]) =>{
       this.companies = data;
       console.log(data);
       this.collectionSize = this.companies.length;

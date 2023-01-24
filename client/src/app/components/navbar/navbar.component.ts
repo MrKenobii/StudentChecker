@@ -21,23 +21,20 @@ export class NavbarComponent implements OnInit {
               private recruiterService: RecruiterService) {
   }
   ngOnInit(): void {
-    // console.log(this.recruiter);
-    // console.log(this.student);
     if(localStorage.getItem("key") !== null){
       this.studentService.
-      getStudentByKey(localStorage.getItem("key")!)
-        .subscribe((data: StudentResponse) => {
-          // console.log(data);
-          if(data?.id !== null && data?.name !== null){
+      getStudentByKey(localStorage.getItem("key")!).subscribe((data: StudentResponse) => {
+          if(data !== null && data?.id !== null && data?.name !== null){
+            console.log(data);
             this.student = data;
+            this.student.image = "data:image/png;base64," + this.student?.image
           } else {
-            // console.log(localStorage.getItem("key"));
             this.recruiterService.getRecruiterByKey(localStorage.getItem("key")!)
-              .subscribe((_data: RecruiterGetResponse) => {
-              // console.log(_data)
-              if(_data.id !== null && _data.name !== null){
-                // console.log(_data.name);
-                this.recruiter = _data;
+              .subscribe((_recruiter: RecruiterGetResponse) => {
+              if(_recruiter.id !== null && _recruiter.name !== null){
+                console.log(_recruiter)
+                this.recruiter = _recruiter;
+                this.recruiter.image = "data:image/png;base64," + this.recruiter?.image
               } else {
                 this.snackBar.open("Something went wrong. Refresh the page", "Ok", {
                   duration: 3000
@@ -48,6 +45,7 @@ export class NavbarComponent implements OnInit {
 
       });
     }
+
 
 
   }

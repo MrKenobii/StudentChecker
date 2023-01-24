@@ -14,12 +14,12 @@
     <div class="row">
       <div class="col-lg-4">
         <div class="card mb-4">
-          <div class="card-body text-center">
-            <img [src]="student.image" alt="avatar"
+          <div *ngIf="student" class="card-body text-center">
+            <img [src]="student.image || 'https://www.example.com/example.png' "
                  class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3">{{student.name}} {{student.lastName}}</h5>
+            <h5 *ngIf="student && student.name && student.lastName" class="my-3">{{student.name || 'N/A'}} {{student!.lastName || 'N/A'}}</h5>
             <p class="text-muted mb-1">Full Stack Developer</p>
-            <p class="text-muted mb-4">{{student.cityName}}, {{student.address}}</p>
+            <p class="text-muted mb-4" *ngIf="student && student.cityName && student.address">{{student.cityName || 'N/A'}}, {{student.address || 'N/A'}}</p>
             <div *ngIf="!isOwnProfilePage" class="d-flex justify-content-center mb-2">
               <button type="button" class="btn btn-outline-primary ms-1">Message</button>
             </div>
@@ -33,7 +33,7 @@
             <ul *ngFor="let course of courses" class="list-group list-group-flush rounded-3">
               <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                 <i class="fas fa-globe fa-lg text-warning"></i>
-                <p class="mb-0" [id]="course.name + '/'+course.id"> {{course.name}}</p>
+                <p class="mb-0" [id]="course?.name + '/'+course.id || 'N/A'" *ngIf="student && course && course.name"> {{course.name || 'N/A'}}</p>
               </li>
             </ul>
           </div>
@@ -47,7 +47,7 @@
                 <p class="mb-0">Full Name</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{student.name}} {{student.lastName}}</p>
+                <p class="text-muted mb-0" *ngIf="student && student.name && student.lastName">{{student.name || 'N/A'}} {{student.lastName || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -56,7 +56,7 @@
                 <p class="mb-0">Email</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{student.email}}</p>
+                <p class="text-muted mb-0" *ngIf="student && student.email">{{student.email || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -65,7 +65,7 @@
                 <p class="mb-0">Phone</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{student.phone}}</p>
+                <p class="text-muted mb-0" *ngIf="student && student.phone">{{student.phone || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -74,7 +74,7 @@
                 <p class="mb-0">City</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{student.cityName}}</p>
+                <p class="text-muted mb-0" *ngIf="student && student.cityName">{{student.cityName || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -83,7 +83,7 @@
                 <p class="mb-0">Address</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{student.address}}</p>
+                <p class="text-muted mb-0" *ngIf="student && student.address">{{student.address || 'N/A'}}</p>
               </div>
             </div>
           </div>

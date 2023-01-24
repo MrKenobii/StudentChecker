@@ -18,7 +18,7 @@ interface CompanyDto {
   address: string;
   phone: string;
   cityName: string;
-  formattedDate: string;
+  companyKey: string;
 }
 
 @Injectable({
@@ -37,6 +37,9 @@ export class RecruiterService {
 
   public updateProfile(id: number, obj: any) : Observable<any> {
     return this.httpClient.put<any>(`http://localhost:5269/Recruiter/${id}/update-profile`, obj);
+  }
+  public editProfile(id: number, obj: any) : Observable<any> {
+    return this.httpClient.put<any>(`http://localhost:5269/Recruiter/${id}/edit-profile`, obj);
   }
 
   public login(payload: RecruiterPostLoginRequest) : Observable<RecruiterPostLoginResponse> {

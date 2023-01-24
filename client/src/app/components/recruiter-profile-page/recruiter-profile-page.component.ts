@@ -13,7 +13,7 @@ interface CompanyDto {
   address: string;
   phone: string;
   cityName: string;
-  formattedDate: string;
+  companyKey: string;
 }
 @Component({
   selector: 'app-recruiter-profile-page',
@@ -46,6 +46,7 @@ export class RecruiterProfilePageComponent {
             console.log("This.companies");
             console.log(this.companies);
             this.activeCompany= this.companies.at(0)!;
+            console.log(this.activeCompany);
           }
         });
       }

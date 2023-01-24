@@ -5,6 +5,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 
+
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.component.html',
@@ -20,17 +21,20 @@ export class ProfilePageComponent implements OnInit{
     this.activatedRoute.params.subscribe(val => {
       this.studentId = this.activatedRoute.snapshot.params['studentId'];
     });
+
+  }
+  ngOnInit(): void {
     this.studentService.getStudentById(this.studentId).subscribe((data: StudentResponse) => {
-      if(data !== null){
         this.student = data;
-        this.student.image = this.student.image = "data:image/png;base64," + this.student.image;
+        console.log(data);
+        this.student.image = "data:image/png;base64," + this.student.image;
         console.log(this.student);
         this.studentService.getCoursesByStudent(this.studentId).subscribe((_courses: any) => {
           this.courses =_courses;
           console.log(_courses);
         });
-      }
     });
+
     this.studentService.getTokenByStudentId(this.studentId).subscribe((data: StudentGetTokenResponse) => {
       if(localStorage.getItem("key") !== null && localStorage.getItem("key") == data.key){
         this.isOwnProfilePage = true;
@@ -40,10 +44,9 @@ export class ProfilePageComponent implements OnInit{
       }
     });
   }
-  ngOnInit(): void {
-  }
 
   editProfile() {
+    this.router.navigate(['student/edit-profile/'+this.studentId]);
     console.log("Inside edit Profile");
   }
 }

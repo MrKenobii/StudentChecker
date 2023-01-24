@@ -68,12 +68,14 @@
     </td>
     <td *ngIf="student.isActivated">{{ student.name}}</td>
     <td *ngIf="student.isActivated">{{ student.lastName}}</td>
-    <td *ngIf="student.isActivated">{{ student.collegeName}}</td>
-    <td *ngIf="student.isActivated">{{ student.department}}</td>
+    <td *ngIf="student.isActivated && student.collegeName">{{ student.collegeName}}</td>
+    <td *ngIf="student.isActivated && !student.collegeName">N/A</td>
+    <td *ngIf="student.isActivated && student.department">{{ student.department}}</td>
+    <td *ngIf="student.isActivated && !student.department">N/A</td>
     <td *ngIf="student.isActivated">{{ student.email}}</td>
-    <td *ngIf="student.isActivated">{{ student.formattedEnrollDate}}</td>
+    <td *ngIf="student.isActivated">{{ student!.formattedEnrollDate}}</td>
 
-    <td *ngIf="student.isActivated && student.dateOfBirth">{{ student.formattedDob}}</td>
+    <td *ngIf="student.isActivated && student.dateOfBirth">{{ student!.formattedDob }}</td>
     <td *ngIf="student.isActivated && !student.dateOfBirth">N/A</td>
 
     <td *ngIf="student.isActivated && student.address">{{ student.address}}</td>

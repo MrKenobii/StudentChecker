@@ -125,4 +125,15 @@ public class RecruiterController : Controller
             return BadRequest();
         return Ok(recruiter);
     }
+    [HttpPut("{recruiterId}/edit-profile")]
+    [ProducesResponseType(200, Type = typeof(EditProfileResponse))]
+    public IActionResult EditProfile(int recruiterId, RecruiterEditProfileRequest recruiter)
+    {
+        if (!_recruiterRepository.RecruiterExists(recruiterId))
+            return NotFound();
+        var message = _recruiterRepository.EditProfile(recruiterId, recruiter);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(message);
+    }
 }

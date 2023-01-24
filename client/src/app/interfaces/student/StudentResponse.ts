@@ -3,16 +3,16 @@ export interface StudentResponse{
   name: string;
   lastName: string;
   email: string;
+  password: string;
   enrollDate: Date;
   dateOfBirth: Date;
   address: string;
+  languages: string;
   skills: string;
-  cityName: string;
   phone: string;
-  isActivated: boolean;
   department: string;
   collegeName: string
-  image: string;
-  formattedEnrollDate: string;
-  formattedDob: string;
+  image: ArrayBuffer | string | null;
+  cityName: string;
+  isActivated: boolean;
 }

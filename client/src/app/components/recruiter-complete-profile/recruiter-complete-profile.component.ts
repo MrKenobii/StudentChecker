@@ -80,7 +80,7 @@ export class RecruiterCompleteProfileComponent implements OnInit{
     this.recruiterService.getRecruiterById(this.recruiterId).subscribe((data: RecruiterGetResponse) => {
       this.recruiter = data;
     });
-    this.companyService.getCompanies().subscribe((data: any) => {
+    this.companyService.getCompanies().subscribe((data: Company[]) => {
       this.companies = data;
     })
     this.createPostForm = new FormGroup({

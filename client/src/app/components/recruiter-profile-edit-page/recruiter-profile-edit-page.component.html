@@ -8,41 +8,41 @@
             <div class="row justify-content-center">
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">{{recruiter!.name}} {{recruiter!.lastName}}, Edit your profile</p>
-                <form class="mx-1 mx-md-4"  [formGroup]="createPostForm" (ngSubmit)="send()">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" *ngIf="recruiter && recruiter.name && recruiter.lastName">{{recruiter.name}} {{recruiter.lastName}}, Edit your profile</p>
+                <form class="mx-1 mx-md-4"  *ngIf="recruiter" [formGroup]="createPostForm" (ngSubmit)="send()">
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="name" class="form-control"  [formControlName]="'name'"  [value]="recruiter.name"  />
+                      <input type="text" id="name" class="form-control" *ngIf="recruiter && recruiter.name"  [formControlName]="'name'" />
                       <label class="form-label" for="address">Name</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="lastName" class="form-control"  [formControlName]="'lastName'"[value]="recruiter.lastName"  />
+                      <input type="text" id="lastName" class="form-control" *ngIf="recruiter && recruiter.lastName"  [formControlName]="'lastName'"   />
                       <label class="form-label" for="address">Last Name</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="email" class="form-control"  [formControlName]="'email'" [value]="recruiter.email"  />
+                      <input type="text" id="email" class="form-control" *ngIf="recruiter && recruiter.email"  [formControlName]="'email'"   />
                       <label class="form-label" for="address">Email</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="address" class="form-control"  [formControlName]="'address'" [value]="recruiter.address"  />
+                      <input type="text" id="address" class="form-control" *ngIf="recruiter && recruiter.address"   [formControlName]="'address'"   />
                       <label class="form-label" for="address">Address</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="phone" class="form-control"  [formControlName]="'phone'"  [value]="recruiter.phone" />
+                      <input type="text" id="phone" class="form-control" *ngIf="recruiter && recruiter.phone"   [formControlName]="'phone'"   />
                       <label class="form-label" for="phone">Phone</label>
                     </div>
                   </div>
@@ -50,7 +50,7 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="date" id="hireDate" name="trip-start"  class="form-control" [formControlName]="'hireDate'" value="{{this.formattedHireDate}}">
+                      <input type="date" id="hireDate" name="trip-start"  class="form-control" *ngIf="recruiter && recruiter.hireDate"  [formControlName]="'hireDate'" >
                       <label class="form-label" for="hireDate">Hire Date</label>
                     </div>
                   </div>
@@ -59,7 +59,7 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="date" id="dateOfBirth" name="trip-start" class="form-control" [formControlName]="'dateOfBirth'" value="2012-04-02">
+                      <input type="date" id="dateOfBirth" name="trip-start" class="form-control" *ngIf="recruiter && recruiter.dateOfBirth"  [formControlName]="'dateOfBirth'" >
                       <label class="form-label" for="dateOfBirth">Date of Birth</label>
                     </div>
                   </div>
@@ -86,7 +86,7 @@
                     <div class="form-outline flex-fill mb-0">
 
                       <div class="text-center">
-                        <input class="form-control" type="file" (change)="onChange($event)" [formControlName]="'image'">
+                        <input class="form-control" type="file" (change)="onChange($event)" *ngIf="recruiter && recruiter.image" [formControlName]="'image'">
                       </div>
 
                       <!-- Shareable short link of  uploaded file -->
@@ -106,7 +106,7 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="password" id="prevPassword" class="form-control"  [formControlName]="'prevPassword'" />
+                      <input type="password" id="prevPassword" class="form-control" *ngIf="recruiter && recruiter.password"  [formControlName]="'prevPassword'" />
                       <label class="form-label" for="prevPassword">Previous Password</label>
                     </div>
                   </div>

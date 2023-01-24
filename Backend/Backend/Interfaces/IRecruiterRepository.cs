@@ -19,4 +19,5 @@ public interface IRecruiterRepository
     RecruiterDto GetRecruiterByToken(string token);
     RecruiterTokenGetResponse GetTokenByRecruiterId(int recruiterId);
     RecruiterDto AddCompany(int recruiterId, AddCompanyToRecruiter addCompanyToRecruiter);
+    EditProfileResponse EditProfile(int recruiterId, RecruiterEditProfileRequest recruiter);
 }

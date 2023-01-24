@@ -13,13 +13,13 @@
 
     <div class="row">
       <div class="col-lg-4">
-        <div class="card mb-4">
+        <div class="card mb-4" *ngIf="recruiter">
           <div class="card-body text-center">
-            <img [src]="recruiter.image" alt="avatar"
+            <img *ngIf="recruiter && recruiter.image" [src]="recruiter.image || ''" alt="avatar"
                  class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3">{{recruiter.name}} {{recruiter.lastName}}</h5>
+            <h5 class="my-3" *ngIf="recruiter && recruiter.name && recruiter.lastName">{{recruiter.name || 'N/A'}} {{recruiter.lastName || 'N/A'}}</h5>
             <p class="text-muted mb-1">Full Stack Developer</p>
-            <p class="text-muted mb-4">{{recruiter.address}}</p>
+            <p class="text-muted mb-4" *ngIf="recruiter && recruiter.address">{{recruiter.address}}</p>
             <div *ngIf="!isOwnProfilePage" class="d-flex justify-content-center mb-2">
               <button type="button" class="btn btn-outline-primary ms-1">Message</button>
             </div>
@@ -33,11 +33,11 @@
             <ul *ngFor="let company of companies; let i = index" class="list-group list-group-flush rounded-3">
               <li *ngIf="i == 0" class="list-group-item d-flex justify-content-between align-items-center p-3">
                 <i class="fas fa-globe fa-lg text-warning"></i>
-                <p class="mb-0" [id]="company.name + '/'+company.id"> {{company.name}} (Current) {{recruiter.hireDate}}</p>
+                <p class="mb-0" [id]="company.name + '/'+company.id || 'N/A'" *ngIf="recruiter && company && company.name && recruiter.hireDate"> {{company.name || 'N/A'}} (Current) {{recruiter.hireDate || 'N/A'}}</p>
               </li>
               <li *ngIf="i > 0" class="list-group-item d-flex justify-content-between align-items-center p-3">
                 <i class="fas fa-globe fa-lg text-warning"></i>
-                <p class="mb-0" [id]="company.name + '/'+company.id"> {{company.name}}</p>
+                <p class="mb-0" [id]="company.name + '/'+company.id || 'N/A'" *ngIf="recruiter && company && company.name"> {{company.name || 'N/A'}}</p>
               </li>
             </ul>
           </div>
@@ -51,7 +51,7 @@
                 <p class="mb-0">Full Name</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{recruiter.name}} {{recruiter.lastName}}</p>
+                <p class="text-muted mb-0" *ngIf="recruiter && recruiter.name && recruiter.lastName">{{recruiter.name || 'N/A'}} {{recruiter.lastName || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -60,7 +60,7 @@
                 <p class="mb-0">Email</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{recruiter.email}}</p>
+                <p class="text-muted mb-0" *ngIf="recruiter && recruiter.email">{{recruiter.email || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -69,7 +69,7 @@
                 <p class="mb-0">Phone</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{recruiter.phone}}</p>
+                <p class="text-muted mb-0" *ngIf="recruiter && recruiter.phone">{{recruiter.phone || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -78,7 +78,7 @@
                 <p class="mb-0">City</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{this.activeCompany.cityName}}</p>
+                <p class="text-muted mb-0" *ngIf="recruiter && this.activeCompany && this.activeCompany.name">{{this.activeCompany.cityName || 'N/A'}}</p>
               </div>
             </div>
             <hr>
@@ -87,7 +87,7 @@
                 <p class="mb-0">Address</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{{recruiter.address}}</p>
+                <p class="text-muted mb-0" *ngIf="recruiter && recruiter.address">{{recruiter.address || 'N/A'}}</p>
               </div>
             </div>
           </div>

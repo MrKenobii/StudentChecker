@@ -339,4 +339,68 @@ public class RecruiterRepository : IRecruiterRepository
         };
 
     }
+
+    public EditProfileResponse EditProfile(int recruiterId, RecruiterEditProfileRequest recruiter)
+    {
+        var _recruiter = this.GetRecruiter(recruiterId);
+        if (_recruiter != null)
+        {
+            var company = _context.Companies.Where(s => s.Name == recruiter.CompanyName).FirstOrDefault();
+            Console.WriteLine("Company: " + company.Name);
+            var enumerable = new List<CompanyRequestById>();
+            enumerable.Add(new CompanyRequestById()
+            {
+                Id = company.Id
+            });
+            ICollection<CompanyDto> companyDtos = this.GetCompanies(recruiterId);
+            Console.WriteLine("Length: " + companyDtos.Count);
+            bool flag = false;
+            foreach (var companyDto in companyDtos)
+            {
+                Console.WriteLine(companyDto.Id + " " + companyDto.Name + " " + company.Id);
+                if (companyDto.Id == company.Id)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag)
+            {
+                Console.WriteLine("HEREEE");
+                this.AddCompany(recruiterId, new AddCompanyToRecruiter()
+                {
+                    Companies = enumerable
+                });
+            }
+
+            _recruiter.Address = recruiter.Address;
+            _recruiter.HireDate = recruiter.HireDate;
+            _recruiter.DateOfBirth = recruiter.DateOfBirth;
+            _recruiter.Phone = recruiter.Phone;
+            _recruiter.Name = recruiter.Name;
+            _recruiter.LastName = recruiter.LastName;
+            _recruiter.Password = BCrypt.Net.BCrypt.HashPassword(recruiter.Password);
+            _recruiter.Email = recruiter.Email;
+            _recruiter.Image = recruiter.Image;
+    
+            
+            _context.Recruiters.Update(_recruiter);
+            _context.SaveChanges();
+            return new EditProfileResponse()
+            {
+                Message = "Recruiter " + _recruiter.Name + " " + _recruiter.LastName +
+                          "' s profile has successfully updated"
+            };
+        }
+
+        return new EditProfileResponse() { Message = "Something went wrong!!" };
+
+
+
+
+
+
+
+    }
 }

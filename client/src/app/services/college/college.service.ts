@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +9,10 @@ import {HttpClient} from "@angular/common/http";
 export class CollegeService {
 
   constructor(private httpClient: HttpClient) { }
-  public getColleges(){
-    return this.httpClient.get("http://localhost:5269/College")
+  public getColleges() : Observable<CollegeGetResponse[]>{
+    return this.httpClient.get<CollegeGetResponse[]>("http://localhost:5269/College")
   }
-  public getCollegeByExtension(extension: string){
-    return this.httpClient.get(`http://localhost:5269/College/`); // ???
+  public getCollegeByExtension(extension: string) : Observable<CollegeGetResponse>{
+    return this.httpClient.get<CollegeGetResponse>(`http://localhost:5269/College/`); // ???
   }
 }
