@@ -6,12 +6,10 @@ import {StudentLoginRequest} from "../../interfaces/student/login/StudentLoginRe
 import {StudentLoginResponse} from "../../interfaces/student/login/StudentLoginResponse";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
-import {dateComparator} from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker-tools";
 import {RecruiterPostLoginResponse} from "../../interfaces/recruiter/login/RecruiterPostLoginResponse";
-class LoginPayload {
-  email!: string;
-  password!: string;
-}
+import {AuthService} from "../../services/admin/admin.service";
+import {AdminLoginResponse} from "../../interfaces/admin/AdminLoginResponse";
+import {AdminLoginRequest} from "../../interfaces/admin/AdminLoginRequest";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -23,6 +21,7 @@ export class LoginComponent implements OnInit{
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private studentService: StudentService,
+              private adminService: AuthService,
               private snackBar: MatSnackBar,
               private recruiterService: RecruiterService) {
     this.postPayload = {
@@ -40,49 +39,65 @@ export class LoginComponent implements OnInit{
     this.postPayload.email = this.createPostForm.get('email')!.value;
     this.postPayload.password = this.createPostForm.get('password')!.value;
 
-    this.studentService.login(this.postPayload).subscribe((data: StudentLoginResponse) => {
-      console.log(data);
-      if (data.key !== null) {
-        this.snackBar.open(data.message, "Dismiss", {
-          duration: 3000
-        });
+    const obj: AdminLoginRequest = {
+      email: this.createPostForm.get('email')!.value,
+      password: this.createPostForm.get('password')!.value
+    }
+
+    this.adminService.loginAsAdmin(obj).subscribe((data: AdminLoginResponse) => {
+      if(data.key){
         localStorage.clear();
-        localStorage.setItem("key", (data.key));
-        console.log(data.key);
-        this.router.routeReuseStrategy.shouldReuseRoute = function () {
-          return false;
-        }
-        this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate(['/']).then(() => {
-          window.location.reload();
-        });
+        localStorage.setItem("key", data.key);
+        this.adminService.setAdmin(true);
+        this.router.navigate(['/admin']);
       } else {
-        this.recruiterService.login(this.postPayload).subscribe((_data: RecruiterPostLoginResponse) => {
-          console.log(_data);
-          if (_data.key !== null) {
-            console.log(_data);
-            this.snackBar.open(_data.message, "Dismiss", {
+        this.studentService.login(this.postPayload).subscribe((data: StudentLoginResponse) => {
+          console.log(data);
+          if (data.key !== null) {
+            this.snackBar.open(data.message, "Dismiss", {
               duration: 3000
             });
-            localStorage.setItem("key", _data.key);
-            console.log(_data.key);
+            localStorage.clear();
+            localStorage.setItem("key", (data.key));
+            console.log(data.key);
             this.router.routeReuseStrategy.shouldReuseRoute = function () {
               return false;
             }
             this.router.onSameUrlNavigation = 'reload';
-            this.router.navigate(['/companies']).then(() => {
+            this.router.navigate(['/']).then(() => {
               window.location.reload();
             });
           } else {
-            this.snackBar.open(`Invalid credentials`, "Ok", {
-              duration: 5000
-            })
+            this.recruiterService.login(this.postPayload).subscribe((_data: RecruiterPostLoginResponse) => {
+              console.log(_data);
+              if (_data.key !== null) {
+                console.log(_data);
+                this.snackBar.open(_data.message, "Dismiss", {
+                  duration: 3000
+                });
+                localStorage.setItem("key", _data.key);
+                console.log(_data.key);
+                this.router.routeReuseStrategy.shouldReuseRoute = function () {
+                  return false;
+                }
+                this.router.onSameUrlNavigation = 'reload';
+                this.router.navigate(['/companies']).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                this.snackBar.open(`Invalid credentials`, "Ok", {
+                  duration: 5000
+                })
+              }
+
+            });
           }
 
         });
       }
-
     });
+
+
 
 
   }

@@ -40,6 +40,9 @@ import { RecruiterPrivacySettingsComponent } from './components/recruiter-privac
 import { StudentPrivacySettingsComponent } from './components/student-privacy-settings/student-privacy-settings.component';
 import { VerifyRecruiterAutomaticComponent } from './components/verify-recruiter-automatic/verify-recruiter-automatic.component';
 import { VerifyRecruiterAccountComponent } from './components/verify-recruiter-account/verify-recruiter-account.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+
 
 @NgModule({
   declarations: [
@@ -66,7 +69,9 @@ import { VerifyRecruiterAccountComponent } from './components/verify-recruiter-a
     RecruiterPrivacySettingsComponent,
     StudentPrivacySettingsComponent,
     VerifyRecruiterAutomaticComponent,
-    VerifyRecruiterAccountComponent
+    VerifyRecruiterAccountComponent,
+    AdminDashboardComponent,
+    UnauthorizedComponent,
   ],
     imports: [
         BrowserModule,

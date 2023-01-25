@@ -6,6 +6,7 @@ namespace Backend.Data;
 
 public class DataContext : DbContext
 {
+    public DbSet<Admin> Admins { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<College> Colleges { get; set; }
     public DbSet<Company> Companies { get; set; }

@@ -37,6 +37,9 @@ import {
 import {
   VerifyRecruiterAccountComponent
 } from "./components/verify-recruiter-account/verify-recruiter-account.component";
+import {AdminDashboardComponent} from "./admin/admin-dashboard/admin-dashboard.component";
+import {AuthGuard} from "./auth/auth.guard";
+import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.component";
 
 
 const routes: Route[] = [
@@ -98,7 +101,14 @@ const routes: Route[] = [
     path: 'login', component: LoginComponent
   },
   {
+    path: 'admin', component: AdminDashboardComponent,
+    // canActivate: [AuthGuard]
+  },
+  {
     path: 'not-found', component: NotFoundComponent
+  },
+  {
+    path: 'forbidden', component: UnauthorizedComponent
   },
 ];
 @NgModule({
