@@ -7,7 +7,10 @@ import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetRespo
 import {RecruiterPostLoginRequest} from "../../interfaces/recruiter/login/RecruiterPostLoginRequest";
 import {RecruiterPostLoginResponse} from "../../interfaces/recruiter/login/RecruiterPostLoginResponse";
 import {RecruiterGetKeyResponse} from "../../interfaces/recruiter/RecruiterGetKeyResponse";
-import {Company} from "../../interfaces/company/Company";
+import {UpdatePassword} from "../../interfaces/UpdatePassword";
+import {UpdatePasswordResponse} from "../../interfaces/UpdatePasswordResponse";
+import {VerifyAccountRequest} from "../../interfaces/student/VerifyAccountRequest";
+import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";
 
 interface CompanyDto {
   id: number,
@@ -57,5 +60,13 @@ export class RecruiterService {
 
   public getCompanies(recruiterId: number) : Observable<CompanyDto[]> {
     return this.httpClient.get<CompanyDto[]>(`http://localhost:5269/Recruiter/${recruiterId}/companies`);
+  }
+
+  public changePassword(recruiterId: number, obj: UpdatePassword) :Observable<UpdatePasswordResponse> {
+    return this.httpClient.put<UpdatePasswordResponse>(`http://localhost:5269/Recruiter/${recruiterId}/change-password`, obj);
+  }
+
+  verifyAccount(recruiterId: number, requestPayload: VerifyAccountRequest) {
+    return this.httpClient.post<VerifyTokenResponse>(`http://localhost:5269/Recruiter/${recruiterId}/verify-account`, requestPayload);
   }
 }

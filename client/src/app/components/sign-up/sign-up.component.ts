@@ -75,7 +75,7 @@ export class SignUpComponent implements OnInit{
       this.studentService.signUp(this.student).subscribe((data: StudentSignupResponse) => {
         console.log("After sign up operation");
         console.log(data.id);
-        this.router.navigateByUrl('sign-up/activate/'+ data.id);
+        this.router.navigateByUrl('sign-up/student/activate/'+ data.id);
       });
     }
   }

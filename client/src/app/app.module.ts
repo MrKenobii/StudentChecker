@@ -34,6 +34,12 @@ import { RecruiterCompleteProfileComponent } from './components/recruiter-comple
 import { RecruiterProfilePageComponent } from './components/recruiter-profile-page/recruiter-profile-page.component';
 import { RecruiterProfileEditPageComponent } from './components/recruiter-profile-edit-page/recruiter-profile-edit-page.component';
 import { StudentProfileEditPageComponent } from './components/student-profile-edit-page/student-profile-edit-page.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { LoaderComponent } from './components/loader/loader.component';
+import { RecruiterPrivacySettingsComponent } from './components/recruiter-privacy-settings/recruiter-privacy-settings.component';
+import { StudentPrivacySettingsComponent } from './components/student-privacy-settings/student-privacy-settings.component';
+import { VerifyRecruiterAutomaticComponent } from './components/verify-recruiter-automatic/verify-recruiter-automatic.component';
+import { VerifyRecruiterAccountComponent } from './components/verify-recruiter-account/verify-recruiter-account.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +60,13 @@ import { StudentProfileEditPageComponent } from './components/student-profile-ed
     RecruiterCompleteProfileComponent,
     RecruiterProfilePageComponent,
     RecruiterProfileEditPageComponent,
-    StudentProfileEditPageComponent
+    StudentProfileEditPageComponent,
+    NotFoundComponent,
+    LoaderComponent,
+    RecruiterPrivacySettingsComponent,
+    StudentPrivacySettingsComponent,
+    VerifyRecruiterAutomaticComponent,
+    VerifyRecruiterAccountComponent
   ],
     imports: [
         BrowserModule,

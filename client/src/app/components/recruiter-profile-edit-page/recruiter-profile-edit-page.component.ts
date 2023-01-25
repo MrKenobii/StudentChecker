@@ -8,6 +8,8 @@ import {RecruiterService} from "../../services/recruiter/recruiter-service.servi
 import {CompanyService} from "../../services/company/company.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {lastValueFrom} from "rxjs";
+import {RecruiterGetKeyResponse} from "../../interfaces/recruiter/RecruiterGetKeyResponse";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 interface CompanyDto {
   id: number,
@@ -49,11 +51,14 @@ export class RecruiterProfileEditPageComponent implements OnInit{
   file!: File; //
   fileBlob! :ArrayBuffer;
   formattedHireDate!: string;
+  isOwnPage!: boolean;
+  isLoading: boolean = true;
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private recruiterService: RecruiterService,
               private companyService: CompanyService,
-              private fileService: ImageUploadService) {
+              private fileService: ImageUploadService,
+              private snackBar: MatSnackBar) {
 
   }
   send() {
@@ -64,7 +69,6 @@ export class RecruiterProfileEditPageComponent implements OnInit{
     this.postPayload.dateOfBirth = this.createPostForm.get('dateOfBirth')!.value;
     this.postPayload.companyName = this.companyControl.value!.at(0)!.name;
     this.postPayload.image = this.createPostForm.get('image')!.value;
-    //console.log(this.companyControl.value);
     const reader = new FileReader();
     reader.readAsDataURL(this.file); //FileStream response from .NET core backend
     reader.onload = _event => {
@@ -74,7 +78,7 @@ export class RecruiterProfileEditPageComponent implements OnInit{
         name: this.createPostForm.get('name')!.value,
         lastName: this.createPostForm.get('lastName')!.value,
         email: this.createPostForm.get('email')!.value,
-        password: this.createPostForm.get('newPassword')!.value,
+        // password: this.createPostForm.get('newPassword')!.value,
         hireDate: this.createPostForm.get('hireDate')!.value,
         phone: this.createPostForm.get('phone')!.value,
         dateOfBirth: this.createPostForm.get('dateOfBirth')!.value,
@@ -84,57 +88,70 @@ export class RecruiterProfileEditPageComponent implements OnInit{
       console.log(obj);
       this.recruiterService.editProfile(this.recruiterId,obj).subscribe(data => {
         console.log(data);
-        this.router.navigate(['/recruiter/student/'+this.recruiterId]);
+        this.router.navigate(['/profile/recruiter/'+this.recruiterId]);
       });
     }
   }
 
   ngOnInit(): void {
     this.recruiterId = this.activatedRoute.snapshot.params['recruiterId'];
-    this.fetchRecruiter(this.recruiterId).then((data) => {
-      this.recruiter = data;
-      if(data !== null){
-        this.recruiter = data;
-        this.formattedHireDate = this.format(new Date(this.recruiter!.hireDate)); // noluyyyyoyo
-        console.log("HireDate");
-        console.log(this.recruiter.hireDate);
-        console.log("Formatted Date");
-        console.log(this.formattedHireDate);
+    this.fetchTokenByRecruiterId(this.recruiterId).then((tokenResponse: RecruiterGetKeyResponse) => {
+      this.isLoading = true;
+      if(tokenResponse !== null && tokenResponse.key !== null && tokenResponse.key === localStorage.getItem("key")) {
+        this.isOwnPage = true;
+        this.fetchRecruiter(this.recruiterId).then((data) => {
+          this.recruiter = data;
+          if(data !== null){
+            this.recruiter = data;
+            this.formattedHireDate = this.format(new Date(this.recruiter!.hireDate)); // noluyyyyoyo
+            console.log("HireDate");
+            console.log(this.recruiter.hireDate);
+            console.log("Formatted Date");
+            console.log(this.formattedHireDate);
 
 
-        console.log("Checkpoint")
-        this.companyService.getCompanies().subscribe((data: Company[]) => {
-          console.log(data);
-          this.companies = data;
-        })
-        this.postPayload = {
-          name: '',
-          lastName: '',
-          email: '',
-          address: '',
-          password: '',
-          phone: '',
-          hireDate: new Date(),
-          dateOfBirth: new Date(),
-          companyName: '',
-          image: this.fileBlob,
-        };
+            console.log("Checkpoint")
+            this.companyService.getCompanies().subscribe((data: Company[]) => {
+              console.log(data);
+              this.companies = data;
+            })
+            this.postPayload = {
+              name: '',
+              lastName: '',
+              email: '',
+              address: '',
+              password: '',
+              phone: '',
+              hireDate: new Date(),
+              dateOfBirth: new Date(),
+              companyName: '',
+              image: this.fileBlob,
+            };
 
-        this.createPostForm = new FormGroup({
-          name: new FormControl(this.recruiter ? this.recruiter.name : '', Validators.required),
-          lastName: new FormControl(this.recruiter ? this.recruiter.lastName : '', Validators.required),
-          email: new FormControl(this.recruiter ? this.recruiter.email : '', Validators.required),
-          address: new FormControl(this.recruiter ? this.recruiter.address : '', Validators.required),
-          phone: new FormControl(this.recruiter ? this.recruiter.phone : '', Validators.required),
-          hireDate: new FormControl(this.recruiter ? this.format(new Date(this.recruiter.hireDate)) : '' , Validators.required),
-          dateOfBirth: new FormControl(this.recruiter ? this.format(new Date(this.recruiter.dateOfBirth)) : '', Validators.required),
-          companyName: new FormControl(this.companies ? this.companies.at(0) : '', Validators.required),
-          image: new FormControl('', Validators.required),
-          prevPassword: new FormControl('', Validators.required),
-          newPassword: new FormControl('', Validators.required),
+            this.createPostForm = new FormGroup({
+              name: new FormControl(this.recruiter ? this.recruiter.name : '', Validators.required),
+              lastName: new FormControl(this.recruiter ? this.recruiter.lastName : '', Validators.required),
+              email: new FormControl(this.recruiter ? this.recruiter.email : '', Validators.required),
+              address: new FormControl(this.recruiter ? this.recruiter.address : '', Validators.required),
+              phone: new FormControl(this.recruiter ? this.recruiter.phone : '', Validators.required),
+              hireDate: new FormControl(this.recruiter ? this.format(new Date(this.recruiter.hireDate)) : '' , Validators.required),
+              dateOfBirth: new FormControl(this.recruiter ? this.format(new Date(this.recruiter.dateOfBirth)) : '', Validators.required),
+              companyName: new FormControl(this.companies ? this.companies.at(0) : '', Validators.required),
+              image: new FormControl('', Validators.required),
+              prevPassword: new FormControl('', Validators.required),
+              newPassword: new FormControl('', Validators.required),
+            });
+          } else  this.router.navigate(['/not-found']);
+        }).catch((error) => this.router.navigate(['/not-found']));
+        this.isLoading = false;
+      } else {
+        this.snackBar.open("You are unauthorized", "OK", {
+          duration: 10000
         });
+        this.isOwnPage = false;
+        this.router.navigate(['/not-found']);
       }
-    });
+    }).catch((error) => this.router.navigate(['/not-found']));
   }
   format(inputDate: Date) {
     let date, month, year;
@@ -159,6 +176,10 @@ export class RecruiterProfileEditPageComponent implements OnInit{
   private async fetchRecruiter(id: number){
     let recruiterById = this.recruiterService.getRecruiterById(id);
     return await lastValueFrom(recruiterById);
+  }
+  private async fetchTokenByRecruiterId(id: number){
+    let observable = this.recruiterService.getTokenByRecruiterId(id);
+    return await lastValueFrom(observable);
   }
   onUpload() {
     this.loading = !this.loading;

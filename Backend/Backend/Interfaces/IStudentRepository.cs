@@ -1,4 +1,5 @@
 using Backend.DataTransferObject;
+using Backend.DataTransferObject.Recruiter;
 using Backend.Models;
 
 namespace Backend.Interfaces;
@@ -24,4 +25,6 @@ public interface IStudentRepository
     StudentDto GetStudentByKey(string key);
 
     StudentGetKeyResponse GetKeyByStudentId(int id);
+    StudentEditProfileResponse EditStudentProfile(int studentId, StudentEditProfile studentEditProfile);
+    ChangePasswordResponse ChangePassword(int studentId, ChangePasswordRequest request);
 }

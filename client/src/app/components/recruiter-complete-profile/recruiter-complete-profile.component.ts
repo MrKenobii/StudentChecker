@@ -1,16 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
-import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {CompleteStudentProfile} from "../../interfaces/student/CompleteStudentProfile";
-import {Course} from "../../interfaces/course/Course";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
 import {RecruiterPutUpdateProfileRequest} from "../../interfaces/recruiter/RecruiterPutUpdateProfileRequest";
 import {Company} from "../../interfaces/company/Company";
 import {CompanyService} from "../../services/company/company.service";
+import {lastValueFrom} from "rxjs";
 
 
 interface CompanyControlName {
@@ -33,6 +30,7 @@ export class RecruiterCompleteProfileComponent implements OnInit{
   loading: boolean = false;
   file!: File; //
   fileBlob! :ArrayBuffer;
+  isAccountActive!: boolean;
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private recruiterService: RecruiterService,
@@ -70,16 +68,28 @@ export class RecruiterCompleteProfileComponent implements OnInit{
       console.log(obj);
       this.recruiterService.updateProfile(this.recruiterId,obj).subscribe(data => {
         console.log(data);
-        this.router.navigate(['/login?role=recruiter']);
+        this.router.navigate(['/login']);
       });
     }
+  }
+  private async fetchRecruiterById(id: number) {
+    let recruiterById = this.recruiterService.getRecruiterById(id);
+    return await lastValueFrom(recruiterById);
   }
 
   ngOnInit(): void {
     this.recruiterId = this.activatedRoute.snapshot.params['recruiterId'];
-    this.recruiterService.getRecruiterById(this.recruiterId).subscribe((data: RecruiterGetResponse) => {
-      this.recruiter = data;
-    });
+    this.fetchRecruiterById(this.recruiterId).then((data: RecruiterGetResponse) => {
+      if(data && data.name && data.lastName && !data.hireDate && !data.dateOfBirth){
+        this.isAccountActive = data.isActivated;
+        if(this.isAccountActive){
+          this.recruiter = data;
+        } else {
+          this.router.navigate(['/not-found'])
+        }
+      }
+
+    }).catch((error) =>  this.router.navigate(['/not-found']));
     this.companyService.getCompanies().subscribe((data: Company[]) => {
       this.companies = data;
     })

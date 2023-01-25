@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using AutoMapper;
 using Backend.DataTransferObject;
+using Backend.DataTransferObject.Recruiter;
 using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -122,6 +123,17 @@ public class StudentController : Controller
         var student = _studentRepository.UpdateStudentProfile(studentId, studentUpdateProfile);
         return Ok(student);
     }
+    [HttpPut("{studentId}/edit-profile")]
+    [ProducesResponseType(200, Type = typeof(StudentEditProfileResponse))]
+    public IActionResult EditProfile(int studentId, [FromBody] StudentEditProfile studentEditProfile)
+    {
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var student = _studentRepository.EditStudentProfile(studentId, studentEditProfile);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(student);
+    }
 
     [HttpPost("sign-up")]
     [ProducesResponseType(200, Type = typeof(StudentResponse))]
@@ -161,5 +173,16 @@ public class StudentController : Controller
         if (!ModelState.IsValid)
             return BadRequest();
         return Ok(studentGetKeyResponse);
+    }
+    [HttpPut("{studentId}/change-password")]
+    [ProducesResponseType(200, Type = typeof(ChangePasswordResponse))]
+    public IActionResult ChangeStudentPassword(int studentId, ChangePasswordRequest request)
+    {
+        if (!_studentRepository.StudentExists(studentId))
+            return NotFound();
+        var message = _studentRepository.ChangePassword(studentId, request);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(message);
     }
 }

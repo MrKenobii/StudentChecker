@@ -4,6 +4,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
 import {RecruiterPostSignupRequest} from "../../interfaces/recruiter/signup/RecruiterPostSignupRequest";
 import {RecruiterPostSignupResponse} from "../../interfaces/recruiter/signup/RecruiterPostSignupResponse";
+import {Router} from "@angular/router";
 
 class SignupPayload {
   name!: string;
@@ -21,7 +22,7 @@ export class SignUpRecruiterComponent implements OnInit{
   createPostForm!: FormGroup;
   postPayload: SignupPayload;
   requestPayload!: RecruiterPostSignupRequest;
-  constructor(private recruiterService: RecruiterService ,private snackBar: MatSnackBar) {
+  constructor(private router: Router, private recruiterService: RecruiterService ,private snackBar: MatSnackBar) {
     this.postPayload = {
       name: '',
       lastName: '',
@@ -60,6 +61,9 @@ export class SignUpRecruiterComponent implements OnInit{
         this.snackBar.open(data.message, "Ok", {
           duration: 3000
         });
+        if(data.id > 0){
+          this.router.navigateByUrl('sign-up/recruiter/activate/'+ data.id);
+        }
       });
     }
     else

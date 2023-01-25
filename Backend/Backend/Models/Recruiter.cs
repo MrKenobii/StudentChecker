@@ -19,5 +19,6 @@ public class Recruiter
     public string? Token { get; set; }
     public byte[] Image { get; set; }
     public bool IsActivated { get; set; }
+    public string? VerifyToken { get; set; }
     public ICollection<RecruiterCompany>? RecruiterCompanies { get; set; }
 }

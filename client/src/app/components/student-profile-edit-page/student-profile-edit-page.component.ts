@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
-import {Form, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Company} from "../../interfaces/company/Company";
+
+import { FormControl, FormGroup, Validators} from "@angular/forms";
+
 import {ActivatedRoute, Router} from "@angular/router";
-import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
-import {CompanyService} from "../../services/company/company.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {lastValueFrom} from "rxjs";
 import {StudentService} from "../../services/student/student.service";
@@ -15,24 +13,10 @@ import {CollegeService} from "../../services/college/college.service";
 import {City} from "../../interfaces/city/City";
 import {Student} from "../../interfaces/student/Student";
 import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
+import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
-interface StudentDto {
-  id: number,
-  name: string;
-  lastName: string;
-  email: string;
-  password: string;
-  enrollDate: Date;
-  dateOfBirth: Date;
-  address: string;
-  skills: string;
-  phone: string;
-  department: string;
-  collegeName: string
-  image: ArrayBuffer | string | null;
-  cityName: string;
-  isActivated: boolean;
-}
+
 
 interface UpdateProfile {
   name: string;
@@ -50,14 +34,6 @@ interface UpdateProfile {
   image: ArrayBuffer | string | null
 }
 
-interface CollegeI {
-  city: City;
-  emailExtension: string;
-  foundationDate: Date;
-  id: number;
-  name: string;
-  students: Student[]
-}
 @Component({
   selector: 'app-student-profile-edit-page',
   templateUrl: './student-profile-edit-page.component.html',
@@ -78,12 +54,15 @@ export class StudentProfileEditPageComponent implements OnInit {
   colleges!: CollegeGetResponse[];
   selectedCollege!: CollegeGetResponse;
   formattedEnrolledDate!: string;
+  isOwnPage!: boolean;
+  isLoading: boolean = true;
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private studentService: StudentService,
               private courseService: CoursesService,
               private collegeService: CollegeService,
-              private fileService: ImageUploadService) {
+              private fileService: ImageUploadService,
+              private snackBar: MatSnackBar) {
 
   }
   send() {
@@ -100,35 +79,47 @@ export class StudentProfileEditPageComponent implements OnInit {
     reader.readAsDataURL(this.file); //FileStream response from .NET core backend
     reader.onload = _event => {
       // console.log(reader.result);
-
+      var thatCourses: any[] = [];
+      this.courseControl!.value.map((val:any) => {
+        thatCourses.push({ name: val });
+      });
       const obj = { // değişçek
         name: this.createPostForm.get('name')!.value,
         lastName: this.createPostForm.get('lastName')!.value,
         address: this.createPostForm.get('address')!.value,
         email: this.createPostForm.get('email')!.value,
-        password: this.createPostForm.get('newPassword')!.value,
+        // password: this.createPostForm.get('newPassword')!.value,
         languages: this.createPostForm.get('languages')!.value,
         skills: this.createPostForm.get('skills')!.value,
         enrollDate: this.createPostForm.get('enrollDate')!.value,
         phone: this.createPostForm.get('phone')!.value,
         dateOfBirth: this.createPostForm.get('dateOfBirth')!.value,
         cityName: this.createPostForm.get('cityName')!.value,
-        courses: this.courseControl!.value,
+        courses: thatCourses,
+        department: '',
         // collegeName: this.createPostForm.get('collegeName')!.value,
         collegeName: this.collegeControl!.value,
         image: reader.result!.toString().slice(23, reader.result!.toString().length),
       };
       console.log(obj);
-      // this.studentService.editProfile(this.studentId,obj).subscribe(data => {
-      //   console.log(data);
-      //   this.router.navigate(['/profile/student/'+this.studentId]);
-      // });
+      if(this.createPostForm.get("prevPassword")!.value !== this.student.password){
+        console.log("Hereee");
+      }
+      this.studentService.editProfile(this.studentId,obj).subscribe(data => {
+        console.log(data);
+        this.router.navigate(['/profile/student/'+this.studentId]);
+      });
     }
   }
 
   ngOnInit(): void {
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
-    this.fetchStudent(this.studentId).then((data) => {
+    this.fetchTokenByStudentId(this.studentId).then((tokenResponse: StudentGetTokenResponse) => {
+      this.isLoading = true;
+      if(tokenResponse !== null && tokenResponse.key !== null && tokenResponse.key === localStorage.getItem("key")){
+        console.log("Doğruu");
+        this.isOwnPage = true;
+        this.fetchStudent(this.studentId).then((data) => {
       console.log("Cehckkkk");
       console.log(data);
       this.student = data;
@@ -151,18 +142,10 @@ export class StudentProfileEditPageComponent implements OnInit {
             console.log(this.courses);
             this.courseControl =  new FormControl<string[]>(courses, Validators.required);
             this.courseControl.setValue(courses);
+
+
           });
         });
-        // this.courseService.getCourses().subscribe((data: Course[]) => {
-        //   //console.log(data);
-        //   this.courses = data;
-        //   console.log(this.courses);
-        //   courses.push(this.courses.at(0)!.name);
-        //   courses.push(this.courses.at(1)!.name); // fetch them
-        //   this.courseControl =  new FormControl<string[]>(courses, Validators.required);
-        //   this.courseControl.setValue(courses);
-        // });
-
         this.fetchColleges().then((data: any) => {
           this.colleges = data;
             this.fetchCollegeByStudentId(this.studentId).then((college: any) => {
@@ -207,8 +190,19 @@ export class StudentProfileEditPageComponent implements OnInit {
           prevPassword: new FormControl('', Validators.required),
           newPassword: new FormControl('', Validators.required),
         });
+        this.isLoading = false;
       }
-    });
+    }).catch((error) => this.router.navigate(['/not-found']));
+      } else {
+        console.log(tokenResponse);
+        this.snackBar.open("You are unauthorized", "OK", {
+          duration: 10000
+        });
+        this.isOwnPage = false;
+        this.router.navigate(['/not-found']);
+      }
+
+    }).catch((error) => this.router.navigate(['/not-found']));
   }
   format(inputDate: Date) {
     let date, month, year;
@@ -241,6 +235,10 @@ export class StudentProfileEditPageComponent implements OnInit {
   private async fetchCollegeByStudentId(id: number) {
     let collegeByStudent = this.studentService.getCollegeByStudent(id);
     return await lastValueFrom(collegeByStudent);
+  }
+  private async fetchTokenByStudentId(id: number) {
+    let observable = this.studentService.getTokenByStudentId(id);
+    return await lastValueFrom(observable);
   }
 
   private async fetchCourses(){

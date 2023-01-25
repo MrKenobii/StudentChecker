@@ -142,7 +142,7 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longblob");
 
-                    b.Property<bool?>("IsActivated")
+                    b.Property<bool>("IsActivated")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
@@ -161,6 +161,9 @@ namespace Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Token")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VerifyToken")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -198,7 +201,7 @@ namespace Backend.Migrations
                     b.Property<int?>("CollegeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Department")
@@ -208,7 +211,7 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("EnrollDate")
+                    b.Property<DateTime>("EnrollDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<byte[]>("Image")

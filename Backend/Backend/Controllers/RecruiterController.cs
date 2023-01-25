@@ -85,6 +85,7 @@ public class RecruiterController : Controller
     public IActionResult SignUp(RecruiterSignupRequest signUpRequest)
     {
         var recruiter = _recruiterRepository.Signup(signUpRequest);
+        _recruiterRepository.SendEmail(signUpRequest);
         return Ok(recruiter);
     }
     [HttpPost("login")]
@@ -114,6 +115,14 @@ public class RecruiterController : Controller
             return BadRequest();
         return Ok(token);
     }
+    
+    [HttpPost("{recruiterId}/verify-account")]
+    [ProducesResponseType(200, Type = typeof(RecruiterVerifyAccountResponse))]
+    public IActionResult VerifyAccount(int recruiterId, RecruiterVerifyAccountRequest verifyAccountRequest)
+    {
+        var recruiterVerify = _recruiterRepository.VerifyAccount(recruiterId, verifyAccountRequest);
+        return Ok(recruiterVerify);
+    }
     [HttpPut("{recruiterId}/add-company")]
     [ProducesResponseType(200, Type = typeof(RecruiterDto))]
     public IActionResult AddCompanyToRecruiter(int recruiterId, AddCompanyToRecruiter company)
@@ -132,6 +141,17 @@ public class RecruiterController : Controller
         if (!_recruiterRepository.RecruiterExists(recruiterId))
             return NotFound();
         var message = _recruiterRepository.EditProfile(recruiterId, recruiter);
+        if (!ModelState.IsValid)
+            return BadRequest();
+        return Ok(message);
+    }
+    [HttpPut("{recruiterId}/change-password")]
+    [ProducesResponseType(200, Type = typeof(ChangePasswordResponse))]
+    public IActionResult ChangeRecruiterPassword(int recruiterId, ChangePasswordRequest request)
+    {
+        if (!_recruiterRepository.RecruiterExists(recruiterId))
+            return NotFound();
+        var message = _recruiterRepository.ChangePassword(recruiterId, request);
         if (!ModelState.IsValid)
             return BadRequest();
         return Ok(message);

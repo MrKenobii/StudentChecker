@@ -7,8 +7,12 @@ using Backend.DataTransferObject;
 using Backend.DataTransferObject.Recruiter;
 using Backend.Interfaces;
 using Backend.Models;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using MimeKit.Text;
 
 namespace Backend.Repositories;
 
@@ -190,6 +194,7 @@ public class RecruiterRepository : IRecruiterRepository
         _context.SaveChanges();
         return recruiter;
     }
+    
 
     public RecruiterSignUpResponse Signup(RecruiterSignupRequest signUpRequest)
     {
@@ -197,26 +202,141 @@ public class RecruiterRepository : IRecruiterRepository
             "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/271deea8-e28c-41a3-aaf5-2913f5f48be6/de7834s-6515bd40-8b2c-4dc6-a843-5ac1a95a8b55.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzI3MWRlZWE4LWUyOGMtNDFhMy1hYWY1LTI5MTNmNWY0OGJlNlwvZGU3ODM0cy02NTE1YmQ0MC04YjJjLTRkYzYtYTg0My01YWMxYTk1YThiNTUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.BopkDn1ptIwbmcKHdAOlYHyAOOACXW0Zfgbs0-6BY-E";
         using (var webClient = new WebClient())
         {
-            byte[] imageBytes = webClient.DownloadData(someUrl);
-            var recruiter = new Recruiter()
+            var recruiterByEmail = _context.Recruiters.Where(s => s.Email == signUpRequest.Email).FirstOrDefault();
+            if (recruiterByEmail == null)
             {
-                Name = signUpRequest.Name,
-                LastName = signUpRequest.LastName,
-                Email = signUpRequest.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(signUpRequest.Password),
-                Image = imageBytes,
-                IsActivated = false
-            };
-            _context.Recruiters.Add(recruiter);
-            _context.SaveChanges();
+                byte[] imageBytes = webClient.DownloadData(someUrl);
+                var recruiter = new Recruiter()
+                {
+                    Name = signUpRequest.Name,
+                    LastName = signUpRequest.LastName,
+                    Email = signUpRequest.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(signUpRequest.Password),
+                    Image = imageBytes,
+                    IsActivated = false
+                };
+                _context.Recruiters.Add(recruiter);
+                _context.SaveChanges();
+                return new RecruiterSignUpResponse()
+                {
+                    Id = recruiter.Id,
+                    Message = "Recruiter " +recruiter.Name +" " +recruiter.LastName+" has successfully registered",
+                    Name = recruiter.Name,
+                    LastName = recruiter.LastName,
+                    Email = recruiter.Email
+                };
+            }
+
+            if (recruiterByEmail != null && !recruiterByEmail.IsActivated)
+            {
+                byte[] imageBytes = webClient.DownloadData(someUrl);
+                var recruiter = new Recruiter()
+                {
+                    Name = signUpRequest.Name,
+                    LastName = signUpRequest.LastName,
+                    Email = signUpRequest.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(signUpRequest.Password),
+                    Image = imageBytes,
+                    IsActivated = false
+                };
+                _context.Recruiters.Update(recruiter);
+                _context.SaveChanges();
+                return new RecruiterSignUpResponse()
+                {
+                    Id = recruiter.Id,
+                    Name = recruiter.Name,
+                    LastName = recruiter.LastName,
+                    Email = recruiter.Email,
+                    Message = "Email already taken check your mailbox and confirm verification code"
+                };
+            }
             return new RecruiterSignUpResponse()
             {
-                Message = "Recruiter " +recruiter.Name +" " +recruiter.LastName+" has created",
-                Name = recruiter.Name,
-                LastName = recruiter.LastName,
-                Email = recruiter.Email
+                Id = 0,
+                Name = null,
+                LastName = null,
+                Email = null,
+                Message = "Bad Request"
+            };
+            
+        }
+    }
+    public string SendEmail(RecruiterSignupRequest signUpRequest)
+    {
+        var recruiter = _context.Recruiters.Where(e => e.Email == signUpRequest.Email).FirstOrDefault();
+        
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var stringChars = new char[8];
+        var random = new Random();
+
+        for (int i = 0; i < stringChars.Length; i++)
+        {
+            stringChars[i] = chars[random.Next(chars.Length)];
+        }
+
+        var verifyToken = new String(stringChars);
+        if (recruiter != null)
+        {
+            recruiter.VerifyToken = verifyToken;
+            _context.Recruiters.Update(recruiter);
+            _context.SaveChanges();
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse("arely93@ethereal.email"));
+            email.To.Add(MailboxAddress.Parse(recruiter.Email));
+            email.Subject = "Registration for Application";
+            string TagA = "<a  target=\"_blank\" href=\"http://localhost:4200/activate/recruiter/" + recruiter.Id + "?token=" + verifyToken + "\">Activate your Account</a>";
+            email.Body = new TextPart(TextFormat.Html) { Text = "<h1>Dear Recruiter "+recruiter.Name +" "+recruiter.LastName + "</h1>" +
+                                                                "<h2>Thanks for registering.</h2> " +
+                                                                "<h3>Your Verify Token: " + verifyToken+"</h3> " +
+                                                                "<h4>You can directly visit the link below</h4>" + TagA
+                                                                };
+        
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
+            // smtp.Connect("smtp.live.com", 587, SecureSocketOptions.StartTls);
+        
+            smtp.Authenticate("arely93@ethereal.email", "uA8ZvSH3Q4EAb7xkqw");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+            return "Email was successfully send";
+        }
+
+        return "Recruiter "+recruiter.Name+" "+recruiter.LastName+" was not found";
+
+    }
+
+    public RecruiterVerifyAccountResponse VerifyAccount(int recruiterId, RecruiterVerifyAccountRequest verifyAccountRequest)
+    { 
+        var recruiter = this.GetRecruiter(recruiterId);
+        if (recruiter != null)
+        {
+            if (verifyAccountRequest.VerifyToken == recruiter.VerifyToken)
+            {
+                recruiter.IsActivated = true;
+                recruiter.VerifyToken = null;
+
+                _context.Recruiters.Update(recruiter);
+                _context.SaveChanges();
+                return new RecruiterVerifyAccountResponse()
+                {
+                    Message = "Account verification successful",
+                    Email = recruiter.Email,
+                    Name = recruiter.Name
+                };
+            }
+            return new RecruiterVerifyAccountResponse()
+            {
+                Message = "Invalid token",
+                Email = null,
+                Name = null
             };
         }
+        return new RecruiterVerifyAccountResponse()
+        {
+            Message = "Recruiter with id : " + recruiterId + " does not found",
+            Email = null,
+            Name = null
+        };
     }
 
     public RecruiterLoginResponse Login(RecruiterLoginRequest loginRequest)
@@ -247,7 +367,7 @@ public class RecruiterRepository : IRecruiterRepository
                 return new RecruiterLoginResponse()
                 {
                     Key = recruiter.Token,
-                    Message = "Login Successfull"
+                    Message = "Login Successful"
                 };
             }
                 
@@ -380,7 +500,6 @@ public class RecruiterRepository : IRecruiterRepository
             _recruiter.Phone = recruiter.Phone;
             _recruiter.Name = recruiter.Name;
             _recruiter.LastName = recruiter.LastName;
-            _recruiter.Password = BCrypt.Net.BCrypt.HashPassword(recruiter.Password);
             _recruiter.Email = recruiter.Email;
             _recruiter.Image = recruiter.Image;
     
@@ -395,12 +514,48 @@ public class RecruiterRepository : IRecruiterRepository
         }
 
         return new EditProfileResponse() { Message = "Something went wrong!!" };
+    }
 
+    public ChangePasswordResponse ChangePassword(int recruiterId, ChangePasswordRequest request)
+    {
+        var recruiter = this.GetRecruiter(recruiterId);
+        if (recruiter != null)
+        {
+            bool verify = BCrypt.Net.BCrypt.Verify(request.PrevPassword, recruiter.Password);
+            if (verify)
+            {
+                if (request.NewPassword == request.NewPasswordCopy)
+                {
+                    recruiter.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                    _context.Recruiters.Update(recruiter);
+                    _context.SaveChanges();
+                    return new ChangePasswordResponse()
+                    {
+                        Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName +
+                                  "'s password has updated successfully",
+                        Status = true
+                    };
+                }
 
+                return new ChangePasswordResponse()
+                {
+                    Message = "Passwords are not matching",
+                    Status = false
+                };
+            }
 
+            return new ChangePasswordResponse()
+            {
+                Message = "Your old Password is not correct",
+                Status = false
+            };
+        }
 
-
-
+        return new ChangePasswordResponse()
+        {
+            Message = "Recruiter with id " + recruiterId + " was not found",
+            Status = false
+        };
 
     }
 }

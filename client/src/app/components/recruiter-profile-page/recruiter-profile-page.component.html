@@ -16,15 +16,16 @@
         <div class="card mb-4" *ngIf="recruiter">
           <div class="card-body text-center">
             <img *ngIf="recruiter && recruiter.image" [src]="recruiter.image || ''" alt="avatar"
-                 class="rounded-circle img-fluid" style="width: 150px;">
+                 class="rounded-circle img-fluid w-75 h-50">
             <h5 class="my-3" *ngIf="recruiter && recruiter.name && recruiter.lastName">{{recruiter.name || 'N/A'}} {{recruiter.lastName || 'N/A'}}</h5>
             <p class="text-muted mb-1">Full Stack Developer</p>
             <p class="text-muted mb-4" *ngIf="recruiter && recruiter.address">{{recruiter.address}}</p>
             <div *ngIf="!isOwnProfilePage" class="d-flex justify-content-center mb-2">
               <button type="button" class="btn btn-outline-primary ms-1">Message</button>
             </div>
-            <div *ngIf="isOwnProfilePage" class="d-flex justify-content-center mb-2">
+            <div *ngIf="isOwnProfilePage" class="d-flex justify-content-center mb-2 px-5">
               <button type="button" class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
+              <button type="button ms-2" class="btn btn-outline-primary" (click)="privacySettings()">Privacy Settings</button>
             </div>
           </div>
         </div>

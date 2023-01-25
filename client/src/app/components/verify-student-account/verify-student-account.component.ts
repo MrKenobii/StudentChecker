@@ -5,11 +5,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";
 import {VerifyAccountRequest} from "../../interfaces/student/VerifyAccountRequest";
-import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
+import {lastValueFrom} from "rxjs";
+import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
+import {StudentResponse} from "../../interfaces/student/StudentResponse";
 
-class SignupPayload {
-  verifyToken!: string;
-}
 @Component({
   selector: 'app-verify-student-account',
   templateUrl: './verify-student-account.component.html',
@@ -17,15 +16,26 @@ class SignupPayload {
 })
 export class VerifyStudentAccountComponent implements OnInit{
   studentId!: number;
-  postPayload: VerifyAccountRequest;
+  postPayload!: VerifyAccountRequest;
   createPostForm!: FormGroup;
+  isAccountActive!: boolean;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute,private studentService: StudentService, private matSnackBar: MatSnackBar) {
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
     console.log(this.studentId);
-    this.postPayload = {
-      verifyToken: '',
-    }
+    this.fetchStudentById(this.studentId).then((data: StudentResponse) => {
+      if(data && data.name && data.lastName){
+        this.isAccountActive = data.isActivated;
+        if(!this.isAccountActive){
+          this.postPayload = {
+            verifyToken: '',
+          }
+        }
+      } else {
+        this.router.navigate(['/not-found']);
+      }
+    }).catch((error) => this.router.navigate(['/not-found']));
+
   }
   ngOnInit(): void {
     this.createPostForm = new FormGroup({
@@ -33,7 +43,10 @@ export class VerifyStudentAccountComponent implements OnInit{
 
     });
   }
-
+  private async fetchStudentById(id: number) {
+    let studentById = this.studentService.getStudentById(id);
+    return await lastValueFrom(studentById);
+  }
   send() {
     this.postPayload.verifyToken = this.createPostForm.get('verifyToken')!.value;
     console.log(this.postPayload.verifyToken);

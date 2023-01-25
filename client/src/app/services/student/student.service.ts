@@ -10,6 +10,8 @@ import {StudentLoginRequest} from "../../interfaces/student/login/StudentLoginRe
 import {StudentLoginResponse} from "../../interfaces/student/login/StudentLoginResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 import {Course} from "../../interfaces/course/Course";
+import {UpdatePassword} from "../../interfaces/UpdatePassword";
+import {UpdatePasswordResponse} from "../../interfaces/UpdatePasswordResponse";
 
 
 @Injectable({
@@ -69,6 +71,10 @@ export class StudentService {
   }
 
   public  editProfile(id: number, payload: any) : Observable<any> {
-    return this.http.put(`http://localhost:5269/Student/${id}/update-profile`, payload);
+    return this.http.put(`http://localhost:5269/Student/${id}/edit-profile`, payload);
+  }
+
+  public changePassword(id: number, obj: UpdatePassword) : Observable<UpdatePasswordResponse> {
+    return this.http.put<UpdatePasswordResponse>(`http://localhost:5269/Student/${id}/change-password`, obj);
   }
 }

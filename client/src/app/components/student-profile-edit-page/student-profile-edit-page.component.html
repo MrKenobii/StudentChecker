@@ -1,4 +1,10 @@
-<section  style="background-color: #eee;">
+<!--<div *ngIf="!isOwnPage">-->
+<!--  <app-not-found></app-not-found>-->
+<!--</div>-->
+<div *ngIf="isOwnPage && isLoading">
+  <app-loader></app-loader>
+</div>
+<section *ngIf="isOwnPage && !isLoading"  style="background-color: #eee;">
 
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center">
@@ -28,7 +34,7 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="email" class="form-control" *ngIf="student && student.email"  [formControlName]="'email'"   />
+                      <input type="text" id="email" class="form-control" *ngIf="student && student.email"  [formControlName]="'email'"  readonly="readonly"  />
                       <label class="form-label" for="address">Email</label>
                     </div>
                   </div>
@@ -141,21 +147,21 @@
                     </div>
                   </div>
 
-                  <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                    <div class="form-outline flex-fill mb-0">
-                      <input type="password" id="prevPassword" class="form-control" *ngIf="student && student.password"  [formControlName]="'prevPassword'" />
-                      <label class="form-label" for="prevPassword">Previous Password</label>
-                    </div>
-                  </div>
+<!--                  <div class="d-flex flex-row align-items-center mb-4">-->
+<!--                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>-->
+<!--                    <div class="form-outline flex-fill mb-0">-->
+<!--                      <input type="password" id="prevPassword" class="form-control" *ngIf="student && student.password"  [formControlName]="'prevPassword'" />-->
+<!--                      <label class="form-label" for="prevPassword">Previous Password</label>-->
+<!--                    </div>-->
+<!--                  </div>-->
 
-                  <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                    <div class="form-outline flex-fill mb-0">
-                      <input type="password" id="newPassword" class="form-control"  [formControlName]="'newPassword'" />
-                      <label class="form-label" for="newPassword">New password</label>
-                    </div>
-                  </div>
+<!--                  <div class="d-flex flex-row align-items-center mb-4">-->
+<!--                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>-->
+<!--                    <div class="form-outline flex-fill mb-0">-->
+<!--                      <input type="password" id="newPassword" class="form-control"  [formControlName]="'newPassword'" />-->
+<!--                      <label class="form-label" for="newPassword">New password</label>-->
+<!--                    </div>-->
+<!--                  </div>-->
 
                   <div class="form-check d-flex justify-content-center mb-5">
                     <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />

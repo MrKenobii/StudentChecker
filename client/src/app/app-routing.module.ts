@@ -24,6 +24,19 @@ import {
 import {
   RecruiterProfileEditPageComponent
 } from "./components/recruiter-profile-edit-page/recruiter-profile-edit-page.component";
+import {NotFoundComponent} from "./components/not-found/not-found.component";
+import {
+  StudentPrivacySettingsComponent
+} from "./components/student-privacy-settings/student-privacy-settings.component";
+import {
+  RecruiterPrivacySettingsComponent
+} from "./components/recruiter-privacy-settings/recruiter-privacy-settings.component";
+import {
+  VerifyRecruiterAutomaticComponent
+} from "./components/verify-recruiter-automatic/verify-recruiter-automatic.component";
+import {
+  VerifyRecruiterAccountComponent
+} from "./components/verify-recruiter-account/verify-recruiter-account.component";
 
 
 const routes: Route[] = [
@@ -46,10 +59,16 @@ const routes: Route[] = [
     path: 'sign-up/recruiter', component: SignUpRecruiterComponent
   },
   {
-    path: 'sign-up/activate/:studentId', component: VerifyStudentAccountComponent
+    path: 'sign-up/student/activate/:studentId', component: VerifyStudentAccountComponent
   },
   {
-    path: 'activate/:studentId', component: VerifyStudentAutomaticComponent,
+    path: 'activate/student/:studentId', component: VerifyStudentAutomaticComponent,
+  },
+  {
+    path: 'sign-up/recruiter/activate/:recruiterId', component: VerifyRecruiterAccountComponent
+  },
+  {
+    path: 'activate/recruiter/:recruiterId', component: VerifyRecruiterAutomaticComponent,
   },
   {
     path: 'complete-profile/:studentId', component: StudentCompleteProfileComponent,
@@ -64,13 +83,22 @@ const routes: Route[] = [
     path: 'student/edit-profile/:studentId', component: StudentProfileEditPageComponent,
   },
   {
+    path: 'student/privacy/:studentId', component: StudentPrivacySettingsComponent,
+  },
+  {
     path: 'profile/recruiter/:recruiterId', component: RecruiterProfilePageComponent,
   },
   {
     path: 'recruiter/edit-profile/:recruiterId', component: RecruiterProfileEditPageComponent,
   },
   {
+    path: 'recruiter/privacy/:recruiterId', component: RecruiterPrivacySettingsComponent,
+  },
+  {
     path: 'login', component: LoginComponent
+  },
+  {
+    path: 'not-found', component: NotFoundComponent
   },
 ];
 @NgModule({

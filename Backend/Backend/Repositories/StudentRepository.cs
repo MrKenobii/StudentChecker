@@ -5,16 +5,19 @@ using System.Security.Claims;
 using System.Text;
 using Backend.Data;
 using Backend.DataTransferObject;
+using Backend.DataTransferObject.Recruiter;
 using Backend.Interfaces;
 using Backend.Models;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using MimeKit.Text;
+using MySqlConnector;
 
 namespace Backend.Repositories;
 
@@ -27,6 +30,7 @@ public class StudentRepository : IStudentRepository
         this._context = _context;
         _appSettings = appSettings.Value;
     }
+    [SuppressMessage("ReSharper.DPA", "DPA0006: Large number of DB commands", MessageId = "count: 588")]
     public ICollection<StudentDto> GetStudents()
     {
         var _students = new List<StudentDto>();
@@ -396,7 +400,7 @@ public class StudentRepository : IStudentRepository
 
             if (courses.Count > 0)
             {
-                _context.StudentCourses.AddRange(courses);    
+                _context.StudentCourses.AddRange(courses);
             }
         
             // _context.SaveChanges();
@@ -470,7 +474,7 @@ public class StudentRepository : IStudentRepository
                     Name = student.Name,
                     LastName = student.LastName,
                     Email = student.Email,
-                    Message = "Student "+student.Name+" "+student.LastName+" has successfully registered"
+                    Message = "Email already taken check your mailbox and confirm verification code"
                 };
             }
             
@@ -565,11 +569,12 @@ public class StudentRepository : IStudentRepository
             email.From.Add(MailboxAddress.Parse("arely93@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(student.Email));
             email.Subject = "Registration for Student Application";
+            var TagA = "<a target=\"_blank\" href=\"http://localhost:4200/activate/student/" + student.Id + "?token=" + verifyToken + "\" >Activate your Account</a>";
             email.Body = new TextPart(TextFormat.Html) { Text = "<h1>Dear Student "+student.Name +" "+student.LastName + "</h1>" +
                                                                 "<h2>Thanks for registering.</h2> " +
                                                                 "<h3>Your Verify Token: " + verifyToken+"</h3> " +
-                                                                "<h4>You can directly visit the link below</h4>" +
-                                                                "<a href=\"http://localhost:4200/activate/"+student.Id+"?token="+verifyToken+" \" target=\"_blank\">Activate your Account</a>" };
+                                                                "<h4>You can directly visit the link below</h4>" + TagA
+                                                                 };
         
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
@@ -619,7 +624,7 @@ public class StudentRepository : IStudentRepository
         };
     }
 
-    [SuppressMessage("ReSharper.DPA", "DPA0006: Large number of DB commands", MessageId = "count: 346")]
+    
     public StudentDto GetStudentByKey(string key)
     {
         var student = _context.Students.Where(a => a.Token == key).FirstOrDefault();
@@ -667,5 +672,186 @@ public class StudentRepository : IStudentRepository
             Key = null,
             Message = "Student " + student.Name + " " + student.LastName + " has no active token"
         };
+    }
+
+    private void UpdateCourses()
+    {
+        
+    }
+    public StudentEditProfileResponse EditStudentProfile(int studentId, StudentEditProfile studentEditProfile)
+    {
+        if (studentEditProfile != null)
+        {
+            var student = this.GetStudent(studentId);
+            if (student != null)
+            {
+                var city = _context.Cities.Where(s => s.Name == studentEditProfile.CityName).FirstOrDefault();
+                var college = _context.Colleges.Where(s => s.Name == studentEditProfile.CollegeName).FirstOrDefault();
+                
+                var courses = new List<StudentCourse>();
+                ICollection<CourseDto> courseDtos = this.GetCourses(studentId);
+                Console.WriteLine("Checkpoint-1");
+                foreach (var courseDto in courseDtos)
+                {
+                    Console.WriteLine("Checkpoint-1 aa");
+                    var courseByName = _context.Courses.Where(e => e.Name == courseDto.Name).FirstOrDefault();
+                    var studentCourse = new StudentCourse()
+                    {
+                        Student = student,
+                        Course = courseByName
+                    };
+                    if (studentCourse != null)
+                    {
+                        Console.WriteLine("Checkpoint-2");
+                        courses.Add(studentCourse);
+                    }
+                }
+                if (courses.Count > 0)
+                {
+                    foreach (var studentCourse in courses)
+                    {
+                        
+                        Console.WriteLine("Checkpoint-3");
+                        Console.WriteLine("Inside Removeee -------------------------> " +studentCourse.Course.Id  +  " " + studentCourse.Student.Id);
+
+                        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
+                        MySqlConnection conn = new MySqlConnection(connStr);
+                        try
+                        {
+                            Console.WriteLine("Connecting to MySQL...");
+                            conn.Open();
+                            string sql = "DELETE FROM `student_checker_v2`.`StudentCourses` WHERE (`StudentId` = '" +
+                                         studentCourse.Student.Id + "') and (`CourseId` = '" + studentCourse.Course.Id +
+                                         "');";
+                            Console.WriteLine("Query: " + sql);
+                            MySqlConnection MyConn2 = new MySqlConnection(connStr);
+                            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+                            MySqlDataReader MyReader2;
+                            MyConn2.Open();
+                            MyReader2 = MyCommand2.ExecuteReader();
+                            while (MyReader2.Read())
+                            {
+                            }
+            
+                        }
+                        catch (Exception err)
+                        {
+                            Console.WriteLine(err.ToString());
+                        }
+
+                        conn.Close();
+                        //_context.StudentCourses.Remove(studentCourse);
+                        //_context.SaveChanges();     
+                    }
+                   
+                }
+                
+                
+                var _courses = new List<StudentCourse>();
+                string courseString = "";
+                foreach (var c in studentEditProfile.Courses)
+                {
+                    var courseByName = _context.Courses.Where(e => e.Name == c.Name).FirstOrDefault();
+                    var studentCourse = new StudentCourse()
+                    {
+                        Student = student,
+                        Course = courseByName
+                    };
+                    if (studentCourse != null)
+                    {
+                        courseString = courseString +  c.Name +", " ;
+                        _courses.Add(studentCourse);    
+                    }
+            
+                }
+
+                if (_courses.Count > 0)
+                {
+                    _context.StudentCourses.AddRange(_courses);    
+                }
+        
+                // _context.SaveChanges();
+                
+                // Courses Department CityName CollegeName
+                
+                student.City = city;
+                student.College = college;
+                student.Address = studentEditProfile.Address;
+                student.Phone = studentEditProfile.Phone;
+                student.Name = studentEditProfile.Name;
+                student.LastName = studentEditProfile.LastName;
+                student.Email = studentEditProfile.Email;
+                student.Skills = studentEditProfile.Skills;
+                student.Languages = studentEditProfile.Languages;
+                student.EnrollDate = studentEditProfile.EnrollDate;
+                student.DateOfBirth = studentEditProfile.DateOfBirth;
+                student.Image = studentEditProfile.Image;
+                
+                _context.Students.Update(student);
+                _context.SaveChanges();
+                
+                
+                
+                return new StudentEditProfileResponse()
+                {
+                    Key = student.Token,
+                    Message = "Student " + student.Name + " " + student.LastName +
+                              "'s profile was successfully updated"
+                };
+            }
+            return new StudentEditProfileResponse()
+            {
+                Key = null,
+                Message = "Student with id: " + studentId + " was not found"
+            };
+        }
+        return new StudentEditProfileResponse()
+        {
+            Key = null,
+            Message = "Payload is not valid"
+        };
+    }
+
+    public ChangePasswordResponse ChangePassword(int studentId, ChangePasswordRequest request)
+    {
+        var student = this.GetStudent(studentId);
+        if (student != null)
+        {
+            bool verify = BCrypt.Net.BCrypt.Verify(request.PrevPassword, student.Password);
+            if (verify)
+            {
+                if (request.NewPassword == request.NewPasswordCopy)
+                {
+                    student.Password = request.NewPassword;
+                    _context.Students.Update(student);
+                    _context.SaveChanges();
+                    return new ChangePasswordResponse()
+                    {
+                        Message = "Student " + student.Name + " " + student.LastName +
+                                  "'s password has updated successfully",
+                        Status = true
+                    };
+                }
+
+                return new ChangePasswordResponse()
+                {
+                    Message = "Passwords are not matching",
+                    Status = false
+                };
+            }
+
+            return new ChangePasswordResponse()
+            {
+                Message = "Your old Password is not correct",
+                Status = false
+            };
+        }
+
+        return new ChangePasswordResponse()
+        {
+            Message = "Student with id " + studentId + " was not found",
+            Status = false
+        };
+
     }
 }

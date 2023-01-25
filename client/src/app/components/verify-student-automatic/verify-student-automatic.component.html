@@ -1,7 +1,10 @@
-<div class="mx-4 my-2" style="height: 400px">
+<div *ngIf="isAccountActive">
+  <app-not-found></app-not-found>
+</div>
+<div *ngIf="!isAccountActive" class="mx-4 my-2" style="height: 400px">
   Thank you for activation your account
   <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-    <button type="button" class="btn btn-primary btn-lg" (click)="send()">Login</button>
+    <button type="button" class="btn btn-primary btn-lg" (click)="send()">Go to Login</button>
   </div>
 </div>
 

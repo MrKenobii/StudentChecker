@@ -10,6 +10,7 @@ import {CompleteStudentProfile} from "../../interfaces/student/CompleteStudentPr
 import {Course} from "../../interfaces/course/Course";
 import {CoursesService} from "../../services/course/courses.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
+import {lastValueFrom} from "rxjs";
 
 
 
@@ -37,6 +38,7 @@ export class StudentCompleteProfileComponent implements OnInit{
   loading: boolean = false;
   file!: File; //
   fileBlob! :ArrayBuffer;
+  isAccountActive!: boolean;
   constructor(private router: Router, private activatedRoute: ActivatedRoute,
               private studentService: StudentService,
               private courseService: CoursesService,
@@ -60,24 +62,37 @@ export class StudentCompleteProfileComponent implements OnInit{
 
     };
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
-    studentService.getStudentById(this.studentId).subscribe((data:StudentResponse) => {
-      this.student = data;
-      this.collegeEmailExtension = this.student.email.substring(data.email.indexOf('@') + 1, data.email.length);
-      this.collegeService.getColleges().subscribe((data:any) => { // any degis
-        console.log(data);
-        this.colleges = data;
-        console.log(this.collegeEmailExtension);
-        this.colleges.map((c: CollegeGetResponse) => {
-          if(c.emailExtension == this.collegeEmailExtension){
-            this.college = c;
-          }
-        });
-        console.log(this.college);
-      });
-    })
+    this.fetchStudentById(this.studentId).then((data: StudentResponse) => {
+
+      if(data && data.name && data.lastName && !data.enrollDate && !data.dateOfBirth){
+        this.isAccountActive = data.isActivated;
+        if(this.isAccountActive){
+          this.student = data;
+          this.collegeEmailExtension = this.student.email.substring(data.email.indexOf('@') + 1, data.email.length);
+          this.collegeService.getColleges().subscribe((data:any) => { // any degis
+            console.log(data);
+            this.colleges = data;
+            console.log(this.collegeEmailExtension);
+            this.colleges.map((c: CollegeGetResponse) => {
+              if(c.emailExtension == this.collegeEmailExtension){
+                this.college = c;
+              }
+            });
+            console.log(this.college);
+          });
+        } else {
+          this.router.navigate(['/not-found'])
+          // this.student = data;
+        }
+      }
+    }).catch((error) => this.router.navigate(['/not-found']));
     this.courseService.getCourses().subscribe((data: Course[]) => {
       this.courses = data;
     })
+  }
+  private async fetchStudentById(id: number) {
+    let studentById = this.studentService.getStudentById(id);
+    return await lastValueFrom(studentById);
   }
   ngOnInit(): void {
     this.createPostForm = new FormGroup({
@@ -130,7 +145,7 @@ export class StudentCompleteProfileComponent implements OnInit{
       console.log(obj);
       this.studentService.updateProfile(this.studentId, obj).subscribe((data: any) => {
         console.log(data);
-        this.router.navigate(['/login?role=recruiter']);
+        this.router.navigate(['/login']);
       });
     };
   }

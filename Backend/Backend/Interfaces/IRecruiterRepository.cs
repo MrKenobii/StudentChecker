@@ -20,4 +20,7 @@ public interface IRecruiterRepository
     RecruiterTokenGetResponse GetTokenByRecruiterId(int recruiterId);
     RecruiterDto AddCompany(int recruiterId, AddCompanyToRecruiter addCompanyToRecruiter);
     EditProfileResponse EditProfile(int recruiterId, RecruiterEditProfileRequest recruiter);
+    ChangePasswordResponse ChangePassword(int recruiterId, ChangePasswordRequest request);
+    string SendEmail(RecruiterSignupRequest signUpRequest);
+    RecruiterVerifyAccountResponse VerifyAccount(int recruiterId, RecruiterVerifyAccountRequest verifyAccountRequest);
 }
