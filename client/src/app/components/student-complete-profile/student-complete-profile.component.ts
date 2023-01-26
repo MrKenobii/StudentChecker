@@ -11,6 +11,7 @@ import {Course} from "../../interfaces/course/Course";
 import {CoursesService} from "../../services/course/courses.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {lastValueFrom} from "rxjs";
+import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 
 
 
@@ -63,9 +64,9 @@ export class StudentCompleteProfileComponent implements OnInit{
     };
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
     this.fetchStudentById(this.studentId).then((data: StudentResponse) => {
-
-      if(data && data.name && data.lastName && !data.enrollDate && !data.dateOfBirth){
+      if(data && data.name && data.lastName && !data.collegeName && !data.address){
         this.isAccountActive = data.isActivated;
+        console.log(data);
         if(this.isAccountActive){
           this.student = data;
           this.collegeEmailExtension = this.student.email.substring(data.email.indexOf('@') + 1, data.email.length);
@@ -145,7 +146,31 @@ export class StudentCompleteProfileComponent implements OnInit{
       console.log(obj);
       this.studentService.updateProfile(this.studentId, obj).subscribe((data: any) => {
         console.log(data);
-        this.router.navigate(['/login']);
+        if(data && data.id > 0){
+          this.studentService.getTokenByStudentId(data.id!).subscribe((token: StudentGetTokenResponse) => {
+            if(token && token.key){
+              localStorage.setItem("key", token.key);
+              this.router.routeReuseStrategy.shouldReuseRoute = function () {
+                return false;
+              }
+              this.router.onSameUrlNavigation = 'reload';
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            } else {
+              this.matSnackBar.open("Someth went wrong", "OK", {
+                duration: 5000
+              });
+            }
+          });
+
+        } else {
+            this.matSnackBar.open("Someth went wrong -2", "OK", {
+              duration: 5000
+            });
+          this.router.navigate(['not-found']);
+        }
+
       });
     };
   }

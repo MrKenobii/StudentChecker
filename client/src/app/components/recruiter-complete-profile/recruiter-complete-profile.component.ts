@@ -8,6 +8,8 @@ import {RecruiterPutUpdateProfileRequest} from "../../interfaces/recruiter/Recru
 import {Company} from "../../interfaces/company/Company";
 import {CompanyService} from "../../services/company/company.service";
 import {lastValueFrom} from "rxjs";
+import {RecruiterGetKeyResponse} from "../../interfaces/recruiter/RecruiterGetKeyResponse";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 
 interface CompanyControlName {
@@ -35,7 +37,8 @@ export class RecruiterCompleteProfileComponent implements OnInit{
               private activatedRoute: ActivatedRoute,
               private recruiterService: RecruiterService,
               private companyService: CompanyService,
-              private fileService: ImageUploadService) {
+              private fileService: ImageUploadService,
+              private snackBar: MatSnackBar) {
     this.postPayload = {
       address: '',
       hireDate: new Date(),
@@ -68,7 +71,30 @@ export class RecruiterCompleteProfileComponent implements OnInit{
       console.log(obj);
       this.recruiterService.updateProfile(this.recruiterId,obj).subscribe(data => {
         console.log(data);
-        this.router.navigate(['/login']);
+        if(data && data.id){
+          this.recruiterService.getTokenByRecruiterId(data.id).subscribe((token: RecruiterGetKeyResponse) => {
+            if(token && token.key){
+              localStorage.setItem("key", token.key);
+              this.router.routeReuseStrategy.shouldReuseRoute = function () {
+                return false;
+              }
+              this.router.onSameUrlNavigation = 'reload';
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            } else {
+                this.snackBar.open("Someth went wrong", "OK", {
+                  duration: 5000
+                });
+            }
+          });
+        } else {
+          this.snackBar.open("Someth went wrong -2", "OK",  {
+            duration: 5000
+          });
+          this.router.navigate(['not-found'])
+        }
+
       });
     }
   }

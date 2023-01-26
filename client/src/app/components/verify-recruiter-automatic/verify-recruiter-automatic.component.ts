@@ -34,7 +34,10 @@ export class VerifyRecruiterAutomaticComponent {
           this.recruiterService.verifyAccount(this.recruiterId, this.requestPayload)
             .subscribe((data: VerifyTokenResponse) => {
               if(data.name != null) {
-                this.router.navigateByUrl(`recruiter/complete-profile/${this.recruiterId}`);
+                this.matSnackBar.open("Thanks for your registration. Please wait for your account to be confirmed", "Close", {
+                  duration: 3000
+                });
+                this.router.navigateByUrl(`login`);
               } else {
                 this.matSnackBar.open(data.message, "Close", {
                   duration: 3000

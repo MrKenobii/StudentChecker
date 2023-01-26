@@ -104,10 +104,11 @@ public class StudentController : Controller
         return Ok(student);
     }
     [HttpDelete("{studentId}")]
-    [ProducesResponseType(200)]
-    public void DeleteStudent(int studentId)
+    [ProducesResponseType(200, Type = typeof(DeleteResponse))]
+    public IActionResult DeleteStudent(int studentId)
     {
-        _studentRepository.DeleteStudent(studentId);
+        var deleteResponse = _studentRepository.DeleteStudent(studentId);
+        return Ok(deleteResponse);
     }
     [HttpPut("{studentId}/add-course")]
     [ProducesResponseType(200, Type = typeof(Student))]

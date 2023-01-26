@@ -1,4 +1,297 @@
-<div>
-  <router-outlet>
-  </router-outlet>
+<div *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+
+<div *ngIf="!isLoading" id="wrapper">
+
+  <!-- Sidebar -->
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="'/admin/'">
+      <div class="sidebar-brand-icon rotate-n-15">
+        <i class="fas fa-laugh-wink"></i>
+      </div>
+      <div class="sidebar-brand-text mx-3">Student Checker Admin Page</div>
+    </a>
+
+    <!-- Divider -->
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Tables
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="'/admin/students'"
+         aria-expanded="true">
+        <!--        <i class="fas fa-fw fa-cog"></i>-->
+        <span>
+        <mat-icon>supervisor_account</mat-icon>
+          Students
+        </span>
+      </a>
+    </li>
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="'/admin/companies'"
+         aria-expanded="true" aria-controls="collapseUtilities">
+        <!--        <i class="fas fa-fw fa-wrench"></i>-->
+        <span>
+          <mat-icon>supervisor_account</mat-icon>
+          Companies
+        </span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="'/admin/recruiters'"
+         aria-expanded="true" aria-controls="collapseUtilities">
+        <!--        <i class="fas fa-fw fa-wrench"></i>-->
+        <span>
+          <mat-icon>supervisor_account</mat-icon>
+          Recruiters
+        </span>
+      </a>
+    </li>
+
+  </ul>
+  <!-- End of Sidebar -->
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+      <!-- Topbar -->
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+        <!-- Sidebar Toggle (Topbar) -->
+        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+          <i class="fa fa-bars"></i>
+        </button>
+
+        <!-- Topbar Search -->
+        <form
+          class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+          <div class="input-group">
+            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                   aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button">
+                <mat-icon>search</mat-icon>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Topbar Navbar -->
+        <ul class="navbar-nav ml-auto">
+
+          <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+          <li class="nav-item dropdown no-arrow d-sm-none">
+            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-search fa-fw"></i>
+            </a>
+            <!-- Dropdown - Messages -->
+            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                 aria-labelledby="searchDropdown">
+              <form class="form-inline mr-auto w-100 navbar-search">
+                <div class="input-group">
+                  <input type="text" class="form-control bg-light border-0 small"
+                         placeholder="Search for..." aria-label="Search"
+                         aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">
+                      <i class="fas fa-search fa-sm"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </li>
+
+          <!-- Nav Item - Alerts -->
+          <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <mat-icon>notifications</mat-icon>
+
+              <!-- Counter - Alerts -->
+              <span class="badge badge-danger badge-counter">3+</span>
+            </a>
+            <!-- Dropdown - Alerts -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="alertsDropdown">
+              <h6 class="dropdown-header">
+                Alerts Center
+              </h6>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="mr-3">
+                  <div class="icon-circle bg-primary">
+                    <i class="fas fa-file-alt text-white"></i>
+                  </div>
+                </div>
+                <div>
+                  <div class="small text-gray-500">December 12, 2019</div>
+                  <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                </div>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="mr-3">
+                  <div class="icon-circle bg-success">
+                    <i class="fas fa-donate text-white"></i>
+                  </div>
+                </div>
+                <div>
+                  <div class="small text-gray-500">December 7, 2019</div>
+                  $290.29 has been deposited into your account!
+                </div>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="mr-3">
+                  <div class="icon-circle bg-warning">
+                    <i class="fas fa-exclamation-triangle text-white"></i>
+                  </div>
+                </div>
+                <div>
+                  <div class="small text-gray-500">December 2, 2019</div>
+                  Spending Alert: We've noticed unusually high spending for your account.
+                </div>
+              </a>
+              <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+            </div>
+          </li>
+
+          <!-- Nav Item - Messages -->
+          <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <mat-icon> mail_outline</mat-icon>
+              <!-- Counter - Messages -->
+              <span class="badge badge-danger badge-counter">7</span>
+            </a>
+            <!-- Dropdown - Messages -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="messagesDropdown">
+              <h6 class="dropdown-header">
+                Message Center
+              </h6>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="dropdown-list-image mr-3">
+                  <img class="rounded-circle" src="https://img.freepik.com/free-photo/white-cloud-sky-background_74190-4646.jpg?w=2000"
+                       alt="...">
+                  <div class="status-indicator bg-success"></div>
+                </div>
+                <div class="font-weight-bold">
+                  <div class="text-truncate">Hi there! I am wondering if you can help me with a
+                    problem I've been having.</div>
+                  <div class="small text-gray-500">Emily Fowler · 58m</div>
+                </div>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="dropdown-list-image mr-3">
+                  <img class="rounded-circle" src="https://img.freepik.com/free-photo/white-cloud-sky-background_74190-4646.jpg?w=2000"
+                       alt="...">
+                  <div class="status-indicator"></div>
+                </div>
+                <div>
+                  <div class="text-truncate">I have the photos that you ordered last month, how
+                    would you like them sent to you?</div>
+                  <div class="small text-gray-500">Jae Chun · 1d</div>
+                </div>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="dropdown-list-image mr-3">
+                  <img class="rounded-circle" src="https://img.freepik.com/free-photo/white-cloud-sky-background_74190-4646.jpg?w=2000"
+                       alt="...">
+                  <div class="status-indicator bg-warning"></div>
+                </div>
+                <div>
+                  <div class="text-truncate">Last month's report looks great, I am very happy with
+                    the progress so far, keep up the good work!</div>
+                  <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                </div>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <div class="dropdown-list-image mr-3">
+                  <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                       alt="...">
+                  <div class="status-indicator bg-success"></div>
+                </div>
+                <div>
+                  <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                    told me that people say this to all dogs, even if they aren't good...</div>
+                  <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                </div>
+              </a>
+              <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+            </div>
+          </li>
+
+          <div class="topbar-divider d-none d-sm-block"></div>
+
+          <!-- Nav Item - User Information -->
+          <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{admin.name + " " + admin.lastName}}</span>
+              <img class="img-profile rounded-circle"
+                   src="data:image/jpeg;base64,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">
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="userDropdown">
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                Profile
+              </a>
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                Settings
+              </a>
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                Activity Log
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                Logout
+              </a>
+            </div>
+          </li>
+
+        </ul>
+
+      </nav>
+      <!-- End of Topbar -->
+
+      <!-- Begin Page Content -->
+        <router-outlet></router-outlet>
+      <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+    <!-- Footer -->
+    <footer class="sticky-footer bg-white">
+      <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+          <span>Copyright &copy; Your Website 2021</span>
+        </div>
+      </div>
+    </footer>
+    <!-- End of Footer -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
 </div>

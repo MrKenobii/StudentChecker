@@ -314,12 +314,15 @@ public class StudentRepository : IStudentRepository
         
     }
 
-    public string DeleteStudent(int studentId)
+    public DeleteResponse DeleteStudent(int studentId)
     {
         var student = this.GetStudent(studentId);
         _context.Students.Remove(student);
         _context.SaveChanges();
-        return "Student " + student.Name + " " + student.LastName + " was deleted";
+        return new DeleteResponse()
+        {
+            Message = "Student " + student.Name + " " + student.LastName + " was deleted"
+        };
     }
 
     public string AddCourses(int studentId, AddCourseToStudent addCourseToStudent)
@@ -380,7 +383,22 @@ public class StudentRepository : IStudentRepository
             student.Department = studentUpdateProfile.Department;
             student.Languages = studentUpdateProfile.Languages;
             student.Image = studentUpdateProfile.Image;
-            student.IsActivated = true;
+            
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[] {
+                    new Claim(ClaimTypes.Name, student.Id.ToString()),
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials
+                    (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            student.Token = tokenHandler.WriteToken(token);
+            // student.IsActivated = true;
         
             var courses = new List<StudentCourse>();
             foreach (var c in studentUpdateProfile.Courses)
@@ -597,7 +615,7 @@ public class StudentRepository : IStudentRepository
         {
             if (studentVerifyAccountRequest.VerifyToken == student.VerifyToken)
             {
-                student.IsActivated = true;
+                // student.IsActivated = true;
                 student.VerifyToken = null;
 
                 _context.Students.Update(student);

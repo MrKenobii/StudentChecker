@@ -15,7 +15,7 @@ public interface IStudentRepository
     bool StudentExists(int studentId);
     StudentPostResponse CreateStudent(StudentPostRequest studentDto);
     StudentPostResponse UpdateStudent(int studentId, StudentPostRequest studentDto);
-    string DeleteStudent(int studentId);
+    DeleteResponse DeleteStudent(int studentId);
     string AddCourses(int studentId, AddCourseToStudent addCourseToStudent);
     StudentResponse UpdateStudentProfile(int studentId, StudentUpdateProfile studentUpdateProfile);
     StudentResponse Signup(StudentSignUpRequest signUpRequest);

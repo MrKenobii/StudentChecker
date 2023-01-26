@@ -12,6 +12,9 @@ import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenR
 import {Course} from "../../interfaces/course/Course";
 import {UpdatePassword} from "../../interfaces/UpdatePassword";
 import {UpdatePasswordResponse} from "../../interfaces/UpdatePasswordResponse";
+import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
+import {AdminActivateAccountResponse} from "../../interfaces/admin/AdminActivateAccountResponse";
+import {DeleteResponse} from "../../interfaces/DeleteResponse";
 
 
 @Injectable({
@@ -51,8 +54,10 @@ export class StudentService {
      console.log(payload);
      return this.http.post<StudentSignupResponse>(`http://localhost:5269/Student/sign-up`, payload);
   }
-  public deleteStudent(id: number){
-    return this.http.delete(`http://localhost:5269/Student/${id}`);
+  public deleteStudent(id: number) : Observable<DeleteResponse>{
+    const url = `http://localhost:5269/Student/${id}`;
+    console.log(url)
+    return this.http.delete<DeleteResponse>(url);
   }
   public getStudentByKey(key: string) : Observable<StudentResponse>{
     return this.http.get<StudentResponse>(`http://localhost:5269/Student/key/${key}`)
@@ -76,5 +81,9 @@ export class StudentService {
 
   public changePassword(id: number, obj: UpdatePassword) : Observable<UpdatePasswordResponse> {
     return this.http.put<UpdatePasswordResponse>(`http://localhost:5269/Student/${id}/change-password`, obj);
+  }
+
+  public confirmStudent(id: number) :Observable<AdminActivateAccountResponse> {
+    return this.http.post<AdminActivateAccountResponse>(`http://localhost:5269/Admin/activate-student/${id}`, null);
   }
 }

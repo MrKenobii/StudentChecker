@@ -9,7 +9,7 @@ public interface IRecruiterRepository
     ICollection<Recruiter> GetRecruiters();
     Recruiter GetRecruiter(int id);
     ICollection<CompanyDto> GetCompanies(int id);
-    void DeleteRecruiter(int recruiterId);
+    DeleteResponse DeleteRecruiter(int recruiterId);
     RecruiterPostResponse UpdateRecruiter(int recruiterId, RecruiterPostRequest recruiterDto);
     RecruiterPostResponse CreateRecruiter(RecruiterPostRequest recruiterDto);
     bool RecruiterExists(int recruiterId);

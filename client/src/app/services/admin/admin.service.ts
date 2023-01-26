@@ -8,7 +8,7 @@ import {AdminGetResponse} from "../../interfaces/admin/AdminGetResponse";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AdminService {
   private _isAdmin!: boolean;
 
   // admin_user@admin.com -- 12345678
@@ -20,8 +20,8 @@ export class AuthService {
     return this.httpClient.get<AdminGetResponse>(`http://localhost:5269/Admin/${id}`);
   }
   private async fetchAdminByToken(){
-    let adminByToken = this.getAdminByToken(localStorage.getItem("key")!);
-    return await lastValueFrom(adminByToken);
+      let adminByToken = this.getAdminByToken(localStorage.getItem("key")!);
+      return await lastValueFrom(adminByToken);
   }
   public isLoggedIn(){
     if(localStorage.getItem("key")){
@@ -31,8 +31,7 @@ export class AuthService {
   public async isAdmin(): Promise<boolean> {
     var isAdmin!: boolean;
     this.fetchAdminByToken().then((data: AdminGetResponse) => {
-      if(data.id && data.token && data.name == "AdminUser"){
-        console.log("ASDASDASDASDSASDASDASAS");
+      if(data.id && data.token && data.name == "A_Anil"){
         isAdmin = true;
       } else isAdmin = false;
     }).then(() => console.log(isAdmin));

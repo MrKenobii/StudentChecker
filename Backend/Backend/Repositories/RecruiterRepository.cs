@@ -80,10 +80,15 @@ public class RecruiterRepository : IRecruiterRepository
         return new List<CompanyDto>();
     }
 
-    public void DeleteRecruiter(int recruiterId)
+    public DeleteResponse DeleteRecruiter(int recruiterId)
     {
-        _context.Recruiters.Remove(this.GetRecruiter(recruiterId));
+        var recruiter = this.GetRecruiter(recruiterId);
+        _context.Recruiters.Remove(recruiter);
         _context.SaveChanges();
+        return new DeleteResponse()
+        {
+            Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName + " was deleted"
+        };
     }
 
     public RecruiterPostResponse UpdateRecruiter(int recruiterId, RecruiterPostRequest recruiterDto)
@@ -184,6 +189,21 @@ public class RecruiterRepository : IRecruiterRepository
         recruiter.HireDate = recruiterUpdateProfile.HireDate;
         recruiter.DateOfBirth = recruiterUpdateProfile.DateOfBirth;
         recruiter.Phone = recruiterUpdateProfile.Phone;
+        
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new Claim[] {
+                new Claim(ClaimTypes.Name, recruiter.Id.ToString()),
+            }),
+            Expires = DateTime.UtcNow.AddDays(7),
+            SigningCredentials = new SigningCredentials
+                (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        recruiter.Token = tokenHandler.WriteToken(token);
 
         // student.Image = studentUpdateProfile.Image,
         recruiter.IsActivated = false;
@@ -312,7 +332,7 @@ public class RecruiterRepository : IRecruiterRepository
         {
             if (verifyAccountRequest.VerifyToken == recruiter.VerifyToken)
             {
-                recruiter.IsActivated = true;
+                // recruiter.IsActivated = true;
                 recruiter.VerifyToken = null;
 
                 _context.Recruiters.Update(recruiter);

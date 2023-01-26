@@ -6,6 +6,7 @@ import {StudentService} from "../../services/student/student.service";
 import {StudentSignupRequest} from "../../interfaces/student/signup/StudentSignupRequest";
 import {StudentSignupResponse} from "../../interfaces/student/signup/StudentSignupResponse";
 import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 interface EmailExtension{
   emailExtension: string;
@@ -34,7 +35,7 @@ export class SignUpComponent implements OnInit{
     email: '',
     password: ''
   };
-  constructor(private router: Router,private collegeService: CollegeService, private studentService: StudentService) {
+  constructor(private router: Router,private collegeService: CollegeService, private studentService: StudentService, private snackBar: MatSnackBar) {
     this.postPayload = {
       name: '',
       lastName: '',
@@ -76,6 +77,10 @@ export class SignUpComponent implements OnInit{
         console.log("After sign up operation");
         console.log(data.id);
         this.router.navigateByUrl('sign-up/student/activate/'+ data.id);
+      });
+    } else {
+      this.snackBar.open("Passwords are not matching", "Ok", {
+        duration: 5000
       });
     }
   }

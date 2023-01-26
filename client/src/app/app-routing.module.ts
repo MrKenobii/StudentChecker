@@ -38,11 +38,16 @@ import {
   VerifyRecruiterAccountComponent
 } from "./components/verify-recruiter-account/verify-recruiter-account.component";
 import {AdminDashboardComponent} from "./admin/admin-dashboard/admin-dashboard.component";
-import {AuthGuard} from "./auth/auth.guard";
+import {AdminGuard} from "./auth/admin.guard";
 import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.component";
 import {AdminPanelComponent} from "./admin/admin-panel/admin-panel.component";
 import {AdminRequestsComponent} from "./admin/admin-requests/admin-requests.component";
 import {AdminComponent} from "./admin/admin/admin.component";
+import {AuthGuard} from "./auth/auth.guard";
+import {CompanyTableComponent} from "./admin/company-table/company-table.component";
+import {RecruiterTableComponent} from "./admin/recruiter-table/recruiter-table.component";
+import {AdminStudentTableComponent} from "./admin/admin-student-table/admin-student-table.component";
+
 
 
 const routes: Route[] = [
@@ -56,13 +61,13 @@ const routes: Route[] = [
     path: 'companies', component: CompaniesComponent
   },
   {
-    path: 'sign-up', component: SignUpComponent
+    path: 'sign-up', component: SignUpComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'sign-up/student', component: SignUpComponent
+    path: 'sign-up/student', component: SignUpComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'sign-up/recruiter', component: SignUpRecruiterComponent
+    path: 'sign-up/recruiter', component: SignUpRecruiterComponent, canActivate: [AuthGuard]
   },
   {
     path: 'sign-up/student/activate/:studentId', component: VerifyStudentAccountComponent
@@ -101,7 +106,7 @@ const routes: Route[] = [
     path: 'recruiter/privacy/:recruiterId', component: RecruiterPrivacySettingsComponent,
   },
   {
-    path: 'login', component: LoginComponent
+    path: 'login', component: LoginComponent, canActivate: [AuthGuard]
   },
   {
     path: 'admin',
@@ -111,13 +116,22 @@ const routes: Route[] = [
         path: '', component: AdminDashboardComponent
       },
       {
-        path:'dashboard', component: AdminPanelComponent, canActivate: [AuthGuard]
+        path:'dashboard', component: AdminPanelComponent, canActivate: [AdminGuard]
       },
       {
-        path:'requests', component: AdminRequestsComponent, canActivate: [AuthGuard]
+        path:'requests', component: AdminRequestsComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'students', component: AdminStudentTableComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'companies', component: CompanyTableComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'recruiters', component: RecruiterTableComponent, canActivate: [AdminGuard]
       }
     ],
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'not-found', component: NotFoundComponent

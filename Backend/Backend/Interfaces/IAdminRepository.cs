@@ -14,4 +14,6 @@ public interface IAdminRepository
     Admin GetAdminById(int adminId);
     AdminDeleteResponse DeleteAdmin(int adminId);
     Admin GetAdminByToken(string token);
+    ActivateStudentResponse ActivateStudent(int studentId);
+    ActivateRecruiterResponse ActivateRecruiter(int recruiterId);
 }

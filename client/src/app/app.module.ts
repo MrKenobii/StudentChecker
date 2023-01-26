@@ -45,6 +45,9 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { AdminRequestsComponent } from './admin/admin-requests/admin-requests.component';
 import { AdminComponent } from './admin/admin/admin.component';
+import { RecruiterTableComponent } from './admin/recruiter-table/recruiter-table.component';
+import { CompanyTableComponent } from './admin/company-table/company-table.component';
+import { AdminStudentTableComponent } from './admin/admin-student-table/admin-student-table.component';
 
 
 @NgModule({
@@ -78,6 +81,9 @@ import { AdminComponent } from './admin/admin/admin.component';
     AdminPanelComponent,
     AdminRequestsComponent,
     AdminComponent,
+    RecruiterTableComponent,
+    CompanyTableComponent,
+    AdminStudentTableComponent,
   ],
     imports: [
         BrowserModule,

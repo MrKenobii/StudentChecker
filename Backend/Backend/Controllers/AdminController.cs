@@ -88,5 +88,19 @@ public class AdminController : Controller
         }
         return Ok(adminLogin);
     }
+    [HttpPost("activate-student/{studentId}")]
+    [ProducesResponseType(200 , Type = typeof(ActivateStudentResponse))]
+    public IActionResult ActivateStudent(int studentId)
+    {
+        ActivateStudentResponse activatedStudent = _adminRepository.ActivateStudent(studentId);
+        return Ok(activatedStudent);
+    }
+    [HttpPost("activate-recruiter/{recruiterId}")]
+    [ProducesResponseType(200 , Type = typeof(ActivateRecruiterResponse))]
+    public IActionResult ActivateRecruiter(int recruiterId)
+    {
+        ActivateRecruiterResponse activatedRecruiter = _adminRepository.ActivateRecruiter(recruiterId);
+        return Ok(activatedRecruiter);
+    }
     
 }

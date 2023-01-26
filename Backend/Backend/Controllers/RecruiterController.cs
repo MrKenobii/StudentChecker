@@ -67,10 +67,11 @@ public class RecruiterController : Controller
         return Ok(recruiter);
     }
     [HttpDelete("{recruiterId}")]
-    [ProducesResponseType(200)]
-    public void DeleteRecruiter(int recruiterId)
+    [ProducesResponseType(200, Type = typeof(DeleteResponse))]
+    public IActionResult DeleteRecruiter(int recruiterId)
     {
-        _recruiterRepository.DeleteRecruiter(recruiterId);
+        var deleteResponse = _recruiterRepository.DeleteRecruiter(recruiterId);
+        return Ok(deleteResponse);
     }
     [HttpPut("{recruiterId}/update-profile")]
     [ProducesResponseType(200, Type = typeof(Recruiter))]

@@ -5,17 +5,6 @@ import {City} from "../../interfaces/city/City";
 
 
 
-interface DumbCompany{
-  id: number,
-  name: string;
-  companyType: string;
-  email: string;
-  foundationDate: string;
-  address: string;
-  phone: string;
-  city: City;
-
-}
 
 
 @Component({

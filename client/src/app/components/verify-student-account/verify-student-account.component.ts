@@ -56,7 +56,10 @@ export class VerifyStudentAccountComponent implements OnInit{
       .subscribe((data: VerifyTokenResponse) => {
           console.log(data);
           if(data.name != null){
-              this.router.navigateByUrl(`complete-profile/${this.studentId}`);
+            this.router.navigateByUrl(`login`);
+            this.matSnackBar.open("Thanks for your registration. Please wait for your account to be confirmed", "Close", {
+              duration: 3000
+            });
           } else {
             this.matSnackBar.open(data.message, "Close", {
               duration: 5000

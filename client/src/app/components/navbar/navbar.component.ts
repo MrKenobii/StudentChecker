@@ -5,7 +5,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
 import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
-import {AuthService} from "../../services/admin/admin.service";
+import {AdminService } from "../../services/admin/admin.service";
 import {lastValueFrom} from "rxjs";
 import {AdminGetResponse} from "../../interfaces/admin/AdminGetResponse";
 
@@ -20,16 +20,18 @@ export class NavbarComponent implements OnInit {
   public isCollapsed = false;
   admin!: AdminGetResponse;
 
-  constructor(private router: Router,private studentService: StudentService, private adminService: AuthService,
+  constructor(private router: Router,private studentService: StudentService, private adminService: AdminService,
               private snackBar: MatSnackBar,
               private recruiterService: RecruiterService) {
   }
   ngOnInit(): void {
     if(localStorage.getItem("key") !== null){
       this.fetchAdminByToken(localStorage.getItem("key")!).then((adminRes: AdminGetResponse) => {
-        if(adminRes.token && adminRes.id && adminRes.name) {
-          console.log(adminRes);
-          this.admin = adminRes;
+        if(adminRes){
+          if(adminRes.token && adminRes.id && adminRes.name) {
+            console.log(adminRes);
+            this.admin = adminRes;
+          }
         } else {
           this.fetchStudentByToken(localStorage.getItem("key")!).then((studentRes: StudentResponse) => {
             if(studentRes !== null && studentRes?.id !== null && studentRes?.name !== null){

@@ -7,7 +7,7 @@ import {StudentLoginResponse} from "../../interfaces/student/login/StudentLoginR
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
 import {RecruiterPostLoginResponse} from "../../interfaces/recruiter/login/RecruiterPostLoginResponse";
-import {AuthService} from "../../services/admin/admin.service";
+import {AdminService} from "../../services/admin/admin.service";
 import {AdminLoginResponse} from "../../interfaces/admin/AdminLoginResponse";
 import {AdminLoginRequest} from "../../interfaces/admin/AdminLoginRequest";
 @Component({
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit{
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private studentService: StudentService,
-              private adminService: AuthService,
+              private adminService: AdminService,
               private snackBar: MatSnackBar,
               private recruiterService: RecruiterService) {
     this.postPayload = {

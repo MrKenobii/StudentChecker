@@ -11,6 +11,8 @@ import {UpdatePassword} from "../../interfaces/UpdatePassword";
 import {UpdatePasswordResponse} from "../../interfaces/UpdatePasswordResponse";
 import {VerifyAccountRequest} from "../../interfaces/student/VerifyAccountRequest";
 import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";
+import {AdminActivateAccountResponse} from "../../interfaces/admin/AdminActivateAccountResponse";
+import {DeleteResponse} from "../../interfaces/DeleteResponse";
 
 interface CompanyDto {
   id: number,
@@ -68,5 +70,21 @@ export class RecruiterService {
 
   verifyAccount(recruiterId: number, requestPayload: VerifyAccountRequest) {
     return this.httpClient.post<VerifyTokenResponse>(`http://localhost:5269/Recruiter/${recruiterId}/verify-account`, requestPayload);
+  }
+
+  public getRecruiters() : Observable<RecruiterGetResponse[]> {
+    return this.httpClient.get<RecruiterGetResponse[]>(`http://localhost:5269/Recruiter`);
+  }
+
+
+
+  confirmRecruiter(id: number) : Observable<AdminActivateAccountResponse> {
+    return this.httpClient.post<AdminActivateAccountResponse>(`http://localhost:5269/Admin/activate-recruiter/${id}`, null);
+  }
+
+  deleteRecruiter(id: number) : Observable<DeleteResponse> {
+    const url = `http://localhost:5269/Recruiter/${id}`;
+    console.log(url)
+    return this.httpClient.delete<DeleteResponse>(url);
   }
 }

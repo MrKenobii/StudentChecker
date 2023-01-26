@@ -1,1 +1,23 @@
-<p>admin-requests works!</p>
+
+  <div *ngFor="let recruiter of recruiterRequests" class="card mt-2 mx-3">
+    <h5  *ngIf="!recruiter.isActivated" class="card-header">Recruiter</h5>
+    <div *ngIf="!recruiter.isActivated" class="card-body">
+      <h5 class="card-title">{{recruiter.name + " " + recruiter.lastName}}</h5>
+      <p class="card-text">{{recruiter.name + " " + recruiter.lastName}} with Email: {{recruiter.email}} wants to register</p>
+      <a (click)="confirmRecruiter(recruiter.id)" class="btn btn-success mx-2">Confirm</a>
+      <a (click)="deleteRecruiter(recruiter.id)"  class="btn btn-danger">Deny</a>
+    </div>
+  </div>
+  <div *ngFor="let student of studentRequests" class="card mt-2 mx-3">
+    <div *ngIf="student">
+      <h5  *ngIf="!student.isActivated" class="card-header">Student</h5>
+      <div *ngIf="!student.isActivated" class="card-body">
+        <h5 class="card-title">{{student.name + " " + student.lastName}}</h5>
+        <p class="card-text">{{student.name + " " + student.lastName}} with Email: {{student.email}} wants to register</p>
+        <a (click)="confirmStudent(student.id)" class="btn btn-success mx-2">Confirm</a>
+        <a (click)="deleteStudent(student.id)" class="btn btn-danger">Deny</a>
+      </div>
+    </div>
+
+  </div>
+

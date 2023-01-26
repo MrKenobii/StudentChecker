@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../../services/admin/admin.service";
+import {AdminService} from "../../services/admin/admin.service";
 import {Router} from "@angular/router";
 import {lastValueFrom} from "rxjs";
 import {AdminGetResponse} from "../../interfaces/admin/AdminGetResponse";
@@ -15,7 +15,7 @@ export class AdminDashboardComponent implements OnInit {
   status: boolean = false;
   admin!: AdminGetResponse;
   isLoading: boolean = true;
-  constructor(private router: Router, private adminService: AuthService) {
+  constructor(private router: Router, private adminService: AdminService) {
     if (localStorage.getItem("key") ){
       this.token = (localStorage.getItem("key") as string)
       console.log(this.token);
