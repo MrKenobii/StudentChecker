@@ -42,7 +42,7 @@
       </ul>
     </div>
     <div class="d-flex">
-      <div *ngIf="!student && !recruiter" ngbDropdown class="d-inline-block">
+      <div *ngIf="!student && !recruiter && !admin" ngbDropdown class="d-inline-block">
         <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic1" ngbDropdownToggle>
           Actions
         </button>
@@ -51,10 +51,24 @@
           <button ngbDropdownItem [routerLink]="'/sign-up'">Signup</button>
         </div>
       </div>
-      <div *ngIf="student && !recruiter" class="example-button-row">
+
+      <div *ngIf="admin" class="example-button-row">
         <div class="example-flex-container">
           <div ngbDropdown  class="example-button-container d-inline-block">
-            <button *ngIf="student && !recruiter" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic2" ngbDropdownToggle>
+            <button *ngIf="admin && (!recruiter && !student)" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic5" ngbDropdownToggle>
+              {{admin.name}} {{admin.lastName}}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic5">
+              <button ngbDropdownItem (click)="goToAdmin(admin.id)">Profile</button>
+              <button ngbDropdownItem (click)="logout()">Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="student" class="example-button-row">
+        <div class="example-flex-container">
+          <div ngbDropdown  class="example-button-container d-inline-block">
+            <button *ngIf="student  && (!recruiter && !admin)" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic2" ngbDropdownToggle>
               {{student.name}} {{student.lastName}}
             </button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
@@ -68,7 +82,7 @@
       <div *ngIf="recruiter" class="example-button-row">
         <div class="example-flex-container">
           <div ngbDropdown  class="example-button-container d-inline-block">
-            <button *ngIf="!student && recruiter" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic3" ngbDropdownToggle>
+            <button *ngIf="recruiter && (!student && !admin)" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic3" ngbDropdownToggle>
               {{recruiter.name}} {{recruiter.lastName}}
             </button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic3">

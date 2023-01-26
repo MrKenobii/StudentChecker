@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../../services/admin/admin.service";
 import {Router} from "@angular/router";
-import {lastValueFrom} from "rxjs";
 import {AdminGetResponse} from "../../interfaces/admin/AdminGetResponse";
+import {lastValueFrom} from "rxjs";
+import {AuthService} from "../../services/admin/admin.service";
 
 @Component({
-  selector: 'app-admin-dashboard',
-  templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  selector: 'app-admin-requests',
+  templateUrl: './admin-requests.component.html',
+  styleUrls: ['./admin-requests.component.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminRequestsComponent implements OnInit{
   isAdmin!: boolean;
   token!: string;
   status: boolean = false;
@@ -34,15 +34,12 @@ export class AdminDashboardComponent implements OnInit {
     } else this.router.navigate(['/forbidden']);
 
   }
-  clickEvent(){
-    this.status = !this.status;
-  }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
-
   private async fetchAdminByToken(token: string) {
     let adminByToken = this.adminService.getAdminByToken(token);
     return await lastValueFrom(adminByToken);
   }
+
 }

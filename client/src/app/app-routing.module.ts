@@ -40,6 +40,9 @@ import {
 import {AdminDashboardComponent} from "./admin/admin-dashboard/admin-dashboard.component";
 import {AuthGuard} from "./auth/auth.guard";
 import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.component";
+import {AdminPanelComponent} from "./admin/admin-panel/admin-panel.component";
+import {AdminRequestsComponent} from "./admin/admin-requests/admin-requests.component";
+import {AdminComponent} from "./admin/admin/admin.component";
 
 
 const routes: Route[] = [
@@ -101,8 +104,20 @@ const routes: Route[] = [
     path: 'login', component: LoginComponent
   },
   {
-    path: 'admin', component: AdminDashboardComponent,
-    // canActivate: [AuthGuard]
+    path: 'admin',
+    component: AdminComponent,
+    children: [
+      {
+        path: '', component: AdminDashboardComponent
+      },
+      {
+        path:'dashboard', component: AdminPanelComponent, canActivate: [AuthGuard]
+      },
+      {
+        path:'requests', component: AdminRequestsComponent, canActivate: [AuthGuard]
+      }
+    ],
+    canActivate: [AuthGuard],
   },
   {
     path: 'not-found', component: NotFoundComponent
@@ -110,6 +125,9 @@ const routes: Route[] = [
   {
     path: 'forbidden', component: UnauthorizedComponent
   },
+  {
+    path: '**', redirectTo: '/not-found'
+  }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

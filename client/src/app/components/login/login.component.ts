@@ -45,11 +45,19 @@ export class LoginComponent implements OnInit{
     }
 
     this.adminService.loginAsAdmin(obj).subscribe((data: AdminLoginResponse) => {
+      console.log(data);
       if(data.key){
         localStorage.clear();
+        console.log("In here");
         localStorage.setItem("key", data.key);
         this.adminService.setAdmin(true);
-        this.router.navigate(['/admin']);
+        this.router.routeReuseStrategy.shouldReuseRoute = function () {
+          return false;
+        }
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate(['/admin']).then(() => {
+          window.location.reload();
+        });
       } else {
         this.studentService.login(this.postPayload).subscribe((data: StudentLoginResponse) => {
           console.log(data);

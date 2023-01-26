@@ -42,6 +42,9 @@ import { VerifyRecruiterAutomaticComponent } from './components/verify-recruiter
 import { VerifyRecruiterAccountComponent } from './components/verify-recruiter-account/verify-recruiter-account.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { AdminRequestsComponent } from './admin/admin-requests/admin-requests.component';
+import { AdminComponent } from './admin/admin/admin.component';
 
 
 @NgModule({
@@ -72,6 +75,9 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
     VerifyRecruiterAccountComponent,
     AdminDashboardComponent,
     UnauthorizedComponent,
+    AdminPanelComponent,
+    AdminRequestsComponent,
+    AdminComponent,
   ],
     imports: [
         BrowserModule,

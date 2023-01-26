@@ -3,18 +3,21 @@
 </div>
 
 
+
+
+
 <div class="d-flex" id="wrapper" *ngIf="!isLoading">
 
   <!-- Sidebar -->
   <div class="bg-light border-right" id="sidebar-wrapper"  [ngClass]="status ? 'hide' : 'show'">
     <div class="sidebar-heading" *ngIf="isAdmin && admin">Admin, {{admin.name + " " + admin.lastName}} </div>
     <div class="list-group list-group-flush">
-      <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
+      <a [routerLink]="'dashboard'" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+      <a [routerLink]="'requests'" class="list-group-item list-group-item-action bg-light">Requests</a>
+      <!--      <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>-->
+      <!--      <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>-->
+      <!--      <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>-->
+      <!--      <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>-->
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
@@ -24,7 +27,8 @@
 
 
     <div class="container-fluid">
-      <h1 class="mt-4">Admin Dashboard Main Page of the Project</h1>
+      <h1 class="mt-4">Welcome Admin {{admin.name +" " +admin.lastName}}</h1>
+      <h2 class="mt-4">Admin Dashboard Main Page of the Project</h2>
       <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
       <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>. The top navbar is optional, and just for demonstration.</p>
     </div>
@@ -32,4 +36,3 @@
   <!-- /#page-content-wrapper -->
 
 </div>
-<!-- /#wrapper -->

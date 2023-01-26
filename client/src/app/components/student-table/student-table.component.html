@@ -38,63 +38,70 @@
 <!--</div>-->
 
 <!--42 yeni-->
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      <table class="table table-striped mx-0">
+        <thead class="mx-0">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Image</th>
+          <th scope="col">Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">College</th>
+          <th scope="col">Department</th>
+          <th scope="col">Email</th>
+          <th scope="col">Enroll Date</th>
+          <th scope="col">Date of Birth</th>
+          <th scope="col">Address</th>
+          <th scope="col">Skills</th>
+          <th scope="col">City</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Connect</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let student of dumbStudents; let i = index">
+          <th scope="row" *ngIf="student.isActivated">{{ i +1 }}</th>
+          <td *ngIf="student.isActivated">
 
-<table class="table table-striped mx-0">
-  <thead class="mx-0">
-  <tr>
-    <th scope="col">#</th>
-    <th scope="col">Image</th>
-    <th scope="col">Name</th>
-    <th scope="col">Last Name</th>
-    <th scope="col">College</th>
-    <th scope="col">Department</th>
-    <th scope="col">Email</th>
-    <th scope="col">Enroll Date</th>
-    <th scope="col">Date of Birth</th>
-    <th scope="col">Address</th>
-    <th scope="col">Skills</th>
-    <th scope="col">City</th>
-    <th scope="col">Phone</th>
-    <th scope="col">Connect</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let student of dumbStudents; let i = index">
-    <th scope="row" *ngIf="student.isActivated">{{ i +1 }}</th>
-    <td *ngIf="student.isActivated">
+            <img *ngIf="student.isActivated" [src]="student.image" style="width: 45px; height: 45px" class="rounded-circle"/>
 
-      <img *ngIf="student.isActivated" [src]="student.image" style="width: 45px; height: 45px" class="rounded-circle"/>
+          </td>
+          <td *ngIf="student.isActivated">{{ student.name}}</td>
+          <td *ngIf="student.isActivated">{{ student.lastName}}</td>
+          <td *ngIf="student.isActivated && student.collegeName">{{ student.collegeName}}</td>
+          <td *ngIf="student.isActivated && !student.collegeName">N/A</td>
+          <td *ngIf="student.isActivated && student.department">{{ student.department}}</td>
+          <td *ngIf="student.isActivated && !student.department">N/A</td>
+          <td *ngIf="student.isActivated">{{ student.email}}</td>
+          <td *ngIf="student.isActivated">{{ student!.formattedEnrollDate}}</td>
 
-    </td>
-    <td *ngIf="student.isActivated">{{ student.name}}</td>
-    <td *ngIf="student.isActivated">{{ student.lastName}}</td>
-    <td *ngIf="student.isActivated && student.collegeName">{{ student.collegeName}}</td>
-    <td *ngIf="student.isActivated && !student.collegeName">N/A</td>
-    <td *ngIf="student.isActivated && student.department">{{ student.department}}</td>
-    <td *ngIf="student.isActivated && !student.department">N/A</td>
-    <td *ngIf="student.isActivated">{{ student.email}}</td>
-    <td *ngIf="student.isActivated">{{ student!.formattedEnrollDate}}</td>
+          <td *ngIf="student.isActivated && student.dateOfBirth">{{ student!.formattedDob }}</td>
+          <td *ngIf="student.isActivated && !student.dateOfBirth">N/A</td>
 
-    <td *ngIf="student.isActivated && student.dateOfBirth">{{ student!.formattedDob }}</td>
-    <td *ngIf="student.isActivated && !student.dateOfBirth">N/A</td>
+          <td *ngIf="student.isActivated && student.address">{{ student.address}}</td>
+          <td *ngIf="student.isActivated && !student.address">N/A</td>
 
-    <td *ngIf="student.isActivated && student.address">{{ student.address}}</td>
-    <td *ngIf="student.isActivated && !student.address">N/A</td>
+          <td *ngIf="student.isActivated && student.skills">{{ student.skills}}</td>
+          <td *ngIf="student.isActivated && !student.skills">N/A</td>
 
-    <td *ngIf="student.isActivated && student.skills">{{ student.skills}}</td>
-    <td *ngIf="student.isActivated && !student.skills">N/A</td>
+          <td *ngIf="student.isActivated && student.cityName">{{ student.cityName}}</td>
+          <td *ngIf="student.isActivated && !student.cityName">N/A</td>
 
-    <td *ngIf="student.isActivated && student.cityName">{{ student.cityName}}</td>
-    <td *ngIf="student.isActivated && !student.cityName">N/A</td>
+          <td *ngIf="student.isActivated && student.phone">{{ student.phone}}</td>
+          <td *ngIf="student.isActivated && !student.phone">N/A</td>
+          <td *ngIf="student.isActivated">
+            <button type="button" class="btn btn-primary" [routerLink]="'/profile/student/' + student.id">Connect</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-    <td *ngIf="student.isActivated && student.phone">{{ student.phone}}</td>
-    <td *ngIf="student.isActivated && !student.phone">N/A</td>
-    <td *ngIf="student.isActivated">
-      <button type="button" class="btn btn-primary" [routerLink]="'/profile/student/' + student.id">Connect</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+
 
 <div class="d-flex justify-content-between p-2">
   <ngb-pagination
