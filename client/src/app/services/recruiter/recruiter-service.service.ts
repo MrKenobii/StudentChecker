@@ -39,7 +39,9 @@ export class RecruiterService {
   public getRecruiterById(id: number) : Observable<RecruiterGetResponse> {
     return this.httpClient.get<RecruiterGetResponse>(`http://localhost:5269/Recruiter/${id}`);
   }
-
+  public update(id: number, obj: any) : Observable<any> {
+    return this.httpClient.put<any>(`http://localhost:5269/Recruiter/${id}`, obj);
+  }
   public updateProfile(id: number, obj: any) : Observable<any> {
     return this.httpClient.put<any>(`http://localhost:5269/Recruiter/${id}/update-profile`, obj);
   }
@@ -86,5 +88,9 @@ export class RecruiterService {
     const url = `http://localhost:5269/Recruiter/${id}`;
     console.log(url)
     return this.httpClient.delete<DeleteResponse>(url);
+  }
+
+  public addRecruiter(obj: any) {
+    return this.httpClient.post<AdminActivateAccountResponse>(`http://localhost:5269/Recruiter`, obj);
   }
 }

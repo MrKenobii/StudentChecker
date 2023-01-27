@@ -1,0 +1,134 @@
+<div *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+<section *ngIf="!isLoading"  style="background-color: #eee;">
+
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black m-5" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Add New Company</p>
+                <form class="mx-1 mx-md-4"  [formGroup]="createPostForm" (ngSubmit)="send()">
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="name" class="form-control"  [formControlName]="'name'" />
+                      <label class="form-label" for="address">Name</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="email" class="form-control" [formControlName]="'email'"    />
+                      <label class="form-label" for="address">Email</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="companyType" class="form-control" [formControlName]="'companyType'"    />
+                      <label class="form-label" for="companyType">Company Type</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="address" class="form-control"  [formControlName]="'address'"   />
+                      <label class="form-label" for="address">Address</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="phone" class="form-control"    [formControlName]="'phone'"   />
+                      <label class="form-label" for="phone">Phone</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="companyKey" class="form-control"   [formControlName]="'companyKey'"   />
+                      <label class="form-label" for="companyKey">Company Key</label>
+                  </div>
+                    </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <div class="row">
+                        <mat-form-field appearance="fill" *ngIf="cityControl">
+                          <mat-label>Cities</mat-label>
+                          <mat-select [formControl]="cityControl">
+                            <mat-option *ngFor="let city of cities" [value]="city.name" required>
+                              {{city.name}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="cityControl.hasError('required')">Please choose a City</mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline foundationDate mb-0">
+                      <input type="date" id="foundationDate" name="trip-start"  class="form-control" [formControlName]="'foundationDate'" >
+                      <label class="form-label" for="foundationDate">Foundation Date</label>
+                    </div>
+                  </div>
+
+
+                  <!--                  <div class="d-flex flex-row align-items-center mb-4">-->
+                  <!--                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>-->
+                  <!--                    <div class="form-outline flex-fill mb-0">-->
+
+                  <!--                      <div class="text-center">-->
+                  <!--                        <input class="form-control" type="file" (change)="onChange($event)" *ngIf="company && company.image" [formControlName]="'image'">-->
+                  <!--                      </div>-->
+
+                  <!--                      &lt;!&ndash; Shareable short link of  uploaded file &ndash;&gt;-->
+                  <!--                      <div class="container text-center jumbotron"-->
+                  <!--                           *ngIf="shortLink">-->
+                  <!--                        <h2> Visit Here</h2>-->
+                  <!--                        <a href="{{shortLink}}">{{shortLink}}</a>-->
+                  <!--                      </div>-->
+
+                  <!--                      &lt;!&ndash;Flag variable is used here&ndash;&gt;-->
+                  <!--                      <div class="container" *ngIf="loading">-->
+                  <!--                        <h3>Loading ...</h3>-->
+                  <!--                      </div>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
+                  <!--                    </div>-->
+
+                  <div class="form-check d-flex justify-content-center mb-5">
+                    <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
+                    <label class="form-check-label">
+                      I agree all statements in <a href="#!">Terms of service</a>
+                    </label>
+                  </div>
+
+                  <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                    <button type="button" class="btn btn-primary btn-lg" (click)="send()">Save Changes</button>
+                  </div>
+
+                </form>
+
+              </div>
+              <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                     class="img-fluid" alt="Sample image">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

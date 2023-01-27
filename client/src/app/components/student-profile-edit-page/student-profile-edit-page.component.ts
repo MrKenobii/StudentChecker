@@ -10,8 +10,6 @@ import {CoursesService} from "../../services/course/courses.service";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {Course} from "../../interfaces/course/Course";
 import {CollegeService} from "../../services/college/college.service";
-import {City} from "../../interfaces/city/City";
-import {Student} from "../../interfaces/student/Student";
 import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 import {MatSnackBar} from "@angular/material/snack-bar";

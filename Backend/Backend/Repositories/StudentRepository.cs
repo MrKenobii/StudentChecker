@@ -200,6 +200,12 @@ public class StudentRepository : IStudentRepository
                     Email = studentDto.Email,
                     Password = studentDto.Password
                 };
+                var coursePostRequests = new List<CoursePostRequest>();
+                coursePostRequests.AddRange(studentDto.Courses);
+                this.AddCourses(student.Id, new AddCourseToStudent()
+                {
+                    Courses = coursePostRequests
+                });
 
                 Console.WriteLine("COLLEGE: " + collegeByName.Name + " " + collegeByName.Id + " " +
                                   collegeByName.FoundationDate);
@@ -213,7 +219,14 @@ public class StudentRepository : IStudentRepository
                     student.Skills = studentDto.Skills;
                     student.Phone = studentDto.Phone;
                     student.Department = studentDto.Department;
-                    student.Image = imageBytes;
+                    if (studentDto.Image != null)
+                    {
+                        student.Image = studentDto.Image;
+                    }
+                    else
+                    {
+                        student.Image = imageBytes;
+                    }
                     student.IsActivated = studentDto.IsActivated;
                     student.City = cityByName;
                     student.College = collegeByName;
@@ -281,7 +294,105 @@ public class StudentRepository : IStudentRepository
                 student.Skills = studentDto.Skills;
                 student.Phone = studentDto.Phone;
                 student.Department = studentDto.Department;
-                student.IsActivated = studentDto.IsActivated;
+                student.IsActivated = true;
+                student.Password = BCrypt.Net.BCrypt.HashPassword(studentDto.Password);
+                student.Image = studentDto.Image;
+                
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[] {
+                        new Claim(ClaimTypes.Name, studentDto.Token),
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials
+                        (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                student.Token = tokenHandler.WriteToken(token); 
+                
+                var courses = new List<StudentCourse>();
+                ICollection<CourseDto> courseDtos = this.GetCourses(studentId);
+                Console.WriteLine("Checkpoint-1");
+                foreach (var courseDto in courseDtos)
+                {
+                    Console.WriteLine("Checkpoint-1 aa");
+                    var courseByName = _context.Courses.Where(e => e.Name == courseDto.Name).FirstOrDefault();
+                    var studentCourse = new StudentCourse()
+                    {
+                        Student = student,
+                        Course = courseByName
+                    };
+                    if (studentCourse != null)
+                    {
+                        Console.WriteLine("Checkpoint-2");
+                        courses.Add(studentCourse);
+                    }
+                }
+                if (courses.Count > 0)
+                {
+                    foreach (var studentCourse in courses)
+                    {
+                        
+                        Console.WriteLine("Checkpoint-3");
+                        Console.WriteLine("Inside Removeee -------------------------> " +studentCourse.Course.Id  +  " " + studentCourse.Student.Id);
+
+                        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
+                        MySqlConnection conn = new MySqlConnection(connStr);
+                        try
+                        {
+                            Console.WriteLine("Connecting to MySQL...");
+                            conn.Open();
+                            string sql = "DELETE FROM `student_checker_v2`.`StudentCourses` WHERE (`StudentId` = '" +
+                                         studentCourse.Student.Id + "');";
+                            Console.WriteLine("Query: " + sql);
+                            MySqlConnection MyConn2 = new MySqlConnection(connStr);
+                            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+                            MySqlDataReader MyReader2;
+                            MyConn2.Open();
+                            MyReader2 = MyCommand2.ExecuteReader();
+                            while (MyReader2.Read())
+                            {
+                            }
+            
+                        }
+                        catch (Exception err)
+                        {
+                            Console.WriteLine(err.ToString());
+                        }
+
+                        conn.Close();
+                    }
+                   
+                }
+                
+                
+                var _courses = new List<StudentCourse>();
+                string courseString = "";
+                foreach (var c in studentDto.Courses)
+                {
+                    var courseByName = _context.Courses.Where(e => e.Name == c.Name).FirstOrDefault();
+                    var studentCourse = new StudentCourse()
+                    {
+                        Student = student,
+                        Course = courseByName
+                    };
+                    if (studentCourse != null)
+                    {
+                        courseString = courseString +  c.Name +", " ;
+                        _courses.Add(studentCourse);    
+                    }
+            
+                }
+
+                if (_courses.Count > 0)
+                {
+                    _context.StudentCourses.AddRange(_courses);    
+                }
+                
                 
                 _context.Students.Update(student);
                 _context.SaveChanges();
@@ -739,8 +850,7 @@ public class StudentRepository : IStudentRepository
                             Console.WriteLine("Connecting to MySQL...");
                             conn.Open();
                             string sql = "DELETE FROM `student_checker_v2`.`StudentCourses` WHERE (`StudentId` = '" +
-                                         studentCourse.Student.Id + "') and (`CourseId` = '" + studentCourse.Course.Id +
-                                         "');";
+                                         studentCourse.Student.Id + "')";
                             Console.WriteLine("Query: " + sql);
                             MySqlConnection MyConn2 = new MySqlConnection(connStr);
                             MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);

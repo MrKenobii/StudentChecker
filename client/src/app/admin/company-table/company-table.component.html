@@ -1,1 +1,55 @@
-<app-companies></app-companies>
+<div class="table-responsive">
+  <table class="table table-striped text-successtable-border border-light">
+    <thead class="border-light">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Company Type</th>
+      <th scope="col">Foundation Year</th>
+      <th scope="col">Address</th>
+      <th scope="col">Phone</th>
+      <th scope="col">City</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let company of dumbCompanies; let i = index">
+      <th scope="row" *ngIf="company">{{ i +1 }}</th>
+      <td>{{ company.name}}</td>
+      <td>{{ company.companyType}}</td>
+      <td>{{ company.formattedDate}}</td>
+      <td>{{ company.address}}</td>
+      <td>{{ company.phone}}</td>
+      <td>{{ company.city.name}}</td>
+      <td *ngIf="company">
+        <button mat-icon-button matTooltip="Primary" color="primary" [routerLink]="'/admin/edit-company/' + company.id">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Warn" color="warn" aria-label="Example icon-button with a heart icon" (click)="deleteCompany(company.id)">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+    [pageSize]="pageSize"
+    (pageChange)="refreshCompanies()"
+  >
+  </ngb-pagination>
+  <button mat-raised-button color="primary" [routerLink]="'/admin/add-company/'">Add New Company</button>
+
+  <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCompanies()">
+    <option [ngValue]="2">2 items per page</option>
+    <option [ngValue]="4">4 items per page</option>
+    <option [ngValue]="6">6 items per page</option>
+  </select>
+</div>

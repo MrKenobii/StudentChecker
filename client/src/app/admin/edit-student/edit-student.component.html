@@ -11,7 +11,7 @@
             <div class="row justify-content-center">
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" *ngIf="student && student.name && student.lastName">{{student.name}} {{student.lastName}}, Edit your profile</p>
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" *ngIf="student && student.name && student.lastName">Editing {{student.name}} {{student.lastName}} profile</p>
                 <form class="mx-1 mx-md-4"  *ngIf="student" [formGroup]="createPostForm" (ngSubmit)="send()">
 
                   <div class="d-flex flex-row align-items-center mb-4">
@@ -31,8 +31,36 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="email" class="form-control" *ngIf="student && student.email"  [formControlName]="'email'"  readonly="readonly"  />
+                      <input type="text" id="email" class="form-control" *ngIf="student && student.email"  [formControlName]="'email'"    />
                       <label class="form-label" for="address">Email</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="password" class="form-control" *ngIf="student && student.password"  [formControlName]="'password'"    />
+                      <label class="form-label" for="password">Password</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="isActivated" class="form-control" *ngIf="student && student.isActivated"  [formControlName]="'isActivated'"    />
+                      <label class="form-label" for="isActivated">IsActivated</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="department" class="form-control" *ngIf="student && student.department"  [formControlName]="'department'"   />
+                      <label class="form-label" for="department">Department</label>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center mb-4"  *ngIf="student && token">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" id="token" class="form-control" *ngIf="student && token"  [formControlName]="'token'"   />
+                      <label class="form-label" for="token"  *ngIf="student && token.length > 0">Token</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
@@ -65,10 +93,19 @@
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="cityName" class="form-control" *ngIf="student && student.cityName"   [formControlName]="'cityName'"   />
-                      <label class="form-label" for="phone">City Name</label>
+                      <div class="row">
+                        <mat-form-field appearance="fill" *ngIf="cityControl">
+                          <mat-label>Cities</mat-label>
+                          <mat-select [formControl]="cityControl">
+                            <mat-option *ngFor="let city of cities" [value]="city.name" required>
+                              {{city.name}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="cityControl.hasError('required')">Please choose a City</mat-error>
+                        </mat-form-field>
+                      </div>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
@@ -144,21 +181,21 @@
                     </div>
                   </div>
 
-<!--                  <div class="d-flex flex-row align-items-center mb-4">-->
-<!--                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>-->
-<!--                    <div class="form-outline flex-fill mb-0">-->
-<!--                      <input type="password" id="prevPassword" class="form-control" *ngIf="student && student.password"  [formControlName]="'prevPassword'" />-->
-<!--                      <label class="form-label" for="prevPassword">Previous Password</label>-->
-<!--                    </div>-->
-<!--                  </div>-->
+                  <!--                  <div class="d-flex flex-row align-items-center mb-4">-->
+                  <!--                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>-->
+                  <!--                    <div class="form-outline flex-fill mb-0">-->
+                  <!--                      <input type="password" id="prevPassword" class="form-control" *ngIf="student && student.password"  [formControlName]="'prevPassword'" />-->
+                  <!--                      <label class="form-label" for="prevPassword">Previous Password</label>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
 
-<!--                  <div class="d-flex flex-row align-items-center mb-4">-->
-<!--                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>-->
-<!--                    <div class="form-outline flex-fill mb-0">-->
-<!--                      <input type="password" id="newPassword" class="form-control"  [formControlName]="'newPassword'" />-->
-<!--                      <label class="form-label" for="newPassword">New password</label>-->
-<!--                    </div>-->
-<!--                  </div>-->
+                  <!--                  <div class="d-flex flex-row align-items-center mb-4">-->
+                  <!--                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>-->
+                  <!--                    <div class="form-outline flex-fill mb-0">-->
+                  <!--                      <input type="password" id="newPassword" class="form-control"  [formControlName]="'newPassword'" />-->
+                  <!--                      <label class="form-label" for="newPassword">New password</label>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
 
                   <div class="form-check d-flex justify-content-center mb-5">
                     <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />

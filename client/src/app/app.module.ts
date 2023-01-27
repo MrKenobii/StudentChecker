@@ -48,6 +48,13 @@ import { AdminComponent } from './admin/admin/admin.component';
 import { RecruiterTableComponent } from './admin/recruiter-table/recruiter-table.component';
 import { CompanyTableComponent } from './admin/company-table/company-table.component';
 import { AdminStudentTableComponent } from './admin/admin-student-table/admin-student-table.component';
+import { EditCompanyComponent } from './admin/edit-company/edit-company.component';
+import { EditStudentComponent } from './admin/edit-student/edit-student.component';
+import { EditRecruiterComponent } from './admin/edit-recruiter/edit-recruiter.component';
+import { AddRecruiterComponent } from './admin/add-recruiter/add-recruiter.component';
+import { AddCompanyComponent } from './admin/add-company/add-company.component';
+import { AddStudentComponent } from './admin/add-student/add-student.component';
+
 
 
 @NgModule({
@@ -84,6 +91,12 @@ import { AdminStudentTableComponent } from './admin/admin-student-table/admin-st
     RecruiterTableComponent,
     CompanyTableComponent,
     AdminStudentTableComponent,
+    EditCompanyComponent,
+    EditStudentComponent,
+    EditRecruiterComponent,
+    AddRecruiterComponent,
+    AddCompanyComponent,
+    AddStudentComponent,
   ],
     imports: [
         BrowserModule,
@@ -104,7 +117,7 @@ import { AdminStudentTableComponent } from './admin/admin-student-table/admin-st
         MatSelectModule,
         MatSnackBarModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
     ],
   providers: [],
   bootstrap: [AppComponent]

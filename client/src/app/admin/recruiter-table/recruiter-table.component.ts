@@ -5,6 +5,7 @@ import {RecruiterService} from "../../services/recruiter/recruiter-service.servi
 import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {lastValueFrom} from "rxjs";
+import {Router} from "@angular/router";
 
 interface FormattedRecruiters {
   id: number;
@@ -33,7 +34,7 @@ export class RecruiterTableComponent {
 
   dumbRecruiters: FormattedRecruiters[] = [];
   collectionSize!: number;
-  constructor(private recruiterService: RecruiterService) {
+  constructor(private router: Router,private recruiterService: RecruiterService) {
 
   }
   format(inputDate: Date) {
@@ -86,5 +87,13 @@ export class RecruiterTableComponent {
       (this.page -1) * this.pageSize,
       (this.page -1) * this.pageSize + this.pageSize
     );
+  }
+
+  deleteRecruiter(id: number) {
+
+  }
+
+  editRecruiter(id: number) {
+    this.router.navigate(['/admin/edit-recruiter/'+id]);
   }
 }

@@ -16,8 +16,8 @@ public class StudentPostRequest
     public string Department { get; set; }
     public string CollegeName { get; set; } // College
     public string Token { get; set; }
+    public List<CoursePostRequest> Courses { get; set; } //
     public byte[] Image { get; set; } 
     public string CityName { get; set; } // City
     public bool IsActivated { get; set; }
-    public string VerifyToken { get; set; }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using MimeKit.Text;
+using MySqlConnector;
 
 namespace Backend.Repositories;
 
@@ -99,14 +100,115 @@ public class RecruiterRepository : IRecruiterRepository
             recruiter.Name = recruiterDto.Name;
             recruiter.LastName = recruiterDto.LastName;
             recruiter.Email = recruiterDto.Email;
-            recruiter.Password = recruiterDto.Password;
+            recruiter.Password = BCrypt.Net.BCrypt.HashPassword(recruiterDto.Password);
             recruiter.HireDate = recruiterDto.HireDate;
             recruiter.DateOfBirth = recruiterDto.DateOfBirth;
             recruiter.Address = recruiterDto.Address;
             recruiter.Phone = recruiterDto.Phone;
-            recruiter.IsActivated = recruiterDto.IsActivated;
+            recruiter.Image = recruiterDto.Image;
+            recruiter.IsActivated = true;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[] {
+                    new Claim(ClaimTypes.Name, recruiterDto.Token),
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials
+                    (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
 
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            recruiter.Token = tokenHandler.WriteToken(token);
+            
+            var company = _context.Companies.Where(s => s.Name == recruiterDto.CompanyName).FirstOrDefault();
 
+            var companyDtos = this.GetCompanies(recruiterId);
+            bool f = false;
+            foreach (var companyDto in companyDtos)
+            {
+                if (companyDto.Name == company.Name)
+                {
+                    // daha önce DB de var
+                    f = true;
+                }
+                else
+                {
+                    f = false;
+                    
+                    //Dbdeki companyleri sil kullanıcının
+                    //ekle
+                }
+            }
+
+            if (!f)
+            {
+                var companies = new List<RecruiterCompany>();
+                ICollection<CompanyDto> _companyDtos = this.GetCompanies(recruiterId);
+                Console.WriteLine("Checkpoint-1");
+                foreach (var _companyDto in _companyDtos)
+                {
+                    Console.WriteLine("Checkpoint-1 aa");
+                    
+                    var companyByName = _context.Companies.Where(e => e.Name == _companyDto.Name).FirstOrDefault();
+                    var recruiterCompany = new RecruiterCompany()
+                    {
+                        Company = companyByName,
+                        Recruiter = recruiter
+                    };
+                    if (recruiterCompany != null)
+                    {
+                        Console.WriteLine("Checkpoint-2");
+                        companies.Add(recruiterCompany);
+                    }
+                }
+                if (companies.Count > 0)
+                {
+                    foreach (var recruiterCompani in companies)
+                    {
+                        
+                        Console.WriteLine("Checkpoint-3");
+                        Console.WriteLine("Inside Removeee -------------------------> " +recruiterCompani.Company.Id  +  " " + recruiterCompani.Recruiter.Id);
+
+                        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
+                        MySqlConnection conn = new MySqlConnection(connStr);
+                        try
+                        {
+                            Console.WriteLine("Connecting to MySQL...");
+                            conn.Open();
+                            string sql = "DELETE FROM `student_checker_v2`.`RecruiterCompanies` WHERE (`RecruiterId` = '" +
+                                         recruiterCompani.Recruiter.Id + "');";
+                            Console.WriteLine("Query: " + sql);
+                            MySqlConnection MyConn2 = new MySqlConnection(connStr);
+                            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+                            MySqlDataReader MyReader2;
+                            MyConn2.Open();
+                            MyReader2 = MyCommand2.ExecuteReader();
+                            while (MyReader2.Read())
+                            {
+                            }
+            
+                        }
+                        catch (Exception err)
+                        {
+                            Console.WriteLine(err.ToString());
+                        }
+
+                        conn.Close();
+                    }
+                   
+                }
+                var addCompanyTo = new List<CompanyRequestById>();
+                addCompanyTo.Add(new CompanyRequestById()
+                {
+                    Id = company.Id
+                });
+                this.AddCompany(recruiterId, new AddCompanyToRecruiter()
+                {
+                    Companies = addCompanyTo
+                });
+            }
 
             _context.Recruiters.Update(recruiter);
             _context.SaveChanges();
@@ -139,6 +241,7 @@ public class RecruiterRepository : IRecruiterRepository
             using (var webClient = new WebClient())
             {
                 byte[] imageBytes = webClient.DownloadData(someUrl);
+       
                 var recruiter = new Recruiter()
                 {
                     Name = recruiterDto.Name,
@@ -150,8 +253,15 @@ public class RecruiterRepository : IRecruiterRepository
                     Address = recruiterDto.Address,
                     Phone = recruiterDto.Phone,
                     IsActivated = recruiterDto.IsActivated,
-                    Image = imageBytes
                 };
+                if (recruiterDto.Image != null)
+                {
+                    recruiter.Image = recruiterDto.Image;
+                }
+                else
+                {
+                    recruiter.Image = imageBytes;
+                }
                 _context.Recruiters.Add(recruiter);
 
                 _context.SaveChanges();

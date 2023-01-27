@@ -56,7 +56,6 @@ export class StudentService {
   }
   public deleteStudent(id: number) : Observable<DeleteResponse>{
     const url = `http://localhost:5269/Student/${id}`;
-    console.log(url)
     return this.http.delete<DeleteResponse>(url);
   }
   public getStudentByKey(key: string) : Observable<StudentResponse>{
@@ -85,5 +84,9 @@ export class StudentService {
 
   public confirmStudent(id: number) :Observable<AdminActivateAccountResponse> {
     return this.http.post<AdminActivateAccountResponse>(`http://localhost:5269/Admin/activate-student/${id}`, null);
+  }
+
+  addStudent(obj: any) {
+    return this.http.post<AdminActivateAccountResponse>(`http://localhost:5269/Student`, obj);
   }
 }

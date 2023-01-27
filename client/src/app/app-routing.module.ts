@@ -47,6 +47,12 @@ import {AuthGuard} from "./auth/auth.guard";
 import {CompanyTableComponent} from "./admin/company-table/company-table.component";
 import {RecruiterTableComponent} from "./admin/recruiter-table/recruiter-table.component";
 import {AdminStudentTableComponent} from "./admin/admin-student-table/admin-student-table.component";
+import {EditStudentComponent} from "./admin/edit-student/edit-student.component";
+import {EditCompanyComponent} from "./admin/edit-company/edit-company.component";
+import {EditRecruiterComponent} from "./admin/edit-recruiter/edit-recruiter.component";
+import {AddCompanyComponent} from "./admin/add-company/add-company.component";
+import {AddStudentComponent} from "./admin/add-student/add-student.component";
+import {AddRecruiterComponent} from "./admin/add-recruiter/add-recruiter.component";
 
 
 
@@ -129,7 +135,25 @@ const routes: Route[] = [
       },
       {
         path:'recruiters', component: RecruiterTableComponent, canActivate: [AdminGuard]
-      }
+      },
+      {
+        path:'edit-student/:studentId', component: EditStudentComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'edit-company/:companyId', component: EditCompanyComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'edit-recruiter/:recruiterId', component: EditRecruiterComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'add-company', component: AddCompanyComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'add-student', component: AddStudentComponent, canActivate: [AdminGuard]
+      },
+      {
+        path:'add-recruiter', component: AddRecruiterComponent, canActivate: [AdminGuard]
+      },
     ],
     canActivate: [AdminGuard],
   },
@@ -138,9 +162,6 @@ const routes: Route[] = [
   },
   {
     path: 'forbidden', component: UnauthorizedComponent
-  },
-  {
-    path: '**', redirectTo: '/not-found'
   }
 ];
 @NgModule({

@@ -58,7 +58,7 @@ public class CompanyController : Controller
     [ProducesResponseType(201, Type = typeof(CompanyDto))]
     public IActionResult CreateCompany([FromBody] CompanyPostRequest companyDto)
     {
-        var company = _mapper.Map<Company>(_companyRepository.CreateCompany(companyDto));
+        var company = _companyRepository.CreateCompany(companyDto);
         return Created("HttpStatusCode.Created",company);
     }
     [HttpPut("{companyId}")]
