@@ -9,6 +9,7 @@ using Backend.Interfaces;
 using Backend.Models;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
@@ -163,42 +164,10 @@ public class RecruiterRepository : IRecruiterRepository
                         companies.Add(recruiterCompany);
                     }
                 }
-                if (companies.Count > 0)
-                {
-                    foreach (var recruiterCompani in companies)
-                    {
-                        
-                        Console.WriteLine("Checkpoint-3");
-                        Console.WriteLine("Inside Removeee -------------------------> " +recruiterCompani.Company.Id  +  " " + recruiterCompani.Recruiter.Id);
+                var a_recruiter = _context.Recruiters.Include(c=> c.RecruiterCompanies).First(i => i.Id == recruiterId);
 
-                        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
-                        MySqlConnection conn = new MySqlConnection(connStr);
-                        try
-                        {
-                            Console.WriteLine("Connecting to MySQL...");
-                            conn.Open();
-                            string sql = "DELETE FROM `student_checker_v2`.`RecruiterCompanies` WHERE (`RecruiterId` = '" +
-                                         recruiterCompani.Recruiter.Id + "');";
-                            Console.WriteLine("Query: " + sql);
-                            MySqlConnection MyConn2 = new MySqlConnection(connStr);
-                            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
-                            MySqlDataReader MyReader2;
-                            MyConn2.Open();
-                            MyReader2 = MyCommand2.ExecuteReader();
-                            while (MyReader2.Read())
-                            {
-                            }
-            
-                        }
-                        catch (Exception err)
-                        {
-                            Console.WriteLine(err.ToString());
-                        }
-
-                        conn.Close();
-                    }
-                   
-                }
+                _context.RemoveRange(a_recruiter.RecruiterCompanies);
+                _context.SaveChanges();
                 var addCompanyTo = new List<CompanyRequestById>();
                 addCompanyTo.Add(new CompanyRequestById()
                 {

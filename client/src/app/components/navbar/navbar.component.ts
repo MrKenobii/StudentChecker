@@ -27,20 +27,22 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     if(localStorage.getItem("key") !== null){
       this.fetchAdminByToken(localStorage.getItem("key")!).then((adminRes: AdminGetResponse) => {
-        if(adminRes){
-          if(adminRes.token && adminRes.id && adminRes.name) {
-            console.log(adminRes);
-            this.admin = adminRes;
-          }
-        } else {
+        if(adminRes && adminRes.token && adminRes.id && adminRes.name) {
+          console.log("ADMIN");
+          console.log(adminRes);
+          this.admin = adminRes;
+        }
+        else {
           this.fetchStudentByToken(localStorage.getItem("key")!).then((studentRes: StudentResponse) => {
             if(studentRes !== null && studentRes?.id !== null && studentRes?.name !== null){
+              console.log("STUDENT");
               console.log(studentRes);
               this.student = studentRes;
               this.student.image = "data:image/png;base64," + this.student?.image
             } else {
               this.fetchRecruiterByToken(localStorage.getItem("key")!).then((_recruiter: RecruiterGetResponse) => {
                 if(_recruiter.id !== null && _recruiter.name !== null){
+                  console.log("RECRUITER");
                   console.log(_recruiter)
                   this.recruiter = _recruiter;
                   this.recruiter.image = "data:image/png;base64," + this.recruiter?.image

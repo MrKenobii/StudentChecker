@@ -13,6 +13,9 @@ import {CollegeService} from "../../services/college/college.service";
 import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {CityService} from "../../services/city.service";
+import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
+import {City} from "../../interfaces/city/City";
 
 
 
@@ -47,6 +50,7 @@ export class StudentProfileEditPageComponent implements OnInit {
   postPayload!: UpdateProfile;
   shortLink: string = "";
   loading: boolean = false;
+  selectedCity!: City;
   file!: File; //
   fileBlob! :ArrayBuffer;
   colleges!: CollegeGetResponse[];
@@ -54,10 +58,13 @@ export class StudentProfileEditPageComponent implements OnInit {
   formattedEnrolledDate!: string;
   isOwnPage!: boolean;
   isLoading: boolean = true;
+  cities!: CityGetResponse[];
+  cityControl!: FormControl;
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private studentService: StudentService,
               private courseService: CoursesService,
+              private cityService: CityService,
               private collegeService: CollegeService,
               private fileService: ImageUploadService,
               private snackBar: MatSnackBar) {
@@ -92,7 +99,7 @@ export class StudentProfileEditPageComponent implements OnInit {
         enrollDate: this.createPostForm.get('enrollDate')!.value,
         phone: this.createPostForm.get('phone')!.value,
         dateOfBirth: this.createPostForm.get('dateOfBirth')!.value,
-        cityName: this.createPostForm.get('cityName')!.value,
+        cityName:  this.cityControl!.value,
         courses: thatCourses,
         department: '',
         // collegeName: this.createPostForm.get('collegeName')!.value,
@@ -154,6 +161,17 @@ export class StudentProfileEditPageComponent implements OnInit {
               this.collegeControl.setValue(this.selectedCollege.name);
             });
         });
+        this.fetchCities().then((_city: CityGetResponse[]) => {
+          console.log(_city);
+          this.cities = _city;
+          this.fetchCityByStudentId(this.studentId).then((city: any) => {
+            this.selectedCity = city;
+            console.log(this.cities);
+            console.log(this.selectedCity.name);
+            this.cityControl = new FormControl<string>(this.selectedCity.name, Validators.required);
+            this.cityControl.setValue(this.selectedCity.name);
+          });
+        });
 
 
 
@@ -201,6 +219,15 @@ export class StudentProfileEditPageComponent implements OnInit {
       }
 
     }).catch((error) => this.router.navigate(['/not-found']));
+  }
+
+  private async fetchCities(){
+    let observable = this.cityService.getCities();
+    return await lastValueFrom(observable);
+  }
+  private async fetchCityByStudentId(studentId: number) {
+    let observable = this.studentService.getCityByStudent(studentId);
+    return await lastValueFrom(observable);
   }
   format(inputDate: Date) {
     let date, month, year;

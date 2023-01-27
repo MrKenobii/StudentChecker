@@ -45,4 +45,16 @@ export class AdminComponent implements OnInit{
     let adminByToken = this.adminService.getAdminByToken(token);
     return await lastValueFrom(adminByToken);
   }
+
+  logout() {
+    if(localStorage.getItem("key"))
+      localStorage.removeItem("key");
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    }
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload();
+    });
+  }
 }

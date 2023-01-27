@@ -314,62 +314,30 @@ public class StudentRepository : IStudentRepository
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 student.Token = tokenHandler.WriteToken(token); 
                 
-                var courses = new List<StudentCourse>();
-                ICollection<CourseDto> courseDtos = this.GetCourses(studentId);
-                Console.WriteLine("Checkpoint-1");
-                foreach (var courseDto in courseDtos)
-                {
-                    Console.WriteLine("Checkpoint-1 aa");
-                    var courseByName = _context.Courses.Where(e => e.Name == courseDto.Name).FirstOrDefault();
-                    var studentCourse = new StudentCourse()
-                    {
-                        Student = student,
-                        Course = courseByName
-                    };
-                    if (studentCourse != null)
-                    {
-                        Console.WriteLine("Checkpoint-2");
-                        courses.Add(studentCourse);
-                    }
-                }
-                if (courses.Count > 0)
-                {
-                    foreach (var studentCourse in courses)
-                    {
-                        
-                        Console.WriteLine("Checkpoint-3");
-                        Console.WriteLine("Inside Removeee -------------------------> " +studentCourse.Course.Id  +  " " + studentCourse.Student.Id);
-
-                        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
-                        MySqlConnection conn = new MySqlConnection(connStr);
-                        try
-                        {
-                            Console.WriteLine("Connecting to MySQL...");
-                            conn.Open();
-                            string sql = "DELETE FROM `student_checker_v2`.`StudentCourses` WHERE (`StudentId` = '" +
-                                         studentCourse.Student.Id + "');";
-                            Console.WriteLine("Query: " + sql);
-                            MySqlConnection MyConn2 = new MySqlConnection(connStr);
-                            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
-                            MySqlDataReader MyReader2;
-                            MyConn2.Open();
-                            MyReader2 = MyCommand2.ExecuteReader();
-                            while (MyReader2.Read())
-                            {
-                            }
-            
-                        }
-                        catch (Exception err)
-                        {
-                            Console.WriteLine(err.ToString());
-                        }
-
-                        conn.Close();
-                    }
-                   
-                }
+                // var courses = new List<StudentCourse>();
+                // ICollection<CourseDto> courseDtos = this.GetCourses(studentId);
+                // Console.WriteLine("Checkpoint-1");
+                // foreach (var courseDto in courseDtos)
+                // {
+                //     Console.WriteLine("Checkpoint-1 aa");
+                //     var courseByName = _context.Courses.Where(e => e.Name == courseDto.Name).FirstOrDefault();
+                //     var studentCourse = new StudentCourse()
+                //     {
+                //         Student = student,
+                //         Course = courseByName
+                //     };
+                //     if (studentCourse != null)
+                //     {
+                //         Console.WriteLine("Checkpoint-2");
+                //         courses.Add(studentCourse);
+                //     }
+                // }
                 
-                
+                var a_student = _context.Students.Include(c=> c.StudentCourses).First(i => i.Id == studentId);
+
+                _context.RemoveRange(a_student.StudentCourses);
+                _context.SaveChanges();
+
                 var _courses = new List<StudentCourse>();
                 string courseString = "";
                 foreach (var c in studentDto.Courses)
@@ -817,88 +785,32 @@ public class StudentRepository : IStudentRepository
                 var city = _context.Cities.Where(s => s.Name == studentEditProfile.CityName).FirstOrDefault();
                 var college = _context.Colleges.Where(s => s.Name == studentEditProfile.CollegeName).FirstOrDefault();
                 
-                var courses = new List<StudentCourse>();
-                ICollection<CourseDto> courseDtos = this.GetCourses(studentId);
                 Console.WriteLine("Checkpoint-1");
-                foreach (var courseDto in courseDtos)
-                {
-                    Console.WriteLine("Checkpoint-1 aa");
-                    var courseByName = _context.Courses.Where(e => e.Name == courseDto.Name).FirstOrDefault();
-                    var studentCourse = new StudentCourse()
-                    {
-                        Student = student,
-                        Course = courseByName
-                    };
-                    if (studentCourse != null)
-                    {
-                        Console.WriteLine("Checkpoint-2");
-                        courses.Add(studentCourse);
-                    }
-                }
-                if (courses.Count > 0)
-                {
-                    foreach (var studentCourse in courses)
-                    {
-                        
-                        Console.WriteLine("Checkpoint-3");
-                        Console.WriteLine("Inside Removeee -------------------------> " +studentCourse.Course.Id  +  " " + studentCourse.Student.Id);
+                var a_student = _context.Students.Include(c=> c.StudentCourses).First(i => i.Id == studentId);
 
-                        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
-                        MySqlConnection conn = new MySqlConnection(connStr);
-                        try
-                        {
-                            Console.WriteLine("Connecting to MySQL...");
-                            conn.Open();
-                            string sql = "DELETE FROM `student_checker_v2`.`StudentCourses` WHERE (`StudentId` = '" +
-                                         studentCourse.Student.Id + "')";
-                            Console.WriteLine("Query: " + sql);
-                            MySqlConnection MyConn2 = new MySqlConnection(connStr);
-                            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
-                            MySqlDataReader MyReader2;
-                            MyConn2.Open();
-                            MyReader2 = MyCommand2.ExecuteReader();
-                            while (MyReader2.Read())
-                            {
-                            }
-            
-                        }
-                        catch (Exception err)
-                        {
-                            Console.WriteLine(err.ToString());
-                        }
+                _context.RemoveRange(a_student.StudentCourses);
+                _context.SaveChanges();
+                Console.WriteLine("CourseCount" + this.GetCourses(studentId));
+                Console.WriteLine("Checkpoint - ADDDD");
+                
+                Console.WriteLine("Course Length: " + this.GetCourses(studentId).Count);
+                
 
-                        conn.Close();
-                        //_context.StudentCourses.Remove(studentCourse);
-                        //_context.SaveChanges();     
-                    }
-                   
-                }
-                
-                
                 var _courses = new List<StudentCourse>();
-                string courseString = "";
                 foreach (var c in studentEditProfile.Courses)
                 {
                     var courseByName = _context.Courses.Where(e => e.Name == c.Name).FirstOrDefault();
+                    Console.WriteLine(courseByName.Name + " ----------" + courseByName.Id + " --------------" + student.Id);
                     var studentCourse = new StudentCourse()
                     {
                         Student = student,
                         Course = courseByName
                     };
-                    if (studentCourse != null)
-                    {
-                        courseString = courseString +  c.Name +", " ;
-                        _courses.Add(studentCourse);    
-                    }
-            
+                    _courses.Add(studentCourse);
+                    _context.StudentCourses.Add(studentCourse);
+                    
                 }
-
-                if (_courses.Count > 0)
-                {
-                    _context.StudentCourses.AddRange(_courses);    
-                }
-        
-                // _context.SaveChanges();
+                
                 
                 // Courses Department CityName CollegeName
                 

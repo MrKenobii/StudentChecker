@@ -12,13 +12,10 @@ import {CoursesService} from "../../services/course/courses.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {lastValueFrom} from "rxjs";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
+import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
+import {CityService} from "../../services/city.service";
 
 
-
-interface CourseControl{
-  id: number;
-  name: string;
-}
 @Component({
   selector: 'app-student-complete-profile',
   templateUrl: './student-complete-profile.component.html',
@@ -28,6 +25,7 @@ export class StudentCompleteProfileComponent implements OnInit{
   studentId!: number;
   collegeEmailExtension!: string;
   colleges!: CollegeGetResponse[];
+  cities!: CityGetResponse[];
   college!: CollegeGetResponse;
   student!: StudentResponse;
   createPostForm!: FormGroup;
@@ -35,14 +33,17 @@ export class StudentCompleteProfileComponent implements OnInit{
   _courses!: Course[];
   courses!: Course[];
   courseControl = new FormControl<Course[] | null>(null, Validators.required);
+  cityControl!: FormControl;
   shortLink: string = "";
   loading: boolean = false;
   file!: File; //
   fileBlob! :ArrayBuffer;
   isAccountActive!: boolean;
+  isLoading!: boolean;
   constructor(private router: Router, private activatedRoute: ActivatedRoute,
               private studentService: StudentService,
               private courseService: CoursesService,
+              private cityService: CityService,
               private collegeService: CollegeService,
               private fileService: ImageUploadService,
               private matSnackBar: MatSnackBar) {
@@ -65,12 +66,14 @@ export class StudentCompleteProfileComponent implements OnInit{
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
     this.fetchStudentById(this.studentId).then((data: StudentResponse) => {
       if(data && data.name && data.lastName && !data.collegeName && !data.address){
+        this.isLoading = true;
         this.isAccountActive = data.isActivated;
         console.log(data);
         if(this.isAccountActive){
           this.student = data;
           this.collegeEmailExtension = this.student.email.substring(data.email.indexOf('@') + 1, data.email.length);
-          this.collegeService.getColleges().subscribe((data:any) => { // any degis
+          this.fetchColleges().then((data: any) =>{
+            this.isLoading = true;
             console.log(data);
             this.colleges = data;
             console.log(this.collegeEmailExtension);
@@ -79,11 +82,22 @@ export class StudentCompleteProfileComponent implements OnInit{
                 this.college = c;
               }
             });
+            this.fetchCities().then((_city: CityGetResponse[]) => {
+              this.isLoading = true;
+              console.log(_city);
+              this.cities = _city;
+              console.log(this.cities);
+              this.cityControl = new FormControl<string>(this.cities.at(0)!.name, Validators.required);
+              this.cityControl.setValue(this.cities.at(0)!.name);
+              this.isLoading = false;
+            });
             console.log(this.college);
+            this.isLoading = false;
           });
+
+
         } else {
           this.router.navigate(['/not-found'])
-          // this.student = data;
         }
       }
     }).catch((error) => this.router.navigate(['/not-found']));
@@ -94,6 +108,10 @@ export class StudentCompleteProfileComponent implements OnInit{
   private async fetchStudentById(id: number) {
     let studentById = this.studentService.getStudentById(id);
     return await lastValueFrom(studentById);
+  }
+  private async fetchColleges() {
+    let observable = this.collegeService.getColleges();
+    return await lastValueFrom(observable);
   }
   ngOnInit(): void {
     this.createPostForm = new FormGroup({
@@ -141,13 +159,13 @@ export class StudentCompleteProfileComponent implements OnInit{
         languages: this.createPostForm.get('languages')!.value,
         image: reader.result!.toString().slice(23, reader.result!.toString().length),
         courses:this.courseControl!.value,
-        cityName: this.createPostForm.get('cityName')!.value
+        cityName: this.cityControl!.value,
       };
       console.log(obj);
-      this.studentService.updateProfile(this.studentId, obj).subscribe((data: any) => {
+      this.updateProfile(this.studentId, obj).then((data: any) => {
         console.log(data);
         if(data && data.id > 0){
-          this.studentService.getTokenByStudentId(data.id!).subscribe((token: StudentGetTokenResponse) => {
+          this.fetchTokenByStudentId(data.id!).then((token: StudentGetTokenResponse) => {
             if(token && token.key){
               localStorage.setItem("key", token.key);
               this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -163,16 +181,31 @@ export class StudentCompleteProfileComponent implements OnInit{
               });
             }
           });
-
         } else {
-            this.matSnackBar.open("Someth went wrong -2", "OK", {
-              duration: 5000
-            });
+          this.matSnackBar.open("Someth went wrong -2", "OK", {
+            duration: 5000
+          });
           this.router.navigate(['not-found']);
         }
-
       });
+
     };
+  }
+  private async updateProfile(id: number, obj: any){
+    let observable = this.studentService.updateProfile(id, obj);
+    return await lastValueFrom(observable);
+  }
+  private async fetchTokenByStudentId(id: number){
+    let tokenByStudentId = this.studentService.getTokenByStudentId(id);
+    return await lastValueFrom(tokenByStudentId);
+  }
+  private async fetchCities(){
+    let observable = this.cityService.getCities();
+    return await lastValueFrom(observable);
+  }
+  private async fetchCityByStudentId(studentId: number) {
+    let observable = this.studentService.getCityByStudent(studentId);
+    return await lastValueFrom(observable);
   }
   onChange(event: any) {
     // const file = new File(['hello', ' ', 'world'], 'hello_world.txt', {type: 'text/plain'});
