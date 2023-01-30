@@ -13,7 +13,7 @@ import {CollegeService} from "../../services/college/college.service";
 import {CollegeGetResponse} from "../../interfaces/college/CollegeGetResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {CityService} from "../../services/city.service";
+import {CityService} from "../../services/city/city.service";
 import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
 import {City} from "../../interfaces/city/City";
 

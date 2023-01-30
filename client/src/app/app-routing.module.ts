@@ -53,6 +53,7 @@ import {EditRecruiterComponent} from "./admin/edit-recruiter/edit-recruiter.comp
 import {AddCompanyComponent} from "./admin/add-company/add-company.component";
 import {AddStudentComponent} from "./admin/add-student/add-student.component";
 import {AddRecruiterComponent} from "./admin/add-recruiter/add-recruiter.component";
+import {ChatRoomComponent} from "./components/chat-room/chat-room.component";
 
 
 
@@ -113,6 +114,8 @@ const routes: Route[] = [
   },
   {
     path: 'login', component: LoginComponent, canActivate: [AuthGuard]
+  },{
+   path: 'chat-room/:id',component: ChatRoomComponent
   },
   {
     path: 'admin',

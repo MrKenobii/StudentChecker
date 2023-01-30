@@ -72,12 +72,20 @@ export class SignUpComponent implements OnInit{
       this.student.lastName = this.postPayload.lastName = this.createPostForm.get('lastName')!.value;
       this.student.password = this.postPayload.password = this.createPostForm.get('password')!.value;
 
+      if((this.student.name == null || this.student.name == "") || ( this.createPostForm.get('email')?.value == null || this.createPostForm.get('email')?.value == "") ||
+      (this.student.lastName == null || this.student.lastName == "") || (this.student.password == null || this.student.password == "")){
+          this.snackBar.open("You must fill all the fields", "OK", {
+            duration: 5000
+          });
+      } else {
+        this.studentService.signUp(this.student).subscribe((data: StudentSignupResponse) => {
+          console.log("After sign up operation");
+          console.log(data.id);
+          this.router.navigateByUrl('sign-up/student/activate/'+ data.id);
+        });
+      }
       // this.router.navigateByUrl('sign-up/activate/'+ 2);
-      this.studentService.signUp(this.student).subscribe((data: StudentSignupResponse) => {
-        console.log("After sign up operation");
-        console.log(data.id);
-        this.router.navigateByUrl('sign-up/student/activate/'+ data.id);
-      });
+
     } else {
       this.snackBar.open("Passwords are not matching", "Ok", {
         duration: 5000

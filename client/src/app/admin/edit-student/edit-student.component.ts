@@ -13,7 +13,7 @@ import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenR
 import {lastValueFrom} from "rxjs";
 import {City} from "../../interfaces/city/City";
 import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
-import {CityService} from "../../services/city.service";
+import {CityService} from "../../services/city/city.service";
 
 interface UpdateProfile {
   name: string;

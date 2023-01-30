@@ -107,4 +107,8 @@ export class RecruiterProfilePageComponent {
   privacySettings() {
     this.router.navigate(["/recruiter/privacy/" + this.recruiterId]);
   }
+
+  chatRoom() {
+    this.router.navigate(["/chat-room/" + this.recruiterId]);
+  }
 }

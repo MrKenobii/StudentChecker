@@ -25,6 +25,9 @@ public class Student
     public City? City { get; set; } // City
     public bool IsActivated { get; set; }
     public string? VerifyToken { get; set; }
+    public ICollection<SendMessage> SendMessages { get; set; }
+    public ICollection<DeliveredMessage> DeliveredMessages { get; set; }
+    
     public ICollection<StudentCourse>? StudentCourses { get; set; }
     
 }

@@ -6,7 +6,7 @@ import {ImageUploadService} from "../../services/image-upload/image-upload.servi
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {lastValueFrom} from "rxjs";
 import {City} from "../../interfaces/city/City";
-import {CityService} from "../../services/city.service";
+import {CityService} from "../../services/city/city.service";
 import {CompanyService} from "../../services/company/company.service";
 import {Company} from "../../interfaces/company/Company";
 import {CityGetResponse} from "../../interfaces/city/CityGetResponse";

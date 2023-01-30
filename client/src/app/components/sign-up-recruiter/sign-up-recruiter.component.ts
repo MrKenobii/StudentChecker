@@ -55,16 +55,23 @@ export class SignUpRecruiterComponent implements OnInit{
         lastName: this.postPayload.lastName,
         password: this.postPayload.password
       };
-
-      console.log(this.requestPayload);
-      this.recruiterService.signUp(this.requestPayload).subscribe((data: RecruiterPostSignupResponse) => {
-        this.snackBar.open(data.message, "Ok", {
-          duration: 3000
+      if((this.requestPayload.name == null || this.requestPayload.name == "") || (this.requestPayload.email == null || this.requestPayload.email == "") ||
+        (this.requestPayload.lastName == null || this.requestPayload.lastName == "") || (this.requestPayload.password == null || this.requestPayload.password == "")){
+          this.snackBar.open("You must fill all the fields", "OK", {
+            duration: 5000
+          });
+      } else {
+        console.log(this.requestPayload);
+        this.recruiterService.signUp(this.requestPayload).subscribe((data: RecruiterPostSignupResponse) => {
+          this.snackBar.open(data.message, "Ok", {
+            duration: 3000
+          });
+          if(data.id > 0){
+            this.router.navigateByUrl('sign-up/recruiter/activate/'+ data.id);
+          }
         });
-        if(data.id > 0){
-          this.router.navigateByUrl('sign-up/recruiter/activate/'+ data.id);
-        }
-      });
+      }
+
     }
     else
       this.snackBar.open("Password are not matching", "Ok", {

@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230130051025_CreateMessageTable")]
+    partial class CreateMessageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,7 +152,7 @@ namespace Backend.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("Backend.Models.DeliveredMessage", b =>
+            modelBuilder.Entity("Backend.Models.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,14 +162,15 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeliveredTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<int?>("RecruiterId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -175,7 +178,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("DeliveredMessages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Backend.Models.Recruiter", b =>
@@ -243,34 +246,6 @@ namespace Backend.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("RecruiterCompanies");
-                });
-
-            modelBuilder.Entity("Backend.Models.SendMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("RecruiterId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SendTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("StudentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecruiterId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("SendMessages");
                 });
 
             modelBuilder.Entity("Backend.Models.Student", b =>
@@ -381,14 +356,14 @@ namespace Backend.Migrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("Backend.Models.DeliveredMessage", b =>
+            modelBuilder.Entity("Backend.Models.Message", b =>
                 {
                     b.HasOne("Backend.Models.Recruiter", "Recruiter")
-                        .WithMany("DeliveredMessages")
+                        .WithMany("Messages")
                         .HasForeignKey("RecruiterId");
 
                     b.HasOne("Backend.Models.Student", "Student")
-                        .WithMany("DeliveredMessages")
+                        .WithMany("Messages")
                         .HasForeignKey("StudentId");
 
                     b.Navigation("Recruiter");
@@ -413,21 +388,6 @@ namespace Backend.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Recruiter");
-                });
-
-            modelBuilder.Entity("Backend.Models.SendMessage", b =>
-                {
-                    b.HasOne("Backend.Models.Recruiter", "Recruiter")
-                        .WithMany("SendMessages")
-                        .HasForeignKey("RecruiterId");
-
-                    b.HasOne("Backend.Models.Student", "Student")
-                        .WithMany("SendMessages")
-                        .HasForeignKey("StudentId");
-
-                    b.Navigation("Recruiter");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Backend.Models.Student", b =>
@@ -490,18 +450,14 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Recruiter", b =>
                 {
-                    b.Navigation("DeliveredMessages");
+                    b.Navigation("Messages");
 
                     b.Navigation("RecruiterCompanies");
-
-                    b.Navigation("SendMessages");
                 });
 
             modelBuilder.Entity("Backend.Models.Student", b =>
                 {
-                    b.Navigation("DeliveredMessages");
-
-                    b.Navigation("SendMessages");
+                    b.Navigation("Messages");
 
                     b.Navigation("StudentCourses");
                 });

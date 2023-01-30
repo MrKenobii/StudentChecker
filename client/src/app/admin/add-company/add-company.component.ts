@@ -4,7 +4,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
 import {City} from "../../interfaces/city/City";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CityService} from "../../services/city.service";
+import {CityService} from "../../services/city/city.service";
 import {CompanyService} from "../../services/company/company.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {MatSnackBar} from "@angular/material/snack-bar";

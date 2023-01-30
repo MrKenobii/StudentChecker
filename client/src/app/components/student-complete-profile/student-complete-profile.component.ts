@@ -13,7 +13,7 @@ import {ImageUploadService} from "../../services/image-upload/image-upload.servi
 import {lastValueFrom} from "rxjs";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
-import {CityService} from "../../services/city.service";
+import {CityService} from "../../services/city/city.service";
 
 
 @Component({

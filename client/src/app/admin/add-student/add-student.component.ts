@@ -8,7 +8,7 @@ import {City} from "../../interfaces/city/City";
 import {ActivatedRoute, Router} from "@angular/router";
 import {StudentService} from "../../services/student/student.service";
 import {CoursesService} from "../../services/course/courses.service";
-import {CityService} from "../../services/city.service";
+import {CityService} from "../../services/city/city.service";
 import {CollegeService} from "../../services/college/college.service";
 import {ImageUploadService} from "../../services/image-upload/image-upload.service";
 import {MatSnackBar} from "@angular/material/snack-bar";

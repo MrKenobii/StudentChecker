@@ -54,6 +54,8 @@ import { EditRecruiterComponent } from './admin/edit-recruiter/edit-recruiter.co
 import { AddRecruiterComponent } from './admin/add-recruiter/add-recruiter.component';
 import { AddCompanyComponent } from './admin/add-company/add-company.component';
 import { AddStudentComponent } from './admin/add-student/add-student.component';
+import { MessageComponent } from './components/message/message.component';
+import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 
 
 
@@ -97,6 +99,8 @@ import { AddStudentComponent } from './admin/add-student/add-student.component';
     AddRecruiterComponent,
     AddCompanyComponent,
     AddStudentComponent,
+    MessageComponent,
+    ChatRoomComponent,
   ],
     imports: [
         BrowserModule,

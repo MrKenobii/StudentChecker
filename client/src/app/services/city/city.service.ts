@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {DeleteResponse} from "../interfaces/DeleteResponse";
-import {City} from "../interfaces/city/City";
+import {DeleteResponse} from "../../interfaces/DeleteResponse";
+import {City} from "../../interfaces/city/City";
 import {Observable} from "rxjs";
-import {CityGetResponse} from "../interfaces/city/CityGetResponse";
+import {CityGetResponse} from "../../interfaces/city/CityGetResponse";
 
 @Injectable({
   providedIn: 'root'

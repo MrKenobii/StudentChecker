@@ -73,6 +73,6 @@ export class ProfilePageComponent implements OnInit{
   }
 
   chat() {
-
+    this.router.navigate(["/chat-room/" + this.studentId]);
   }
 }
