@@ -10,18 +10,6 @@ import {ImageUploadService} from "../../services/image-upload/image-upload.servi
 import {lastValueFrom} from "rxjs";
 import {RecruiterGetKeyResponse} from "../../interfaces/recruiter/RecruiterGetKeyResponse";
 import {MatSnackBar} from "@angular/material/snack-bar";
-
-interface CompanyDto {
-  id: number,
-  name: string;
-  companyType: string;
-  email: string;
-  foundationDate: Date;
-  address: string;
-  phone: string;
-  cityName: string;
-  formattedDate: string;
-}
 interface UpdateProfile {
   name: string;
   lastName: string;
@@ -85,11 +73,24 @@ export class RecruiterProfileEditPageComponent implements OnInit{
         companyName: this.companyControl!.value,
         image: reader.result!.toString().slice(23, reader.result!.toString().length),
       };
-      console.log(obj);
-      this.recruiterService.editProfile(this.recruiterId,obj).subscribe(data => {
-        console.log(data);
-        this.router.navigate(['/profile/recruiter/'+this.recruiterId]);
-      });
+      if((obj.image == null) || (obj.image.trim() == "")
+        || (obj.name == null) || (obj.name.trim() == "")
+        || (obj.lastName == null) || (obj.lastName.trim() == "")
+        || (obj.email == null) || (obj.email.trim() == "")
+        || (obj.address == null) || (obj.address.trim() == "")
+        || (obj.phone == null) || (obj.phone.trim() == "")
+        || (obj.dateOfBirth == null)
+        || (obj.hireDate == null)) {
+          this.snackBar.open("You must fill all the fields", "OK", {
+            duration: 4000
+          });
+      } else {
+        console.log(obj);
+        this.recruiterService.editProfile(this.recruiterId,obj).subscribe(data => {
+          console.log(data);
+          this.router.navigate(['/profile/recruiter/'+this.recruiterId]);
+        });
+      }
     }
   }
 

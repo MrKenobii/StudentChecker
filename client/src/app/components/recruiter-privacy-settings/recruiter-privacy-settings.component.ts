@@ -42,20 +42,35 @@ export class RecruiterPrivacySettingsComponent implements OnInit{
         newPassword: this.createPostForm.get('newPassword')!.value,
         newPasswordCopy: this.createPostForm.get('newPasswordCopy')!.value,
       };
-      console.log(obj);
-      this.recruiterService.changePassword(this.recruiterId,obj).subscribe((passwordResponse: UpdatePasswordResponse) => {
-        console.log(passwordResponse);
-        if(passwordResponse && passwordResponse.status){
-          this.snackBar.open(passwordResponse.message, "OK", {
-            duration: 5000
+      if((obj.prevPassword  == null || obj.prevPassword.trim() == "")
+        ||(obj.newPassword  == null || obj.newPassword.trim() == "")
+        ||(obj.newPasswordCopy  == null || obj.newPasswordCopy.trim() == "")) {
+        this.snackBar.open("You must fill all the fields", "OK", {
+          duration: 4000
+        });
+      } else {
+        if(obj.newPassword != obj.newPasswordCopy){
+          this.snackBar.open("Passwords are not matching", "OK", {
+            duration: 4000
           });
-          this.router.navigate(['/profile/recruiter/'+this.recruiterId]);
         } else {
-          this.snackBar.open(passwordResponse.message, "OK", {
-            duration: 5000
+          console.log(obj);
+          this.recruiterService.changePassword(this.recruiterId,obj).subscribe((passwordResponse: UpdatePasswordResponse) => {
+            console.log(passwordResponse);
+            if(passwordResponse && passwordResponse.status){
+              this.snackBar.open(passwordResponse.message, "OK", {
+                duration: 5000
+              });
+              this.router.navigate(['/profile/recruiter/'+this.recruiterId]);
+            } else {
+              this.snackBar.open(passwordResponse.message, "OK", {
+                duration: 5000
+              });
+            }
           });
+
         }
-      });
+      }
   }
 
   ngOnInit(): void {

@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit{
       email: this.createPostForm.get('email')!.value,
       password: this.createPostForm.get('password')!.value
     }
-    if((obj.email == null || obj.email == "") || (obj.password == null || obj.password == "")){
+    if((obj.email == null || obj.email.trim() == "") || (obj.password == null || obj.password.trim() == "")){
       this.snackBar.open("Please fill all the fields", "OK", {
         duration: 4000
       });

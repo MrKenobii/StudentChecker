@@ -112,4 +112,26 @@ export class NavbarComponent implements OnInit {
   goToAdmin(id: number) {
 
   }
+
+  openMessagesRecruiter(id: number) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    }
+    this.router.onSameUrlNavigation = 'reload';
+    if(this.recruiter.id !== null && this.recruiter.name !== null){
+      console.log("Inside recruiters");
+      this.router.navigate(['/recruiter-message-box/'+id]);
+    }
+  }
+
+  openMessagesStudent(id: number) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    }
+    this.router.onSameUrlNavigation = 'reload';
+    if(this.student.id !== null && this.student.name !== null){
+      console.log("Inside recruiters");
+      this.router.navigate(['/student-message-box/'+id]);
+    }
+  }
 }

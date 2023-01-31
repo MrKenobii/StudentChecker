@@ -57,7 +57,7 @@ export class RecruiterCompleteProfileComponent implements OnInit{
     this.postPayload.image = this.createPostForm.get('image')!.value;
     //console.log(this.companyControl.value);
     const reader = new FileReader();
-    reader.readAsDataURL(this.file); //FileStream response from .NET core backend
+    reader.readAsDataURL(this.file);
     reader.onload = _event => {
       // console.log(reader.result);
       const obj = {
@@ -69,33 +69,43 @@ export class RecruiterCompleteProfileComponent implements OnInit{
         image: reader.result!.toString().slice(23, reader.result!.toString().length),
       };
       console.log(obj);
-      this.recruiterService.updateProfile(this.recruiterId,obj).subscribe(data => {
-        console.log(data);
-        if(data && data.id){
-          this.recruiterService.getTokenByRecruiterId(data.id).subscribe((token: RecruiterGetKeyResponse) => {
-            if(token && token.key){
-              localStorage.setItem("key", token.key);
-              this.router.routeReuseStrategy.shouldReuseRoute = function () {
-                return false;
-              }
-              this.router.onSameUrlNavigation = 'reload';
-              this.router.navigate(['/']).then(() => {
-                window.location.reload();
-              });
-            } else {
-                this.snackBar.open("Someth went wrong", "OK", {
-                  duration: 5000
+      if((obj.image == null) || (obj.image.trim() == "")
+        || (obj.address == null) || (obj.address.trim() == "")
+        || (obj.phone == null) || (obj.phone.trim() == "")
+        || (obj.dateOfBirth == null)
+        || (obj.hireDate == null)) {
+        this.snackBar.open("You must fill all the fields", "OK", {
+          duration: 4000
+        });
+      } else {
+        this.recruiterService.updateProfile(this.recruiterId,obj).subscribe(data => {
+          console.log(data);
+          if(data && data.id){
+            this.recruiterService.getTokenByRecruiterId(data.id).subscribe((token: RecruiterGetKeyResponse) => {
+              if(token && token.key){
+                localStorage.setItem("key", token.key);
+                this.router.routeReuseStrategy.shouldReuseRoute = function () {
+                  return false;
+                }
+                this.router.onSameUrlNavigation = 'reload';
+                this.router.navigate(['/']).then(() => {
+                  window.location.reload();
                 });
-            }
-          });
-        } else {
-          this.snackBar.open("Someth went wrong -2", "OK",  {
-            duration: 5000
-          });
-          this.router.navigate(['not-found'])
-        }
+              } else {
+                  this.snackBar.open("Someth went wrong", "OK", {
+                    duration: 5000
+                  });
+              }
+            });
+          } else {
+            this.snackBar.open("Someth went wrong -2", "OK",  {
+              duration: 5000
+            });
+            this.router.navigate(['not-found'])
+          }
 
-      });
+        });
+      }
     }
   }
   private async fetchRecruiterById(id: number) {

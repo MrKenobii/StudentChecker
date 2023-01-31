@@ -10,16 +10,14 @@
         <div class="col-md-10 col-lg-8 col-xl-6">
 
           <div class="card" id="chat2">
-            <div class="card-header d-flex justify-content-between align-items-center p-3">
-              <h5 class="mb-0">Chat</h5>
-              <button type="button" class="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Let's Chat
-                App</button>
+            <div class="card-header d-flex justify-content-center align-items-center p-3 fw-bold">
+              <h5 *ngIf="toStudent && toStudent.name && toStudent.lastName" class="mb-0">{{toStudent.name + " " + toStudent.lastName}}</h5>
             </div>
-            <div class="card-body overflow-scroll"   style="position: relative; height: 400px;">
+            <div class="card-body overflow-scroll" id="chat-box" style="position: relative; height: 400px;">
               <div *ngFor="let d of displayArr">
                 <div *ngIf="d.deliveredTime != null && d.sendTime == null">
-                  <div class="d-flex flex-row justify-content-start">
-                    <img *ngIf="this.toStudent &&  this.toStudent.image" src="{{this.toStudent.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp' }}"
+                  <div *ngIf="toStudent" class="d-flex flex-row justify-content-start">
+                    <img *ngIf="toStudent &&  toStudent.image" [src]="toStudent.image || 'https://www.example.com/example.png' "
                          alt="avatar 1" style="width: 45px; height: 100%;">
                     <div>
                       <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{d.content}}</p>
@@ -41,49 +39,15 @@
                   </div>
                 </div>
               </div>
-
-
-<!--              <div *ngFor="let r of recruiterDeliveredMessages" class="d-flex flex-row justify-content-start">-->
-<!--                <img *ngIf="this.toStudent &&  this.toStudent.image" src="{{this.toStudent.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp' }}"-->
-<!--                     alt="avatar 1" style="width: 45px; height: 100%;">-->
-<!--                <div>-->
-<!--                  <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{r.content}}</p>-->
-<!--&lt;!&ndash;                  <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">How are you ...???&ndash;&gt;-->
-<!--&lt;!&ndash;                  </p>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">What are you doing&ndash;&gt;-->
-<!--&lt;!&ndash;                    tomorrow? Can we come up a bar?</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p>&ndash;&gt;-->
-<!--                </div>-->
-<!--              </div>-->
-
-<!--              <div class="divider d-flex align-items-center mb-4">-->
-<!--                <p class="text-center mx-3 mb-0" style="color: #a2aab7;">Today</p>-->
-<!--              </div>-->
-
-<!--              <div *ngFor="let s of recruiterSendMessages" class="d-flex flex-row justify-content-end mb-4 pt-1">-->
-<!--                <div>-->
-<!--                  <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{{s.content}}</p>-->
-<!--&lt;!&ndash;                  <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">How are you doing?</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">Long time no see! Tomorrow&ndash;&gt;-->
-<!--&lt;!&ndash;                    office. will&ndash;&gt;-->
-<!--&lt;!&ndash;                    be free on sunday.</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:06</p>&ndash;&gt;-->
-<!--                </div>-->
-<!--                <img *ngIf="fromRecruiter && fromRecruiter.image" src="{{fromRecruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}"-->
-<!--                     alt="avatar 1" style="width: 45px; height: 100%;">-->
-<!--              </div>-->
-
-
-
             </div>
-            <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-              <img *ngIf="fromRecruiter.image"  src="{{fromRecruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}"
+            <div *ngIf="fromRecruiter" class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+              <img *ngIf="fromRecruiter.image"  [src]="fromRecruiter.image || 'https://www.example.com/example.png' "
                    alt="avatar 3" style="width: 40px; height: 100%;">
-              <input type="text" class="form-control form-control-lg" id="exampleFormControlInput1"
-                     placeholder="Type message">
-              <a class="ms-1 text-muted" href="#!"><i class="fas fa-paperclip"></i></a>
-              <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a>
-              <a class="ms-3" href="#!"><i class="fas fa-paper-plane"></i></a>
+              <input type="text" class="form-control form-control-lg ms-1" id="exampleFormControlInput1"
+                     placeholder="Type message" >
+              <a class="ms-3" (click)="sendMessage()">
+                <mat-icon>send</mat-icon>
+              </a>
             </div>
           </div>
 

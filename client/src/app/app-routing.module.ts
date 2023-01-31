@@ -54,6 +54,9 @@ import {AddCompanyComponent} from "./admin/add-company/add-company.component";
 import {AddStudentComponent} from "./admin/add-student/add-student.component";
 import {AddRecruiterComponent} from "./admin/add-recruiter/add-recruiter.component";
 import {ChatRoomComponent} from "./components/chat-room/chat-room.component";
+import {StudentChatRoomComponent} from "./components/student-chat-room/student-chat-room.component";
+import {StudentsMessageBoxComponent} from "./components/students-message-box/students-message-box.component";
+import {RecruitersMessageBoxComponent} from "./components/recruiters-message-box/recruiters-message-box.component";
 
 
 
@@ -114,8 +117,18 @@ const routes: Route[] = [
   },
   {
     path: 'login', component: LoginComponent, canActivate: [AuthGuard]
-  },{
+  },
+  {
    path: 'chat-room/:id',component: ChatRoomComponent
+  },
+  {
+   path: 'student-chat-room/:id',component: StudentChatRoomComponent
+  },
+  {
+   path: 'student-message-box/:id',component: StudentsMessageBoxComponent
+  },
+  {
+   path: 'recruiter-message-box/:id',component: RecruitersMessageBoxComponent
   },
   {
     path: 'admin',

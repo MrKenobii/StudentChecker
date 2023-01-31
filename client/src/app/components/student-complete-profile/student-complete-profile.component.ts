@@ -147,47 +147,63 @@ export class StudentCompleteProfileComponent implements OnInit{
     const reader = new FileReader();
     reader.readAsDataURL(this.file); //FileStream response from .NET core backend
     reader.onload = _event => {
-
       const obj = {
-        department: this.createPostForm.get('department')!.value,
-        collegeName: this.college.name,
-        address: this.createPostForm.get('address')!.value,
-        enrollDate: this.createPostForm.get('enrollDate')!.value,
-        phone: this.createPostForm.get('phone')!.value,
-        dateOfBirth: this.createPostForm.get('dateOfBirth')!.value,
-        skills: this.createPostForm.get('skills')!.value,
-        languages: this.createPostForm.get('languages')!.value,
-        image: reader.result!.toString().slice(23, reader.result!.toString().length),
-        courses:this.courseControl!.value,
-        cityName: this.cityControl!.value,
-      };
-      console.log(obj);
-      this.updateProfile(this.studentId, obj).then((data: any) => {
-        console.log(data);
-        if(data && data.id > 0){
-          this.fetchTokenByStudentId(data.id!).then((token: StudentGetTokenResponse) => {
-            if(token && token.key){
-              localStorage.setItem("key", token.key);
-              this.router.routeReuseStrategy.shouldReuseRoute = function () {
-                return false;
+          department: this.createPostForm.get('department')!.value,
+          collegeName: this.college.name,
+          address: this.createPostForm.get('address')!.value,
+          enrollDate: this.createPostForm.get('enrollDate')!.value,
+          phone: this.createPostForm.get('phone')!.value,
+          dateOfBirth: this.createPostForm.get('dateOfBirth')!.value,
+          skills: this.createPostForm.get('skills')!.value,
+          languages: this.createPostForm.get('languages')!.value,
+          image: reader.result!.toString().slice(23, reader.result!.toString().length),
+          courses:this.courseControl!.value,
+          cityName: this.cityControl!.value,
+        };
+      if((obj.department == null || obj.department.trim() == "")
+        ||(obj.enrollDate == null)
+        ||(obj.phone == null || obj.phone.trim() == "")
+        ||(obj.address == null || obj.address.trim() == "")
+        ||(obj.dateOfBirth == null)
+        ||(obj.skills == null || obj.skills.trim() == "")
+        ||(obj.languages == null || obj.languages.trim() == "")
+        ||(obj.courses == null || obj.courses.length == 0)
+        ||(obj.cityName == null || obj.cityName.trim() == "")
+        ||(obj.collegeName == null || obj.collegeName.trim() == "")
+        ||(obj.image  == null || obj.image.trim() == "")){
+        this.matSnackBar.open("You must fill all the fields", "OK", {
+          duration: 4000
+        });
+      } else {
+        console.log(obj);
+        this.updateProfile(this.studentId, obj).then((data: any) => {
+          console.log(data);
+          if(data && data.id > 0){
+            this.fetchTokenByStudentId(data.id!).then((token: StudentGetTokenResponse) => {
+              if(token && token.key){
+                localStorage.setItem("key", token.key);
+                this.router.routeReuseStrategy.shouldReuseRoute = function () {
+                  return false;
+                }
+                this.router.onSameUrlNavigation = 'reload';
+                this.router.navigate(['/']).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                this.matSnackBar.open("Something went wrong", "OK", {
+                  duration: 5000
+                });
               }
-              this.router.onSameUrlNavigation = 'reload';
-              this.router.navigate(['/']).then(() => {
-                window.location.reload();
-              });
-            } else {
-              this.matSnackBar.open("Someth went wrong", "OK", {
-                duration: 5000
-              });
-            }
-          });
-        } else {
-          this.matSnackBar.open("Someth went wrong -2", "OK", {
-            duration: 5000
-          });
-          this.router.navigate(['not-found']);
-        }
-      });
+            });
+          } else {
+            this.matSnackBar.open("Something went wrong -2", "OK", {
+              duration: 5000
+            });
+            this.router.navigate(['not-found']);
+          }
+        });
+      }
+
 
     };
   }

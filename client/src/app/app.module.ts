@@ -56,6 +56,12 @@ import { AddCompanyComponent } from './admin/add-company/add-company.component';
 import { AddStudentComponent } from './admin/add-student/add-student.component';
 import { MessageComponent } from './components/message/message.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
+import { StudentsMessageBoxComponent } from './components/students-message-box/students-message-box.component';
+import { RecruitersMessageBoxComponent } from './components/recruiters-message-box/recruiters-message-box.component';
+import { StudentChatRoomComponent } from './components/student-chat-room/student-chat-room.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatListModule} from "@angular/material/list";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 
 
@@ -101,28 +107,34 @@ import { ChatRoomComponent } from './components/chat-room/chat-room.component';
     AddStudentComponent,
     MessageComponent,
     ChatRoomComponent,
+    StudentsMessageBoxComponent,
+    RecruitersMessageBoxComponent,
+    StudentChatRoomComponent,
   ],
-    imports: [
-        BrowserModule,
-        MatToolbarModule,
-        MatIconModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        MatButtonModule,
-        MatTableModule,
-        MatPaginatorModule,
-        RouterOutlet,
-        RouterLink,
-        AppRoutingModule,
-        FormsModule,
-        NgbModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-    ],
+  imports: [
+    BrowserModule,
+    MatToolbarModule,
+    MatIconModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    RouterOutlet,
+    RouterLink,
+    AppRoutingModule,
+    FormsModule,
+    NgbModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCardModule,
+    MatListModule,
+    MatProgressBarModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

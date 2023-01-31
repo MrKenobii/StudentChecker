@@ -72,8 +72,8 @@ export class SignUpComponent implements OnInit{
       this.student.lastName = this.postPayload.lastName = this.createPostForm.get('lastName')!.value;
       this.student.password = this.postPayload.password = this.createPostForm.get('password')!.value;
 
-      if((this.student.name == null || this.student.name == "") || ( this.createPostForm.get('email')?.value == null || this.createPostForm.get('email')?.value == "") ||
-      (this.student.lastName == null || this.student.lastName == "") || (this.student.password == null || this.student.password == "")){
+      if((this.student.name == null || this.student.name.trim() == "") || ( this.createPostForm.get('email')?.value == null || this.createPostForm.get('email')?.value.trim() == "") ||
+      (this.student.lastName == null || this.student.lastName.trim() == "") || (this.student.password == null || this.student.password.trim() == "")){
           this.snackBar.open("You must fill all the fields", "OK", {
             duration: 5000
           });

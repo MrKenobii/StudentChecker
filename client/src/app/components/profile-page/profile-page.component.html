@@ -20,8 +20,8 @@
             <h5 *ngIf="student && student.name && student.lastName" class="my-3">{{student.name || 'N/A'}} {{student!.lastName || 'N/A'}}</h5>
             <p class="text-muted mb-1">Full Stack Developer</p>
             <p class="text-muted mb-4" *ngIf="student && student.cityName && student.address">{{student.cityName || 'N/A'}}, {{student.address || 'N/A'}}</p>
-            <div *ngIf="!isOwnProfilePage" class="d-flex justify-content-center mb-2">
-              <button type="button" class="btn btn-outline-primary ms-1" (click)="chat()">Message</button>
+            <div *ngIf="!isOwnProfilePage && !isStudent" class="d-flex justify-content-center mb-2">
+              <button  type="button" class="btn btn-outline-primary ms-1" (click)="chat()">Message</button>
             </div>
             <div *ngIf="isOwnProfilePage" class="d-flex justify-content-center mb-2">
               <button type="button" class="btn btn-primary" (click)="editProfile()">Edit Profile</button>

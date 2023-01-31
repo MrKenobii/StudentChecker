@@ -55,8 +55,8 @@ export class SignUpRecruiterComponent implements OnInit{
         lastName: this.postPayload.lastName,
         password: this.postPayload.password
       };
-      if((this.requestPayload.name == null || this.requestPayload.name == "") || (this.requestPayload.email == null || this.requestPayload.email == "") ||
-        (this.requestPayload.lastName == null || this.requestPayload.lastName == "") || (this.requestPayload.password == null || this.requestPayload.password == "")){
+      if((this.requestPayload.name == null || this.requestPayload.name.trim() == "") || (this.requestPayload.email == null || this.requestPayload.email.trim() == "") ||
+        (this.requestPayload.lastName == null || this.requestPayload.lastName.trim() == "") || (this.requestPayload.password == null || this.requestPayload.password.trim() == "")){
           this.snackBar.open("You must fill all the fields", "OK", {
             duration: 5000
           });

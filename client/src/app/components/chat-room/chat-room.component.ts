@@ -16,11 +16,9 @@ import {GetMessageResponseWithDateTime} from "../../interfaces/message/GetMessag
   styleUrls: ['./chat-room.component.css']
 })
 export class ChatRoomComponent implements OnInit{
-  fromStudent!: StudentResponse;
   toStudent!: StudentResponse;
   id!: number;
   fromRecruiter!: RecruiterGetResponse;
-  toRecruiter!: RecruiterGetResponse;
   isLoading!: boolean;
   recruiterSendMessages!: GetMessageResponse[];
   recruiterDeliveredMessages!: GetMessageResponse[];
@@ -42,37 +40,35 @@ export class ChatRoomComponent implements OnInit{
       this.getStudentByKey(key).then((data: StudentResponse)=>{
         this.isLoading = true;
         if(data && data.id > 0 && data.name != null && data.lastName != null){
-          this.fromStudent = data;
-          console.log(this.fromStudent);
-          this.getRecruiterById(this.id).then((toRec: RecruiterGetResponse) => {
-            if(toRec && toRec.id > 0 && toRec.name != null && toRec.lastName != null){
-              this.toRecruiter = toRec;
-              console.log(this.toRecruiter);
-            } else {
-              this.snackBar.open("Nothing found with recruiter ID: " + this.id, "OK", {
-                duration: 4000
-              });
-            }
+          this.snackBar.open("NOT FOUND", "OK", {
+            duration: 4000
           });
+          this.router.onSameUrlNavigation = 'reload';
+          console.log("Inside recruiters");
+          this.router.navigate(['/not-found']);
         } else {
           this.getRecruiterByKey(key).then((_recruiter: RecruiterGetResponse) => {
+            this.isLoading = true;
             if(_recruiter && _recruiter.id > 0 && _recruiter.name != null && _recruiter.lastName != null){
               this.fromRecruiter = _recruiter;
               this.fromRecruiter.image = "data:image/png;base64," + this.fromRecruiter.image;
               console.log(this.fromRecruiter);
               this.getStudentById(this.id).then((toStudent: StudentResponse) => {
+                this.isLoading = true;
                 if(toStudent && toStudent.id > 0 && toStudent.name != null && toStudent.lastName != null){
                   this.toStudent = toStudent;
                   console.log(this.toStudent);
                   this.toStudent.image = "data:image/png;base64," + this.toStudent.image;
                   this.getSendMessageRecruiterById(this.fromRecruiter.id).then((messageGet: GetMessageResponseWithDateTime[]) => {
+                    this.isLoading = true;
                     console.log(messageGet);
                     this.recruiterSendMessages = messageGet;
                     this.recruiterSendMessages = this.recruiterSendMessages.filter(s => s.studentId == this.id);
                     this.getSendDeliveredRecruiterById(this.fromRecruiter.id).then((_d: GetMessageResponseWithDateTime[]) => {
+                      this.isLoading = true;
                       console.log(_d);
                       this.recruiterDeliveredMessages = _d;
-                      this.recruiterDeliveredMessages=this.recruiterDeliveredMessages.filter(s => s.studentId == this.id);
+                      this.recruiterDeliveredMessages = this.recruiterDeliveredMessages.filter(s => s.studentId == this.id);
                       this.displayArr = this.recruiterDeliveredMessages.concat(this.recruiterSendMessages);
                       console.log(this.displayArr);
                       this.displayArr.sort((a: GetMessageResponse, b: GetMessageResponse) => {
@@ -89,24 +85,15 @@ export class ChatRoomComponent implements OnInit{
                       });
                       console.log(this.displayArr);
                       console.log("-------------------------");
-                      // this.displayArr.map((a) => {
-                      //   if(a.deliveredTime != null && a.sendTime == null){
-                      //     console.log(a.deliveredTime);
-                      //     console.log(new Date(a.deliveredTime));
-                      //   }
-                      //   else if(a.sendTime != null && a.deliveredTime == null){
-                      //     console.log(a.sendTime);
-                      //     console.log(new Date(a.sendTime));
-                      //   }
-                      // })
-                      // console.log("-------------------------");
-                      // console.log(this.displayArr);
+                      this.isLoading = false;
                     });
+                    //this.isLoading = false;
                   });
 
                   // this.getSendDeliveredStudentById(this.id).then((deliverGet: GetMessageResponse[]) => {
                   //   console.log(deliverGet);
                   // })
+                  //this.isLoading = false;
                 } else {
                   this.snackBar.open("Nothing found with student ID: " + this.id, "OK", {
                     duration: 4000
@@ -160,5 +147,72 @@ export class ChatRoomComponent implements OnInit{
 
   private getTime(date: Date) {
     return date != null ? date.getTime() : 0;
+  }
+
+  sendMessage() {
+    let elementById = document.getElementById('exampleFormControlInput1') as HTMLInputElement | null;
+    if(elementById != null){
+      if(elementById.value.trim() == "" || elementById.value.trim() == " " || elementById.value == null){
+        this.snackBar.open("You need to enter a message", "OK", {
+          duration: 4000
+        });
+      } else {
+        console.log(elementById.value);
+        const e: GetMessageResponse = {
+          studentId: this.toStudent.id,
+          recruiterId: this.fromRecruiter.id,
+          content: elementById.value.trim(),
+          sendTime: new Date(Date.now()),
+          deliveredTime: new Date(Date.now())
+        };
+        let root = document.getElementById("chat-box") as HTMLInputElement | null;
+        if(root != null){
+          this.postRecrutiterToStudentMessage({
+            fromId: this.fromRecruiter.id,
+            toId: this.toStudent.id,
+            content: elementById.value.trim()
+          }).then((res: any) => {
+            console.log(res);
+            if(res.fromRecruiterId > 0){
+              console.log(this.displayArr);
+              this.displayArr.push(e);
+              console.log(this.displayArr);
+              var div = document.createElement("div");
+              var div2 = document.createElement("div");
+              var img = document.createElement("img");
+              var p = document.createElement("p");
+
+
+              div.className = "d-flex flex-row justify-content-end mb-4 pt-1"
+              p.className = "small p-2 me-3 mb-1 text-white rounded-3 bg-primary";
+
+              p.innerText = elementById!.value.trim();
+              div2.appendChild(p);
+
+
+              img.src = (this.fromRecruiter.image as string);
+              img.style.width = "45px";
+              img.style.height = "100%";
+              div.appendChild(div2);
+              div.appendChild(img)
+
+              root!.appendChild(div);
+              elementById!.value = "";
+            } else {
+              this.snackBar.open("Message could not be sent", "OK", {
+                duration: 4000
+              });
+            }
+          });
+        }
+
+      }
+
+    }
+  }
+
+  private async postRecrutiterToStudentMessage(payload: any) {
+    let recruiterStudentMessageResponseObservable = this.messageService.postRecruiterToStudentMessage(payload);
+    return await lastValueFrom(recruiterStudentMessageResponseObservable);
   }
 }

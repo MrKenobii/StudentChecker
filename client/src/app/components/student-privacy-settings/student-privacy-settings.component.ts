@@ -37,25 +37,38 @@ export class StudentPrivacySettingsComponent implements OnInit{
     this.postPayload.prevPassword = this.createPostForm.get('prevPassword')!.value;
     this.postPayload.newPassword = this.createPostForm.get('newPassword')!.value;
     this.postPayload.newPasswordCopy = this.createPostForm.get('newPasswordCopy')!.value;
-
     const obj: UpdatePassword = {
       prevPassword: this.createPostForm.get('prevPassword')!.value,
       newPassword: this.createPostForm.get('newPassword')!.value,
       newPasswordCopy: this.createPostForm.get('newPasswordCopy')!.value,
     };
-      this.studentService.changePassword(this.studentId,obj).subscribe((passwordResponse:UpdatePasswordResponse) => { //
-        console.log(passwordResponse);
-        if(passwordResponse && passwordResponse.status){
-          this.snackBar.open(passwordResponse.message, "OK", {
-            duration: 5000
-          });
-          this.router.navigate(['/profile/student/'+this.studentId]);
-        } else {
-          this.snackBar.open(passwordResponse.message, "OK", {
-            duration: 5000
-          });
-        }
+    if((obj.prevPassword  == null || obj.prevPassword.trim() == "")
+      ||(obj.newPassword  == null || obj.newPassword.trim() == "")
+      ||(obj.newPasswordCopy  == null || obj.newPasswordCopy.trim() == "")){
+      this.snackBar.open("You must fill all the fields", "OK", {
+        duration: 4000
       });
+    } else{
+      if(obj.newPassword != obj.newPasswordCopy){
+        this.snackBar.open("Passwords are not matching", "OK", {
+          duration: 4000
+        });
+      } else {
+        this.studentService.changePassword(this.studentId,obj).subscribe((passwordResponse:UpdatePasswordResponse) => { //
+          console.log(passwordResponse);
+          if(passwordResponse && passwordResponse.status){
+            this.snackBar.open(passwordResponse.message, "OK", {
+              duration: 5000
+            });
+            this.router.navigate(['/profile/student/'+this.studentId]);
+          } else {
+            this.snackBar.open(passwordResponse.message, "OK", {
+              duration: 5000
+            });
+          }
+        });
+      }
+    }
   }
 
 

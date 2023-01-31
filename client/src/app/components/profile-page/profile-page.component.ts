@@ -17,6 +17,7 @@ export class ProfilePageComponent implements OnInit{
   student!: StudentResponse;
   courses: any;
   isOwnProfilePage: boolean =false;
+  isStudent!: boolean;
   constructor(private activatedRoute: ActivatedRoute,private studentService: StudentService, private router: Router, private snackBar: MatSnackBar) {
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
     this.activatedRoute.params.subscribe(() => {
@@ -46,13 +47,25 @@ export class ProfilePageComponent implements OnInit{
 
 
     this.fetchTokenByStudentId(this.studentId).then((data: StudentGetTokenResponse) => {
-      this.isOwnProfilePage = localStorage.getItem("key") !== null && localStorage.getItem("key") == data.key;
+      if(data && data.key){
+        this.isOwnProfilePage = localStorage.getItem("key") !== null && localStorage.getItem("key") == data.key;
+      } else {
+      }
     }).catch((error) => {
       this.snackBar.open("Error!!!" +error, "Ok", {
         duration: 3000
       })
       this.router.navigate(['/not-found']);
     });
+    if(localStorage.getItem("key") != null){
+      this.fetchStudentByToken(localStorage.getItem("key") as string).then((res: StudentResponse) => {
+        if(res && res.name && res.id && res.collegeName){
+          this.isStudent = true;
+        } else {
+          this.isStudent = false;
+        }
+      });
+    }
   }
   private async fetchStudentById(id: number){
     let studentById = this.studentService.getStudentById(id);
@@ -65,6 +78,10 @@ export class ProfilePageComponent implements OnInit{
   private async fetchCoursesByStudentId(id: number) {
     let coursesByStudent = this.studentService.getCoursesByStudent(this.studentId);
     return await lastValueFrom(coursesByStudent);
+  }
+  private async fetchStudentByToken(token: string){
+    let studentByKey = this.studentService.getStudentByKey(token);
+    return await lastValueFrom(studentByKey);
   }
 
   editProfile() {

@@ -88,7 +88,7 @@ export class StudentProfileEditPageComponent implements OnInit {
       this.courseControl!.value.map((val:any) => {
         thatCourses.push({ name: val });
       });
-      const obj = { // değişçek
+      const obj = {
         name: this.createPostForm.get('name')!.value,
         lastName: this.createPostForm.get('lastName')!.value,
         address: this.createPostForm.get('address')!.value,
@@ -101,19 +101,34 @@ export class StudentProfileEditPageComponent implements OnInit {
         dateOfBirth: this.createPostForm.get('dateOfBirth')!.value,
         cityName:  this.cityControl!.value,
         courses: thatCourses,
-        department: '',
+        department: this.student.department,
         // collegeName: this.createPostForm.get('collegeName')!.value,
         collegeName: this.collegeControl!.value,
         image: reader.result!.toString().slice(23, reader.result!.toString().length),
       };
       console.log(obj);
-      if(this.createPostForm.get("prevPassword")!.value !== this.student.password){
-        console.log("Hereee");
+      if((obj.name == null || obj.name.trim() == "")
+        ||(obj.lastName == null || obj.lastName.trim() == "")
+        ||(obj.email == null || obj.email.trim() == "")
+        ||(obj.department == null || obj.department.trim() == "")
+        ||(obj.enrollDate == null)
+        ||(obj.phone == null || obj.phone.trim() == "")
+        ||(obj.dateOfBirth == null)
+        ||(obj.skills == null || obj.skills.trim() == "")
+        ||(obj.languages == null || obj.languages.trim() == "")
+        ||(obj.courses == null || obj.courses.length == 0)
+        ||(obj.cityName == null || obj.cityName.trim() == "")
+        ||(obj.image  == null || obj.image.trim() == "")){
+        this.snackBar.open("You must fill all the fields", "OK", {
+          duration: 4000
+        });
+      } else {
+        //console.log(obj);
+        this.studentService.editProfile(this.studentId,obj).subscribe(data => {
+          console.log(data);
+          this.router.navigate(['/profile/student/'+this.studentId]);
+        });
       }
-      this.studentService.editProfile(this.studentId,obj).subscribe(data => {
-        console.log(data);
-        this.router.navigate(['/profile/student/'+this.studentId]);
-      });
     }
   }
 

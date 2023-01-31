@@ -1,0 +1,52 @@
+<div *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+
+
+<section *ngIf="!isLoading" style="background-color: #eee;">
+  <div class="container py-5">
+
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-6">
+
+        <div class="card" id="chat2">
+          <div class="card-header d-flex justify-content-center align-items-center p-3 fw-bold">
+            <h5 *ngIf="toRecruiter && toRecruiter.name && toRecruiter.lastName" class="mb-0">{{toRecruiter.name + " " + toRecruiter.lastName}}</h5>
+          </div>
+          <div class="card-body overflow-scroll"  id="chat-box"  style="position: relative; height: 400px;">
+            <div *ngFor="let d of displayArr">
+              <div *ngIf="d.deliveredTime != null && d.sendTime == null">
+                <div *ngIf="toRecruiter" class="d-flex flex-row justify-content-start">
+                  <img *ngIf="toRecruiter &&  toRecruiter.image" [src]="toRecruiter.image || 'https://www.example.com/example.png' "
+                       alt="avatar 1" style="width: 45px; height: 100%;">
+                  <div>
+                    <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{d.content}}</p>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="d.sendTime != null && d.deliveredTime == null">
+                <div  class="d-flex flex-row justify-content-end mb-4 pt-1">
+                  <div>
+                    <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{{d.content}}</p>
+                  </div>
+                  <img *ngIf="fromStudent && fromStudent.image" src="{{fromStudent.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}"
+                       alt="avatar 1" style="width: 45px; height: 100%;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="fromStudent" class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+            <img *ngIf="fromStudent && fromStudent.image"  [src]="fromStudent.image || 'https://www.example.com/example.png' " alt="avatar 3" style="width: 40px; height: 100%;">
+              <input type="text" class="form-control form-control-lg ms-1" id="exampleFormControlInput1" placeholder="Type message">
+              <a class="ms-3" (click)="sendMessage()">
+                <mat-icon>send</mat-icon>
+              </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+

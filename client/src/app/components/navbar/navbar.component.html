@@ -36,8 +36,17 @@
             <button class="btn btn-danger text-white" type="button">
               Search
             </button>
+
           </form>
 
+        </li>
+        <li class="nav-item ms-lg-5 ">
+          <button *ngIf="recruiter && !student" type="button" class="btn btn-secondary bg-gradient text-white" (click)="openMessagesRecruiter(recruiter.id)" >
+            <mat-icon> message</mat-icon>
+          </button>
+          <button *ngIf="!recruiter && student" type="button" class="btn btn-secondary bg-gradient text-white" (click)="openMessagesStudent(student.id)" >
+            <mat-icon> message</mat-icon>
+          </button>
         </li>
       </ul>
     </div>

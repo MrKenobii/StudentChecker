@@ -1,0 +1,63 @@
+<div *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+
+
+<section *ngIf="!isLoading" style="background-color: #eee;">
+  <div class="container py-5">
+
+    <div class="row overflow-scroll h-25">
+
+      <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+
+        <h5 *ngIf="recruiter && recruiter.name && recruiter.lastName" class="font-weight-bold mb-3 text-center text-lg-start">{{recruiter.name + ' ' + recruiter.lastName }}</h5>
+        <div *ngIf="deliveredMessages && deliveredMessages.length > 0">
+          <div class="card">
+          <div class="card-body">
+
+            <ul *ngFor="let u of updatedDeliveredMessages" class="list-unstyled mb-0">
+              <li class="p-2 border-bottom" style="background-color: #eee;">
+                <a (click)="goTo(u.studentId)" class="d-flex justify-content-between">
+                  <div *ngIf="u && u.student && u.student.id && u.student.image && u.student.name && u.student.lastName" class="d-flex flex-row">
+                    <img [src]="'data:image/png;base64,'+u.student.image" alt="avatar"
+                         class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                    <div class="pt-1">
+                      <p class="fw-bold mb-0">{{u.student.name + ' ' + u.student.lastName }}</p>
+                      <p class="small text-muted">{{u.content}}</p>
+                    </div>
+                  </div>
+                  <div class="pt-1">
+                    <p class="small text-muted mb-1">{{u.deliveredTime}}</p>
+                    <span class="badge bg-danger float-end">1</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+        </div>
+          <div *ngIf="deliveredMessages && deliveredMessages.length <= 0">
+            <mat-card class="example-card">
+              <mat-card-header>
+                <mat-card-subtitle>Student</mat-card-subtitle>
+                <mat-card-title>{{recruiter.name + " " + recruiter.lastName}}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>You have no messages</p>
+                <mat-divider></mat-divider>
+              </mat-card-content>
+              <mat-card-footer>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </mat-card-footer>
+            </mat-card>
+
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+</section>
