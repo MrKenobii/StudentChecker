@@ -96,6 +96,7 @@ export class RecruiterTableComponent {
     this.recruiterService.deleteRecruiter(id).subscribe((data: DeleteResponse) => {
       if(data){
         this.dumbRecruiters.filter(s => s.id != id);
+        this.recruiters.filter(s => s.id != id);
         this.snackBar.open(data.message, "OK", {
           duration: 4000
         });

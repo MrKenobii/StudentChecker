@@ -62,6 +62,7 @@ import { StudentChatRoomComponent } from './components/student-chat-room/student
 import {MatCardModule} from "@angular/material/card";
 import {MatListModule} from "@angular/material/list";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { FeedComponent } from './components/feed/feed.component';
 
 
 
@@ -110,6 +111,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     StudentsMessageBoxComponent,
     RecruitersMessageBoxComponent,
     StudentChatRoomComponent,
+    FeedComponent,
   ],
   imports: [
     BrowserModule,

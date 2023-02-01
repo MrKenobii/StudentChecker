@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230201123351_CreatePostTable")]
+    partial class CreatePostTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,11 +430,11 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Post", b =>
                 {
                     b.HasOne("Backend.Models.Recruiter", "Recruiter")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("RecruiterId");
 
                     b.HasOne("Backend.Models.Student", "Student")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("StudentId");
 
                     b.Navigation("Recruiter");
@@ -536,8 +538,6 @@ namespace Backend.Migrations
                 {
                     b.Navigation("DeliveredMessages");
 
-                    b.Navigation("Posts");
-
                     b.Navigation("RecruiterCompanies");
 
                     b.Navigation("SendMessages");
@@ -546,8 +546,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Student", b =>
                 {
                     b.Navigation("DeliveredMessages");
-
-                    b.Navigation("Posts");
 
                     b.Navigation("SendMessages");
 
