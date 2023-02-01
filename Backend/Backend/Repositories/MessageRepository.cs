@@ -220,13 +220,21 @@ public class MessageRepository : IMessageRepository
             var students = _context.Students.ToList();
             Console.WriteLine(sendMessage.Content);
             var firstOrDefault = _context.DeliveredMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
+            var _stu = _context.Students.Where(s => s.Id == studentId).FirstOrDefault();
+            var _rec = _context.Recruiters.Where(r => r.Id == firstOrDefault.Recruiter.Id).FirstOrDefault();
             list.Add(new GetSendMessageResponse()
             {
                 Content = sendMessage.Content,
                 StudentId = studentId,
                 RecruiterId = firstOrDefault.Recruiter.Id,
                 SendTime = sendMessage.SendTime,
-                DeliveredTime = null
+                DeliveredTime = null,
+                RecruiterImage = _rec.Image,
+                RecruiterName = _rec.Name,
+                RecruiterLastName = _rec.LastName,
+                StudentImage = _stu.Image,
+                StudentName = _stu.Name,
+                StudentLastName = _stu.LastName,
             });
         }
 
@@ -248,13 +256,21 @@ public class MessageRepository : IMessageRepository
             var students = _context.Students.ToList();
             Console.WriteLine(sendMessage.Content);
             var firstOrDefault = _context.SendMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
+            var _stu = _context.Students.Where(s => s.Id == studentId).FirstOrDefault();
+            var _rec = _context.Recruiters.Where(r => r.Id == firstOrDefault.Recruiter.Id).FirstOrDefault();
             list.Add(new GetSendMessageResponse()
             {
                 Content = sendMessage.Content,
                 StudentId = studentId,
                 RecruiterId = firstOrDefault.Recruiter.Id,
                 DeliveredTime = sendMessage.DeliveredTime,
-                SendTime = null
+                SendTime = null,
+                RecruiterImage = _rec.Image,
+                RecruiterName = _rec.Name,
+                RecruiterLastName = _rec.LastName,
+                StudentImage = _stu.Image,
+                StudentName = _stu.Name,
+                StudentLastName = _stu.LastName,
             });
         }
 
@@ -276,13 +292,21 @@ public class MessageRepository : IMessageRepository
             var students = _context.Students.ToList();
             Console.WriteLine(sendMessage.Content);
             var firstOrDefault = _context.DeliveredMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
+            var _stu = _context.Students.Where(s => s.Id == firstOrDefault.Student.Id).FirstOrDefault();
+            var _rec = _context.Recruiters.Where(r => r.Id == recruiterId).FirstOrDefault();
             list.Add(new GetSendMessageResponse()
             {
                 Content = sendMessage.Content,
                 StudentId = firstOrDefault.Student.Id,
                 RecruiterId = recruiterId,
                 SendTime = sendMessage.SendTime,
-                DeliveredTime = null
+                DeliveredTime = null,
+                RecruiterImage = _rec.Image,
+                RecruiterName = _rec.Name,
+                RecruiterLastName = _rec.LastName,
+                StudentImage = _stu.Image,
+                StudentName = _stu.Name,
+                StudentLastName = _stu.LastName,
             });
         }
 
@@ -304,13 +328,21 @@ public class MessageRepository : IMessageRepository
             var students = _context.Students.ToList();
             Console.WriteLine(sendMessage.Content);
             var firstOrDefault = _context.SendMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
+            var _stu = _context.Students.Where(s => s.Id == firstOrDefault.Student.Id).FirstOrDefault();
+            var _rec = _context.Recruiters.Where(r => r.Id == recruiterId).FirstOrDefault();
             list.Add(new GetSendMessageResponse()
             {
                 Content = sendMessage.Content,
                 StudentId = firstOrDefault.Student.Id,
                 RecruiterId = recruiterId,
                 DeliveredTime = sendMessage.DeliveredTime,
-                SendTime = null
+                SendTime = null,
+                RecruiterImage = _rec.Image,
+                RecruiterName = _rec.Name,
+                RecruiterLastName = _rec.LastName,
+                StudentImage = _stu.Image,
+                StudentName = _stu.Name,
+                StudentLastName = _stu.LastName,
             });
         }
 

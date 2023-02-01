@@ -7,6 +7,7 @@ import {StudentService} from "../../services/student/student.service";
 import {MessageService} from "../../services/message/message.service";
 import {GetMessageResponse} from "../../interfaces/message/GetMessageResponse";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
+import * as moment from 'moment';
 import {lastValueFrom} from "rxjs";
 interface UpdatedRecruiterDeliveredMessages {
   studentId: number;
@@ -25,7 +26,7 @@ export class StudentsMessageBoxComponent implements OnInit{
   id!: number;
   isLoading!: boolean;
   deliveredMessages!: GetMessageResponseWithDateTime[];
-  updatedDeliveredMessages: UpdatedRecruiterDeliveredMessages[] = [];
+  updatedDeliveredMessages: any[] = [];
   student!: StudentResponse;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -38,6 +39,33 @@ export class StudentsMessageBoxComponent implements OnInit{
       this.id = this.activatedRoute.snapshot.params['id'];
     });
   }
+  private timeSince(date: any) {
+
+    var seconds = Math.floor(((new Date().getTime()) - date) / 1000);
+
+    var interval = seconds / 31536000;
+
+    if (interval > 1) {
+      return Math.floor(interval) + " years";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " months";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " days";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " hours";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minutes";
+    }
+    return Math.floor(seconds) + " seconds";
+  }
   ngOnInit(): void {
     if(localStorage.getItem("key")){
       this.getStudentByToken(localStorage.getItem("key") as string).then((d: StudentResponse) => {
@@ -48,41 +76,16 @@ export class StudentsMessageBoxComponent implements OnInit{
             this.isLoading = true;
             this.deliveredMessages = deliveredM;
             this.isLoading = false;
-            this.deliveredMessages.sort((a: GetMessageResponse, b: GetMessageResponse) => {
-              if(a.sendTime != null && b.deliveredTime != null){
-                return  new Date(a.sendTime!).getTime() - new Date(b.deliveredTime!).getTime();
-              } else if(a.deliveredTime != null && b.sendTime != null){
-                return  new Date(a.deliveredTime!).getTime() - new Date(b.sendTime!).getTime();
-              } else if(a.sendTime != null && b.sendTime != null) {
-                return new Date(a.sendTime!).getTime() - new Date(b.sendTime!).getTime();
-              } else if(a.deliveredTime != null && b.deliveredTime != null){
-                return new Date(a.deliveredTime!).getTime() - new Date(b.deliveredTime!).getTime();
-              }
-              return 0;
-            });
             console.log(this.deliveredMessages);
             if(this.deliveredMessages.length > 0){
-              const unique2: any[] = [];
-              this.deliveredMessages.map(x => unique2.filter((a: any) => a.recruiterId == x.recruiterId).length > 0 ? null : unique2.push(x));
-              console.log(unique2);
-              for(let i = 0; i<unique2.length; i++){
-                this.getRecruiterById(unique2[i].recruiterId).then((_rec: RecruiterGetResponse) => {
-                  this.isLoading = true;
-                  this.updatedDeliveredMessages.push({ ...unique2[i], recruiter:  _rec});
-                  this.isLoading = false;
-                });
+              this.deliveredMessages.reverse();
+              this.deliveredMessages.map(x => this.updatedDeliveredMessages.filter((a: any) => a.recruiterId == x.recruiterId).length > 0 ? null : this.updatedDeliveredMessages.push(x));
+              for(let i = 0; i<this.updatedDeliveredMessages.length; i++){
+                this.updatedDeliveredMessages[i] = { ...this.updatedDeliveredMessages[i], deliveredTime:moment(new Date(this.updatedDeliveredMessages[i].deliveredTime)).fromNow() }
               }
               console.log(this.updatedDeliveredMessages);
               this.isLoading = false;
             }
-            // for(let i = 0; i<this.deliveredMessages.length; i++){
-            //   this.getRecruiterById(this.deliveredMessages[i].recruiterId).then((_rec: RecruiterGetResponse) => {
-            //     this.isLoading = true;
-            //     this.updatedDeliveredMessages.push({ ...this.deliveredMessages[i], recruiter:  _rec});
-            //     this.isLoading = false;
-            //   });
-            // }
-            //this.isLoading = false;
           });
         } else {
           this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -93,6 +96,12 @@ export class StudentsMessageBoxComponent implements OnInit{
         }
         //this.isLoading = false;
       });
+    } else {
+      this.router.routeReuseStrategy.shouldReuseRoute = function () {
+        return false;
+      }
+      this.router.onSameUrlNavigation = 'reload';
+      this.router.navigate(['/forbidden']);
     }
 
   }

@@ -18,11 +18,11 @@
               <ul *ngFor="let u of updatedDeliveredMessages" class="list-unstyled mb-0">
                 <li class="p-2 border-bottom" style="background-color: #eee;">
                   <a (click)="goTo(u.recruiterId)" class="d-flex justify-content-between">
-                    <div *ngIf="u && u.recruiter && u.recruiter.id && u.recruiter.image && u.recruiter.name && u.recruiter.lastName" class="d-flex flex-row">
-                      <img [src]="'data:image/png;base64,'+u.recruiter.image" alt="avatar"
+                    <div *ngIf="u && u.recruiterId && u.recruiterImage && u.recruiterName && u.recruiterLastName" class="d-flex flex-row">
+                      <img [src]="'data:image/png;base64,'+u.recruiterImage" alt="avatar"
                            class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                       <div class="pt-1">
-                        <p class="fw-bold mb-0">{{u.recruiter.name + ' ' + u.recruiter.lastName }}</p>
+                        <p class="fw-bold mb-0">{{u.recruiterName + ' ' + u.recruiterLastName }}</p>
                         <p class="small text-muted">{{u.content}}</p>
                       </div>
                     </div>

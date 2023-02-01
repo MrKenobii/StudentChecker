@@ -268,6 +268,21 @@ public class RecruiterRepository : IRecruiterRepository
         recruiter.HireDate = recruiterUpdateProfile.HireDate;
         recruiter.DateOfBirth = recruiterUpdateProfile.DateOfBirth;
         recruiter.Phone = recruiterUpdateProfile.Phone;
+        recruiter.IsActivated = true;
+        recruiter.Image = recruiterUpdateProfile.Image;
+        var _com = new List<CompanyRequestById>();
+        var firstOrDefault = _context.Companies.Where(s => s.Name == recruiterUpdateProfile.CompanyName).FirstOrDefault();
+        _com.Add(new CompanyRequestById()
+        {
+            Id = firstOrDefault.Id
+        });
+
+        this.AddCompany(recruiterId, new AddCompanyToRecruiter()
+        {
+            Companies = _com
+        });
+        
+        
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -284,8 +299,8 @@ public class RecruiterRepository : IRecruiterRepository
         var token = tokenHandler.CreateToken(tokenDescriptor);
         recruiter.Token = tokenHandler.WriteToken(token);
 
-        // student.Image = studentUpdateProfile.Image,
-        recruiter.IsActivated = false;
+        
+        
 
 
 
@@ -447,6 +462,14 @@ public class RecruiterRepository : IRecruiterRepository
             bool verify = BCrypt.Net.BCrypt.Verify(loginRequest.Password, recruiter.Password);
             if (verify)
             {
+                if (!recruiter.IsActivated)
+                {
+                    return new RecruiterLoginResponse()
+                    {
+                        Key = null,
+                        Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName + "'s account has not been enabled yet"
+                    };
+                }
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor

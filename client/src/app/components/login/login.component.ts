@@ -10,6 +10,8 @@ import {RecruiterPostLoginResponse} from "../../interfaces/recruiter/login/Recru
 import {AdminService} from "../../services/admin/admin.service";
 import {AdminLoginResponse} from "../../interfaces/admin/AdminLoginResponse";
 import {AdminLoginRequest} from "../../interfaces/admin/AdminLoginRequest";
+import {lastValueFrom} from "rxjs";
+import {RecruiterPostLoginRequest} from "../../interfaces/recruiter/login/RecruiterPostLoginRequest";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -47,7 +49,7 @@ export class LoginComponent implements OnInit{
         duration: 4000
       });
     } else {
-      this.adminService.loginAsAdmin(obj).subscribe((data: AdminLoginResponse) => {
+      this.loginAsAdmin(obj).then((data: AdminLoginResponse) => {
         console.log(data);
         if(data.key){
           localStorage.clear();
@@ -62,7 +64,7 @@ export class LoginComponent implements OnInit{
             window.location.reload();
           });
         } else {
-          this.studentService.login(this.postPayload).subscribe((data: StudentLoginResponse) => {
+          this.loginAsStudent(this.postPayload).then((data: StudentLoginResponse) => {
             console.log(data);
             if (data.key !== null) {
               this.snackBar.open(data.message, "Dismiss", {
@@ -79,7 +81,7 @@ export class LoginComponent implements OnInit{
                 window.location.reload();
               });
             } else {
-              this.recruiterService.login(this.postPayload).subscribe((_data: RecruiterPostLoginResponse) => {
+              this.loginAsRecruiter(this.postPayload).then((_data: RecruiterPostLoginResponse) => {
                 console.log(_data);
                 if (_data.key !== null) {
                   console.log(_data);
@@ -96,22 +98,39 @@ export class LoginComponent implements OnInit{
                     window.location.reload();
                   });
                 } else {
-                  this.snackBar.open(`Invalid credentials`, "Ok", {
+                  this.snackBar.open(`Your account has not been enabled yet`, "Ok", {
                     duration: 5000
                   })
                 }
-
               });
+              // this.recruiterService.login(this.postPayload).subscribe((_data: RecruiterPostLoginResponse) => {
+              //
+              //
+              // });
             }
-
           });
+          // this.studentService.login(this.postPayload).subscribe((data: StudentLoginResponse) => {
+          //
+          //
+          // });
         }
-      });
+      })
+      // this.adminService.loginAsAdmin(obj).subscribe((data: AdminLoginResponse) => {
+      //
+      // });
     }
+  }
 
-
-
-
-
+  private async loginAsAdmin(obj: AdminLoginRequest){
+    let adminLoginResponseObservable = this.adminService.loginAsAdmin(obj);
+    return await lastValueFrom(adminLoginResponseObservable)
+  };
+  private async loginAsStudent(obj: StudentLoginRequest){
+    let observable = this.studentService.login(obj);
+    return await lastValueFrom(observable);
+  }
+  private async loginAsRecruiter(obj: RecruiterPostLoginRequest){
+    let observable = this.recruiterService.login(obj);
+    return await lastValueFrom(observable);
   }
 }

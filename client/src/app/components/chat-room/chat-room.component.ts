@@ -110,6 +110,12 @@ export class ChatRoomComponent implements OnInit{
         }
         this.isLoading = false;
       });
+    } else {
+      this.router.routeReuseStrategy.shouldReuseRoute = function () {
+        return false;
+      }
+      this.router.onSameUrlNavigation = 'reload';
+      this.router.navigate(['/forbidden']);
     }
   }
   private async getSendDeliveredStudentById(id: number){

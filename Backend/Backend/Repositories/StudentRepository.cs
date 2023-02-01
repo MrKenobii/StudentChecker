@@ -598,6 +598,14 @@ public class StudentRepository : IStudentRepository
                 bool verify = BCrypt.Net.BCrypt.Verify(loginRequest.Password, student.Password);
                 if (verify)
                 {
+                    if (!student.IsActivated)
+                    {
+                        return new StudentLoginReponse()
+                        {
+                            Key = null,
+                            Message = "Student " + student.Name + " " + student.LastName + "'s account has not been enabled yet!!"
+                        };  
+                    }
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
                     var tokenDescriptor = new SecurityTokenDescriptor

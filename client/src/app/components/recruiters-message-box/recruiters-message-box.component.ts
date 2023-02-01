@@ -9,6 +9,7 @@ import {GetMessageResponseWithDateTime} from "../../interfaces/message/GetMessag
 import {GetMessageResponse} from "../../interfaces/message/GetMessageResponse";
 import {StudentService} from "../../services/student/student.service";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
+import * as moment from 'moment';
 interface UpdatedRecruiterDeliveredMessages {
   studentId: number;
   recruiterId: number;
@@ -27,7 +28,7 @@ export class RecruitersMessageBoxComponent implements OnInit{
   id!: number;
   isLoading!: boolean;
   deliveredMessages!: GetMessageResponseWithDateTime[];
-  updatedDeliveredMessages: UpdatedRecruiterDeliveredMessages[] = [];
+  updatedDeliveredMessages: any[] = [];
   recruiter!: RecruiterGetResponse;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -49,33 +50,22 @@ export class RecruitersMessageBoxComponent implements OnInit{
           this.getSendDeliveredRecruiterById(this.id).then((deliveredM:GetMessageResponseWithDateTime[]) => {
             this.isLoading = true;
             this.deliveredMessages = deliveredM;
-            this.deliveredMessages.sort((a: GetMessageResponse, b: GetMessageResponse) => {
-              if(a.sendTime != null && b.deliveredTime != null){
-                return  new Date(a.sendTime!).getTime() - new Date(b.deliveredTime!).getTime();
-              } else if(a.deliveredTime != null && b.sendTime != null){
-                return  new Date(a.deliveredTime!).getTime() - new Date(b.sendTime!).getTime();
-              } else if(a.sendTime != null && b.sendTime != null) {
-                return new Date(a.sendTime!).getTime() - new Date(b.sendTime!).getTime();
-              } else if(a.deliveredTime != null && b.deliveredTime != null){
-                return new Date(a.deliveredTime!).getTime() - new Date(b.deliveredTime!).getTime();
-              }
-              return 0;
-            });
+            console.log(deliveredM);
             console.log(this.deliveredMessages);
             if(this.deliveredMessages.length > 0){
-              const unique2: any[] = [];
-              this.deliveredMessages.map(x => unique2.filter((a: any) => a.studentId == x.studentId).length > 0 ? null : unique2.push(x));
-              console.log(unique2);
-              for(let i = 0; i<unique2.length; i++){
-                this.getStudentById(unique2[i].studentId).then((stu: StudentResponse) => {
-                  this.isLoading = true;
-                  this.updatedDeliveredMessages.push({ ...unique2[i], student:  stu});
-                  this.isLoading = false;
-                });
+              this.deliveredMessages.reverse();
+              this.deliveredMessages.map(x => this.updatedDeliveredMessages.filter((a: any) => a.studentId == x.studentId).length > 0 ? null : this.updatedDeliveredMessages.push(x));
+              console.log(this.updatedDeliveredMessages);
+              for(let i =0; i< this.updatedDeliveredMessages.length; i++){
+                this.updatedDeliveredMessages[i] = { ...this.updatedDeliveredMessages[i], deliveredTime:moment(new Date(this.updatedDeliveredMessages[i].deliveredTime)).fromNow() }
               }
               console.log(this.updatedDeliveredMessages);
               this.isLoading = false;
             }
+          }).finally(() => {
+            this.updatedDeliveredMessages.map((x: UpdatedRecruiterDeliveredMessages) => {
+              console.log(x.content);
+            });
           });
         } else {
           this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -86,6 +76,12 @@ export class RecruitersMessageBoxComponent implements OnInit{
         }
         //this.isLoading = false;
       });
+    } else {
+      this.router.routeReuseStrategy.shouldReuseRoute = function () {
+        return false;
+      }
+      this.router.onSameUrlNavigation = 'reload';
+      this.router.navigate(['/forbidden']);
     }
 
   }

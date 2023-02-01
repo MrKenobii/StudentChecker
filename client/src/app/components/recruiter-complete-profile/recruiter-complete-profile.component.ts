@@ -80,7 +80,7 @@ export class RecruiterCompleteProfileComponent implements OnInit{
       } else {
         this.recruiterService.updateProfile(this.recruiterId,obj).subscribe(data => {
           console.log(data);
-          if(data && data.id){
+          if(data && data.id > 0){
             this.recruiterService.getTokenByRecruiterId(data.id).subscribe((token: RecruiterGetKeyResponse) => {
               if(token && token.key){
                 localStorage.setItem("key", token.key);

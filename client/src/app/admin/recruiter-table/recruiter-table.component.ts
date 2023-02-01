@@ -6,6 +6,8 @@ import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetRespo
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {lastValueFrom} from "rxjs";
 import {Router} from "@angular/router";
+import {DeleteResponse} from "../../interfaces/DeleteResponse";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 interface FormattedRecruiters {
   id: number;
@@ -34,7 +36,7 @@ export class RecruiterTableComponent {
 
   dumbRecruiters: FormattedRecruiters[] = [];
   collectionSize!: number;
-  constructor(private router: Router,private recruiterService: RecruiterService) {
+  constructor(private router: Router,private recruiterService: RecruiterService, private snackBar: MatSnackBar) {
 
   }
   format(inputDate: Date) {
@@ -90,7 +92,17 @@ export class RecruiterTableComponent {
   }
 
   deleteRecruiter(id: number) {
-
+    this.recruiterService.deleteRecruiter(id).subscribe((data: DeleteResponse) => {
+      if(data){
+        this.snackBar.open(data.message, "OK", {
+          duration: 4000
+        });
+      } else {
+        this.snackBar.open("Something went wrong", "OK", {
+          duration: 4000
+        });
+      }
+    });
   }
 
   editRecruiter(id: number) {
