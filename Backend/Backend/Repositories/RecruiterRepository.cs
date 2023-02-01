@@ -85,11 +85,27 @@ public class RecruiterRepository : IRecruiterRepository
     public DeleteResponse DeleteRecruiter(int recruiterId)
     {
         var recruiter = this.GetRecruiter(recruiterId);
+        var sendMessages = _context.SendMessages.Where(s => s.Recruiter.Id == recruiterId).ToList();
+        var deliveredMessages = _context.DeliveredMessages.Where(s => s.Recruiter.Id == recruiterId).ToList();
+        Console.WriteLine("Before");
+        Console.WriteLine(sendMessages.Count);
+        Console.WriteLine(deliveredMessages.Count);
+        foreach (var sendMessage in sendMessages)
+        {
+            _context.SendMessages.Remove(sendMessage);
+        }
+        foreach (var deliveredMessage in deliveredMessages)
+        {
+            _context.DeliveredMessages.Remove(deliveredMessage);
+        }
+        Console.WriteLine("After");
+        Console.WriteLine(sendMessages.Count);
+        Console.WriteLine(deliveredMessages.Count);
         _context.Recruiters.Remove(recruiter);
         _context.SaveChanges();
         return new DeleteResponse()
         {
-            Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName + " was deleted"
+            Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName + " was deleted."
         };
     }
 

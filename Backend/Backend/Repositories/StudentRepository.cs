@@ -396,6 +396,22 @@ public class StudentRepository : IStudentRepository
     public DeleteResponse DeleteStudent(int studentId)
     {
         var student = this.GetStudent(studentId);
+        var sendMessages = _context.SendMessages.Where(s => s.Student.Id == studentId).ToList();
+        var deliveredMessages = _context.DeliveredMessages.Where(s => s.Student.Id == studentId).ToList();
+        Console.WriteLine("Before");
+        Console.WriteLine(sendMessages.Count);
+        Console.WriteLine(deliveredMessages.Count);
+        foreach (var sendMessage in sendMessages)
+        {
+            _context.SendMessages.Remove(sendMessage);
+        }
+        foreach (var deliveredMessage in deliveredMessages)
+        {
+            _context.DeliveredMessages.Remove(deliveredMessage);
+        }
+        Console.WriteLine("After");
+        Console.WriteLine(sendMessages.Count);
+        Console.WriteLine(deliveredMessages.Count);
         _context.Students.Remove(student);
         _context.SaveChanges();
         return new DeleteResponse()

@@ -25,6 +25,15 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+        // modelBuilder.Entity<DeliveredMessage>().HasOne(p => p.Recruiter).WithMany(b => b.DeliveredMessages)
+        //     .HasForeignKey(p => p.Recruiter.Id)
+        //     .OnDelete(DeleteBehavior.Cascade);
+        // modelBuilder.Entity<SendMessage>().HasOne(p => p.Recruiter).WithMany(b => b.SendMessages)
+        //     .HasForeignKey(p => p.Recruiter.Id)
+        //     .OnDelete(DeleteBehavior.Cascade);
+        
+        
         modelBuilder.Entity<RecruiterCompany>()
             .HasKey(pc => new { pc.RecruiterId, pc.CompanyId });
         modelBuilder.Entity<RecruiterCompany>()
