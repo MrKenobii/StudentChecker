@@ -3,20 +3,20 @@
 </div>
 
 
-<section *ngIf="!isLoading" style="background-color: #eee;">
+<section *ngIf="!isLoading" style="background-image: linear-gradient(#009FFD, #2A2A72);">
   <div class="container py-5">
 
     <div class="row overflow-scroll h-25">
 
       <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
 
-        <h5 *ngIf="student && student.name && student.lastName" class="font-weight-bold mb-3 text-center text-lg-start">{{student.name + ' ' + student.lastName }}</h5>
+        <h5 *ngIf="student && student.name && student.lastName" class="fw-bold text-white text-1 mb-3 text-center text-lg-start">{{student.name + ' ' + student.lastName }}</h5>
         <div *ngIf="deliveredMessages && deliveredMessages.length > 0">
-          <div  class="card">
+          <div  class="card" style="background-image: linear-gradient(#6782B4, #B1BFD8);">
             <div  class="card-body">
 
               <ul *ngFor="let u of updatedDeliveredMessages" class="list-unstyled mb-0">
-                <li class="p-2 border-bottom" style="background-color: #eee;">
+                <li class="p-2 border-bottom" style="background-image: linear-gradient(#83EAF1, #63A4FF); border-radius: 15px;">
                   <a (click)="goTo(u.recruiterId)" class="d-flex justify-content-between">
                     <div *ngIf="u && u.recruiterId && u.recruiterImage && u.recruiterName && u.recruiterLastName" class="d-flex flex-row">
                       <img [src]="'data:image/png;base64,'+u.recruiterImage" alt="avatar"

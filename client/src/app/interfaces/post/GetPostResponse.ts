@@ -7,4 +7,5 @@ export interface GetPostResponse{
   title: string;
   recruiter?: RecruiterGetResponse;
   student?: Student
+  createdTime: Date
 }

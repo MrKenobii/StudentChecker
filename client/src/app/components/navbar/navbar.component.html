@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg  bg-primary bg-gradient text-white">
+<nav class="navbar navbar-expand-lg  text-white" style="background-image: linear-gradient(#3348f5, #091083);">
 
   <div class="container-fluid text-white">
 
@@ -45,15 +45,15 @@
     </div>
     <div class="d-flex">
       <div class="me-2 ms-lg-5 ">
-        <button *ngIf="recruiter && !student" type="button" class="btn btn-secondary bg-gradient text-white" (click)="openMessagesRecruiter(recruiter.id)" >
+        <button *ngIf="recruiter && !student" type="button" class="btn text-white" style="background-image: linear-gradient(#3348f5, #091083);"  (click)="openMessagesRecruiter(recruiter.id)" >
           <mat-icon> message</mat-icon>
         </button>
-        <button *ngIf="!recruiter && student" type="button" class="btn btn-secondary bg-gradient text-white" (click)="openMessagesStudent(student.id)" >
+        <button *ngIf="!recruiter && student" type="button" class="btn text-white" style="background-image: linear-gradient(rgba(22,46,166,0.4), #091083);" (click)="openMessagesStudent(student.id)" >
           <mat-icon> message</mat-icon>
         </button>
       </div>
       <div *ngIf="!(student || recruiter)" ngbDropdown class="d-inline-block">
-        <button type="button" class="btn btn-success bg-gradient text-white" id="dropdownBasic1" ngbDropdownToggle>
+        <button type="button" class="btn text-white" id="dropdownBasic1" ngbDropdownToggle style="background-image: linear-gradient(#0D324D, #7F5A83);">
           Actions
         </button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
@@ -78,7 +78,7 @@
       <div *ngIf="student" class="example-button-row">
         <div class="example-flex-container">
           <div ngbDropdown  class="example-button-container d-inline-block">
-            <button *ngIf="student" type="button" class="btn btn-success bg-gradient text-white w-100" id="dropdownBasic2" ngbDropdownToggle>
+            <button *ngIf="student" type="button" class="btn  text-white w-100" id="dropdownBasic2" ngbDropdownToggle style="background-image: linear-gradient(#0D324D, #7F5A83);">
               {{student.name}} {{student.lastName}}
             </button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic2">

@@ -9,4 +9,5 @@ public class PostResponse
     public string Content { get; set; }
     public Models.Recruiter? Recruiter { get; set; }
     public Student? Student { get; set; }
+    public DateTime CreatedTime { get; set; }
 }

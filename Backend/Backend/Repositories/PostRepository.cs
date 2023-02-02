@@ -33,6 +33,7 @@ public class PostRepository : IPostRepository
                     Id = post.Id,
                     Recruiter = null,
                     Student = student,
+                    CreatedTime = post.CreatedTime
                 });
             }
             if (student == null && recruiter != null)
@@ -45,6 +46,7 @@ public class PostRepository : IPostRepository
                     Id = post.Id,
                     Recruiter = recruiter,
                     Student = null,
+                    CreatedTime = post.CreatedTime
                 });
             }
                 
@@ -54,20 +56,7 @@ public class PostRepository : IPostRepository
         return postResponses;
     }
 
-    private Student? GetStudentsInside(int postId)
-    {
-        var student = _context.Students.Where(s => s.Id == 1).FirstOrDefault();
-        Console.WriteLine(student.Posts.Count);
-        return student;
-    }
-
-    private Recruiter? GetRecruiterInside(int postId)
-    {
-        var recruiter = _context.Recruiters.Where(s => s.Id == 4).FirstOrDefault();
-        
-        return recruiter;
-    }
-
+    
     public PostResponse GetPostById(int postId)
     {
         var post = _context.Posts.Where(p => p.Id == postId).FirstOrDefault();
@@ -79,7 +68,8 @@ public class PostRepository : IPostRepository
                 Content = post.Content,
                 Recruiter = post.Recruiter,
                 Student = post.Student,
-                Title = post.Title
+                Title = post.Title,
+                CreatedTime = post.CreatedTime
             };
         }
 
@@ -101,16 +91,19 @@ public class PostRepository : IPostRepository
                 Content = request.Content,
                 Title = request.Title,
                 Student = student,
-                Recruiter = null
+                Recruiter = null,
+                CreatedTime = DateTime.Now
             };
             _context.Posts.Add(post);
             _context.SaveChanges();
             return new PostResponse()
             {
+                Id = post.Id,
                 Content = post.Content,
                 Title = post.Title,
                 Student = student,
-                Recruiter = null
+                Recruiter = null,
+                CreatedTime = post.CreatedTime
             };
         }
 
@@ -129,16 +122,19 @@ public class PostRepository : IPostRepository
                 Content = request.Content,
                 Title = request.Title,
                 Student = null,
-                Recruiter = recruiter
+                Recruiter = recruiter,
+                CreatedTime = DateTime.Now
             };
             _context.Posts.Add(post);
             _context.SaveChanges();
             return new PostResponse()
             {
+                Id = post.Id,
                 Content = post.Content,
                 Title = post.Title,
                 Student = null,
-                Recruiter = recruiter
+                Recruiter = recruiter,
+                CreatedTime = post.CreatedTime
             };
         }
 

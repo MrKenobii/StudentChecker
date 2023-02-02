@@ -63,10 +63,13 @@ import {FeedComponent} from "./components/feed/feed.component";
 
 const routes: Route[] = [
   {
-    path: '', component: HomeComponent
+    path: '', component: FeedComponent
   },
   {
-    path: 'feed', component: FeedComponent
+    path: 'feed', redirectTo: ''
+  },
+  {
+    path: 'about', component: HomeComponent
   },
   {
     path: 'students', component: StudentTableComponent

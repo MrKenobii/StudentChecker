@@ -2,8 +2,10 @@
   <app-loader></app-loader>
 </div>
 
-<div *ngIf="!isLoading && posts && posts.length > 0" style="margin-right: 25%; margin-left: 25%">
-  <div class="card m-2">
+
+<section style="background-image: linear-gradient(#009FFD, #2A2A72);" class="p-4">
+  <div *ngIf="!isLoading" style="margin-right: 25%; margin-left: 25%;" >
+  <div class="card m-2" *ngIf="student || recruiter">
     <h5 class="card-header d-flex  justify-content-start">
       <p class="ms-2">SHARE YOUR THOUGHTS</p>
     </h5>
@@ -13,14 +15,14 @@
         <div class="d-flex flex-row align-items-center mb-4">
           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
           <div class="form-outline flex-fill mb-0">
-            <input type="text" id="title" class="form-control"  [formControlName]="'title'" />
+            <input type="text" id="title" class="form-control"  [formControlName]="'title'" placeholder="What's your title of content?" />
             <label class="form-label" for="title">Title</label>
           </div>
         </div>
         <div class="d-flex flex-row align-items-center mb-4">
           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
           <div class="form-outline flex-fill mb-0">
-            <textarea type="text" id="content" class="form-control"  [formControlName]="'content'"></textarea>
+            <textarea type="text" id="content" class="form-control" rows="5" cols="40" placeholder="What's your content?"  [formControlName]="'content'" style="resize: none"></textarea>
             <label class="form-label" for="content">Content</label>
           </div>
         </div>
@@ -32,22 +34,24 @@
       </form>
     </div>
   </div>
-
-  <div *ngFor="let post of posts">
+  <div *ngIf="updatedPosts && updatedPosts.length > 0" >
+    <div *ngFor="let post of updatedPosts">
     <div class="card m-2" *ngIf="post.recruiter != null">
       <h5 class="card-header d-flex  justify-content-start">
-        <img class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%; border-radius: 100% 100% 100% 100%;" *ngIf="post && post.recruiter && post.recruiter.image" src="{{'data:image/png;base64,' + post.recruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
-        <p class="ms-2">{{post.recruiter.name + " " + post.recruiter.lastName}}</p>
+        <img [routerLink]="'/profile/recruiter/' + post.recruiter.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%; border-radius: 100% 100% 100% 100%;" *ngIf="post && post.recruiter && post.recruiter.image" src="{{'data:image/png;base64,' + post.recruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+        <a [routerLink]="'/profile/recruiter/' + post.recruiter.id" class="ms-2 text-decoration-none text-black fw-bold">{{post.recruiter.name + " " + post.recruiter.lastName}}</a>
+        <p class="ms-2">{{post.formattedDate}}</p>
       </h5>
-      <div class="card-body">
+      <div class="card-body" >
         <h5 class="card-title fw-bold">{{post.title}}</h5>
         <p class="card-text">{{post.content}}</p>
       </div>
     </div>
     <div class="card m-2" *ngIf="post.student != null">
       <h5 class="card-header d-flex justify-content-start">
-        <img class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%;  border-radius: 100% 100% 100% 100%;" *ngIf="post && post.student && post.student.image" src="{{'data:image/png;base64,' + post.student.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
-        <p class="ms-2">{{post.student.name + " " + post.student.lastName}}</p>
+        <img [routerLink]="'/profile/student/' + post.student.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%;  border-radius: 100% 100% 100% 100%;" *ngIf="post && post.student && post.student.image" src="{{'data:image/png;base64,' + post.student.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+        <a [routerLink]="'/profile/student/' + post.student.id" class="ms-2 text-decoration-none text-black fw-bold">{{post.student.name + " " + post.student.lastName}}</a>
+        <p class="ms-2">{{post.formattedDate}}</p>
       </h5>
       <div class="card-body">
         <h5 class="card-title fw-bold">{{post.title}}</h5>
@@ -55,4 +59,6 @@
       </div>
     </div>
   </div>
+  </div>
 </div>
+</section>

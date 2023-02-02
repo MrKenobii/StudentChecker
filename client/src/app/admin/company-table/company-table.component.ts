@@ -61,8 +61,8 @@ export class CompanyTableComponent  implements OnInit{
   deleteCompany(id: number) {
     this.companyService.deleteCompanyById(id).subscribe((res: DeleteResponse) => {
       if(res){
-        this.dumbCompanies.filter(s => s.id != id);
-        this.companies.filter(s => s.id != id);
+        this.dumbCompanies = this.dumbCompanies.filter(s => s.id != id);
+        this.companies = this.companies.filter(s => s.id != id);
         this.snackBar.open(res.message, "OK", {
           duration: 4000
         });

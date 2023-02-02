@@ -13,4 +13,5 @@ public class Post
     public string Title { get; set; }
     public Recruiter? Recruiter { get; set; }
     public Student? Student { get; set; }
+    public DateTime CreatedTime { get; set; }
 }
