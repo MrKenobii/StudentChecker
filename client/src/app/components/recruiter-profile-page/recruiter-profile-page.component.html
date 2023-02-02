@@ -17,7 +17,7 @@
           <div class="card-body text-center">
             <img *ngIf="recruiter && recruiter.image" [src]="recruiter.image || ''" alt="avatar"
                  class="rounded-circle img-fluid w-75 h-50">
-            <h5 class="my-3" *ngIf="recruiter && recruiter.name && recruiter.lastName">{{recruiter.name || 'N/A'}} {{recruiter.lastName || 'N/A'}}</h5>
+            <h5 class="my-3 fs-3 fw-bold" *ngIf="recruiter && recruiter.name && recruiter.lastName">{{recruiter.name || 'N/A'}} {{recruiter.lastName || 'N/A'}}</h5>
             <p class="text-muted mb-1">Recruiter</p>
             <p class="text-muted mb-4" *ngIf="recruiter && recruiter.address">{{recruiter.address}}</p>
             <div *ngIf="!isOwnProfilePage" class="d-flex justify-content-center mb-2">

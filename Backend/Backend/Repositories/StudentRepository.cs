@@ -933,4 +933,24 @@ public class StudentRepository : IStudentRepository
         };
 
     }
+
+    public ICollection<StudentRandomResponse> GetRandomStudents(int studentId)
+    {
+        var students = _context.Students.Where(s => s.Id != studentId && s.IsActivated == true).OrderBy(r => EF.Functions.Random()).Take(6);
+        var studentDtos = new List<StudentRandomResponse>();
+        foreach (var student in students)
+        {
+            studentDtos.Add(new StudentRandomResponse()
+            {
+                Id = student.Id,
+                Name = student.Name,
+                LastName = student.LastName,
+                Image = student.Image
+            });
+        }
+
+        if (studentDtos.Count > 0)
+            return studentDtos;
+        return new List<StudentRandomResponse>();
+    }
 }

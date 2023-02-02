@@ -2,63 +2,101 @@
   <app-loader></app-loader>
 </div>
 
-
-<section style="background-image: linear-gradient(#009FFD, #2A2A72);" class="p-4">
-  <div *ngIf="!isLoading" style="margin-right: 25%; margin-left: 25%;" >
-  <div class="card m-2" *ngIf="student || recruiter">
-    <h5 class="card-header d-flex  justify-content-start">
-      <p class="ms-2">SHARE YOUR THOUGHTS</p>
-    </h5>
-    <div class="card-body">
-      <form class="mx-1 mx-md-4"  [formGroup]="createPostForm" (ngSubmit)="send()">
-
-        <div class="d-flex flex-row align-items-center mb-4">
-          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-          <div class="form-outline flex-fill mb-0">
-            <input type="text" id="title" class="form-control"  [formControlName]="'title'" placeholder="What's your title of content?" />
-            <label class="form-label" for="title">Title</label>
+<div class="container-fluid m-0 ms-0 me-0 p-0" style="background-image: linear-gradient(#009FFD, #2A2A72);">
+  <section style="background-image: linear-gradient(#009FFD, #2A2A72);" class="p-4">
+  <div class="row " style="background-image: linear-gradient(#009FFD, #2A2A72);">
+    <div class="col-lg-3 col-md-2">
+      <div *ngIf="uMayNowStudents && uMayNowStudents.length > 0" >
+        <div >
+          <div class="card m-2">
+            <h5 class="card-header d-flex justify-content-start">
+              <a class="ms-2 text-decoration-none fs-6 text-black fw-bold">Students you may now</a>
+            </h5>
+            <div class="card-body mb-2 mx-1" *ngFor="let student of uMayNowStudents" style="background-color: #012b59; border-radius: 10px;">
+              <img [routerLink]="'/profile/student/' + student.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%; border-radius: 100% 100% 100% 100%;" *ngIf="student && student.image" src="{{'data:image/png;base64,' + student.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+              <a [routerLink]="'/profile/student/' +student.id" class="ms-2 text-decoration-none text-white fw-bold">{{student.name + " " + student.lastName}}</a>
+            </div>
           </div>
         </div>
-        <div class="d-flex flex-row align-items-center mb-4">
-          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-          <div class="form-outline flex-fill mb-0">
-            <textarea type="text" id="content" class="form-control" rows="5" cols="40" placeholder="What's your content?"  [formControlName]="'content'" style="resize: none"></textarea>
-            <label class="form-label" for="content">Content</label>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-8 col-sm-12">
+
+      <div *ngIf="!isLoading">
+        <div class="card m-2" *ngIf="student || recruiter">
+          <h5 class="card-header d-flex  justify-content-start">
+            <p class="m-1 fs-5 d-flex justify-content-center align-items-center">SHARE YOUR THOUGHTS</p>
+          </h5>
+          <div class="card-body">
+            <form class="mx-1 mx-md-4"  [formGroup]="createPostForm" (ngSubmit)="send()">
+
+              <div class="d-flex flex-row align-items-center mb-4">
+                <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                <div class="form-outline flex-fill mb-0">
+                  <input type="text" id="title" class="form-control"  [formControlName]="'title'" placeholder="What's your title of content?" />
+                  <label class="form-label" for="title">Title</label>
+                </div>
+              </div>
+              <div class="d-flex flex-row align-items-center mb-4">
+                <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                <div class="form-outline flex-fill mb-0">
+                  <textarea type="text" id="content" class="form-control" rows="5" cols="40" placeholder="What's your content?"  [formControlName]="'content'" style="resize: none"></textarea>
+                  <label class="form-label" for="content">Content</label>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                <button type="button" class="btn btn-primary btn-lg" (click)="send()">Share</button>
+              </div>
+
+            </form>
           </div>
         </div>
+        <div *ngIf="updatedPosts && updatedPosts.length > 0" >
+          <div *ngFor="let post of updatedPosts">
+            <div class="card m-2" *ngIf="post.recruiter != null">
+              <h5 class="card-header d-flex  justify-content-start">
+                <img [routerLink]="'/profile/recruiter/' + post.recruiter.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%; border-radius: 100% 100% 100% 100%;" *ngIf="post && post.recruiter && post.recruiter.image" src="{{'data:image/png;base64,' + post.recruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+                <a [routerLink]="'/profile/recruiter/' + post.recruiter.id" class="ms-2 fs-6 text-decoration-none text-black fw-bold">{{post.recruiter.name + " " + post.recruiter.lastName}}</a>
+                <p class="ms-2">{{post.formattedDate}}</p>
+              </h5>
+              <div class="card-body" >
+                <h5 class="card-title fs-5 fw-bold">{{post.title}}</h5>
+                <p class="card-text fs-6">{{post.content}}</p>
+              </div>
+            </div>
 
-        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-          <button type="button" class="btn btn-primary btn-lg" (click)="send()">Share</button>
+            <div class="card m-2" *ngIf="post.student != null">
+              <h5 class="card-header d-flex justify-content-start">
+                <img [routerLink]="'/profile/student/' + post.student.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%;  border-radius: 100% 100% 100% 100%;" *ngIf="post && post.student && post.student.image" src="{{'data:image/png;base64,' + post.student.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+                <a [routerLink]="'/profile/student/' + post.student.id" class="ms-2 fs-6 text-decoration-none text-black fw-bold">{{post.student.name + " " + post.student.lastName}}</a>
+                <p class="ms-2">{{post.formattedDate}}</p>
+              </h5>
+              <div class="card-body">
+                <h5 class="card-title fs-5 fw-bold">{{post.title}}</h5>
+                <p class="card-text fs-6">{{post.content}}</p>
+              </div>
+            </div>
+          </div>
         </div>
-
-      </form>
-    </div>
-  </div>
-  <div *ngIf="updatedPosts && updatedPosts.length > 0" >
-    <div *ngFor="let post of updatedPosts">
-    <div class="card m-2" *ngIf="post.recruiter != null">
-      <h5 class="card-header d-flex  justify-content-start">
-        <img [routerLink]="'/profile/recruiter/' + post.recruiter.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%; border-radius: 100% 100% 100% 100%;" *ngIf="post && post.recruiter && post.recruiter.image" src="{{'data:image/png;base64,' + post.recruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
-        <a [routerLink]="'/profile/recruiter/' + post.recruiter.id" class="ms-2 text-decoration-none text-black fw-bold">{{post.recruiter.name + " " + post.recruiter.lastName}}</a>
-        <p class="ms-2">{{post.formattedDate}}</p>
-      </h5>
-      <div class="card-body" >
-        <h5 class="card-title fw-bold">{{post.title}}</h5>
-        <p class="card-text">{{post.content}}</p>
       </div>
     </div>
-    <div class="card m-2" *ngIf="post.student != null">
-      <h5 class="card-header d-flex justify-content-start">
-        <img [routerLink]="'/profile/student/' + post.student.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%;  border-radius: 100% 100% 100% 100%;" *ngIf="post && post.student && post.student.image" src="{{'data:image/png;base64,' + post.student.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
-        <a [routerLink]="'/profile/student/' + post.student.id" class="ms-2 text-decoration-none text-black fw-bold">{{post.student.name + " " + post.student.lastName}}</a>
-        <p class="ms-2">{{post.formattedDate}}</p>
-      </h5>
-      <div class="card-body">
-        <h5 class="card-title fw-bold">{{post.title}}</h5>
-        <p class="card-text">{{post.content}}</p>
+    <div class="col-lg-3 col-md-2">
+      <div *ngIf="uMayNowRecruiters && uMayNowRecruiters.length > 0" >
+        <div >
+          <div class="card m-2">
+            <h5 class="card-header d-flex justify-content-start">
+              <a class="ms-2 text-decoration-none fs-6 text-black fw-bold">Recruiters you may now</a>
+            </h5>
+            <div class="card-body mb-2 mx-1" *ngFor="let recruiter of uMayNowRecruiters" style="background-color: #012b59; border-radius: 10px;">
+              <img [routerLink]="'/profile/recruiter/' + recruiter.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%; border-radius: 100% 100% 100% 100%;" *ngIf="recruiter && recruiter.image" src="{{'data:image/png;base64,' + recruiter.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+              <a [routerLink]="'/profile/recruiter/' +recruiter.id" class="ms-2 text-decoration-none text-white fw-bold">{{recruiter.name + " " + recruiter.lastName}}</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  </div>
+  </section>
 </div>
-</section>
+

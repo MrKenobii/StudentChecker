@@ -484,6 +484,26 @@ public class RecruiterRepository : IRecruiterRepository
         };
     }
 
+    public ICollection<RecruiterRandomResponse> GetRandomRecruiters(int recruiterId)
+    {
+        var recruiters = _context.Recruiters.Where(r => r.Id  != recruiterId && r.IsActivated == true).OrderBy(r => EF.Functions.Random()).Take(6);
+        var recruiterDtos = new List<RecruiterRandomResponse>();
+        foreach (var recruiter in recruiters)
+        {
+            recruiterDtos.Add(new RecruiterRandomResponse()
+            {
+                Id = recruiter.Id,
+                Name = recruiter.Name,
+                LastName = recruiter.LastName,
+                Image = recruiter.Image
+            });
+        }
+
+        if (recruiterDtos.Count > 0)
+            return recruiterDtos;
+        return new List<RecruiterRandomResponse>();
+    }
+
     public RecruiterLoginResponse Login(RecruiterLoginRequest loginRequest)
     {
         var recruiter = _context.Recruiters.Where(e => e.Email == loginRequest.Email)

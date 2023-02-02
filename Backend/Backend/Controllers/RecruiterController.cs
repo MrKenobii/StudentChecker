@@ -28,6 +28,15 @@ public class RecruiterController : Controller
             return BadRequest(ModelState);
         return Ok(recruiters);
     }
+    [HttpGet("get-random/{recruiterId}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<RecruiterRandomResponse>))]
+    public IActionResult GetRandomRecruiters(int recruiterId)
+    {
+        var recruiters = _recruiterRepository.GetRandomRecruiters(recruiterId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(recruiters);
+    }
     [HttpGet("{recruiterId}")]
     [ProducesResponseType(200, Type = typeof(Recruiter))]
     [ProducesResponseType(400)]

@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PostService} from "../../services/post/post.service";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 import {lastValueFrom} from "rxjs";
 import {GetPostResponse} from "../../interfaces/post/GetPostResponse";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -12,6 +12,8 @@ import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetRespo
 import {CreatePostRequest} from "../../interfaces/post/CreatePostRequest";
 import * as moment from 'moment';
 import {Student} from "../../interfaces/student/Student";
+import {GetRandomStudents} from "../../interfaces/student/GetRandomStudents";
+import {GetRandomRecruiters} from "../../interfaces/recruiter/GetRandomRecruiters";
 
 interface UpdatedPosts{
   id: number;
@@ -27,7 +29,7 @@ interface UpdatedPosts{
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.css']
 })
-export class FeedComponent implements OnInit{
+export class FeedComponent implements OnInit, OnDestroy{
   posts!: GetPostResponse[];
   isLoading!: boolean;
   createPostForm!: FormGroup;
@@ -35,12 +37,26 @@ export class FeedComponent implements OnInit{
   student!: StudentResponse;
   recruiter!: RecruiterGetResponse;
   updatedPosts: UpdatedPosts[] = [];
+  someSubscription: any;
+  uMayNowStudents!: GetRandomStudents[];
+  uMayNowRecruiters!: GetRandomRecruiters[];
 
   constructor(private router: Router, private studentService: StudentService, private recruiterService: RecruiterService, private postService: PostService, private snackBar: MatSnackBar) {
     this.postPayload = {
       title: '',
       content: '',
     }
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.someSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Here is the dashing line comes in the picture.
+        // You need to tell the router that, you didn't visit or load the page previously, so mark the navigated flag to false as below.
+        this.router.navigated = false;
+      }
+    });
+
     this.getPosts().then((posts: GetPostResponse[]) => {
       this.isLoading = true;
       if(posts.length > 0){
@@ -69,11 +85,37 @@ export class FeedComponent implements OnInit{
         if(studentResponse.id > 0 && studentResponse.name !== null && studentResponse.lastName !== null && studentResponse.email !== null && studentResponse.cityName !== null){
           console.log(studentResponse);
           this.student = studentResponse;
+          this.getRandomStudents(this.student.id).then((_students: GetRandomStudents[]) => {
+            this.isLoading = true;
+            if(_students.length > 0){
+              this.uMayNowStudents = _students;
+            }
+            this.isLoading = false;
+          }).finally(() => this.isLoading = false);
+          this.getRandomRecruiters(0).then((_recruiters: GetRandomRecruiters[]) => {
+            this.isLoading = true;
+            if(_recruiters.length > 0){
+              this.uMayNowRecruiters = _recruiters;
+            }
+          }).finally(() => this.isLoading =false);
         } else {
           this.getRecruiterByKey(token).then((recResponse: RecruiterGetResponse) => {
             if(recResponse.id > 0 && recResponse.name !== null && recResponse.lastName !== null && recResponse.email !== null && recResponse.dateOfBirth !== null){
               console.log(recResponse);
               this.recruiter = recResponse;
+              this.getRandomStudents(0).then((_students: GetRandomStudents[]) => {
+                this.isLoading = true;
+                if(_students.length > 0){
+                  this.uMayNowStudents = _students;
+                }
+                this.isLoading = false;
+              }).finally(() => this.isLoading = false);
+              this.getRandomRecruiters(this.recruiter.id).then((_recruiters: GetRandomRecruiters[]) => {
+                this.isLoading = true;
+                if(_recruiters.length > 0){
+                  this.uMayNowRecruiters = _recruiters;
+                }
+              }).finally(() => this.isLoading =false);
             } else {
               // NO ONE IS LOGGED IN
               console.log("NO ONE IS LOGGED IN");
@@ -84,7 +126,10 @@ export class FeedComponent implements OnInit{
             this.isLoading = false;
           });
         }
-      })
+      });
+
+
+
     } else {
       this.snackBar.open("NO ONE IS LOGGED IN", "OK", {
         duration: 4000
@@ -103,6 +148,14 @@ export class FeedComponent implements OnInit{
     });
 
   }
+  private async getRandomStudents(id: number){
+    let students = this.studentService.getRandomStudents(id);
+    return await lastValueFrom(students);
+  }
+  private async getRandomRecruiters(id: number){
+    let recruiters = this.recruiterService.getRandomRecruiters(id);
+    return await lastValueFrom(recruiters);
+  }
   private async getStudentByToken(token: string){
     let studentByKey = this.studentService.getStudentByKey(token);
     return await lastValueFrom(studentByKey);
@@ -118,6 +171,14 @@ export class FeedComponent implements OnInit{
   private async createPostForRecruiter(payload: CreatePostRequest) {
     let getPostResponseObservable = this.postService.createPostForRecruiter(payload);
     return await lastValueFrom(getPostResponseObservable);
+  }
+  private async getRecruiterById(id: number){
+    let recruiterById = this.recruiterService.getRecruiterById(id);
+    return await lastValueFrom(recruiterById);
+  }
+  private async getStudentById(id: number){
+    let studentById = this.studentService.getStudentById(id);
+    return await lastValueFrom(studentById);
   }
   send() {
     this.postPayload.title = this.createPostForm.get('title')!.value;
@@ -143,11 +204,9 @@ export class FeedComponent implements OnInit{
           this.createPostForStudent(payload).then((res: GetPostResponse) => {
             console.log(res);
             if(res && res.id > 0){
-              this.snackBar.open("Success STUDENT", "OK", {
-                duration: 4000
-              });
+              location.reload();
             } else {
-              this.snackBar.open("FAILURE STUDENT", "OK", {
+              this.snackBar.open("Post was unable to send", "OK", {
                 duration: 4000
               });
             }
@@ -161,11 +220,9 @@ export class FeedComponent implements OnInit{
           this.createPostForRecruiter(payload).then((res: GetPostResponse) => {
             if(res && res.id > 0){
               console.log(res)
-              this.snackBar.open("Success RECRUITER", "OK", {
-                duration: 4000
-              });
+              location.reload();
             } else {
-              this.snackBar.open("FAILURE RECRUITER", "OK", {
+              this.snackBar.open("Post was unable to send", "OK", {
                 duration: 4000
               });
             }
@@ -177,4 +234,10 @@ export class FeedComponent implements OnInit{
 
       }
     }
+
+  ngOnDestroy(): void {
+    if (this.someSubscription) {
+      this.someSubscription.unsubscribe();
+    }
+  }
 }

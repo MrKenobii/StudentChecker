@@ -15,6 +15,7 @@ import {UpdatePasswordResponse} from "../../interfaces/UpdatePasswordResponse";
 import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
 import {AdminActivateAccountResponse} from "../../interfaces/admin/AdminActivateAccountResponse";
 import {DeleteResponse} from "../../interfaces/DeleteResponse";
+import {GetRandomStudents} from "../../interfaces/student/GetRandomStudents";
 
 
 @Injectable({
@@ -86,7 +87,11 @@ export class StudentService {
     return this.http.post<AdminActivateAccountResponse>(`http://localhost:5269/Admin/activate-student/${id}`, null);
   }
 
-  addStudent(obj: any) {
+  public addStudent(obj: any) {
     return this.http.post<AdminActivateAccountResponse>(`http://localhost:5269/Student`, obj);
+  }
+
+  public getRandomStudents(id: number) :Observable<GetRandomStudents[]> {
+    return this.http.get<GetRandomStudents[]>(`http://localhost:5269/Student/get-random/${id}`);
   }
 }

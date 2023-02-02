@@ -13,6 +13,8 @@ import {VerifyAccountRequest} from "../../interfaces/student/VerifyAccountReques
 import {VerifyTokenResponse} from "../../interfaces/student/VerifyTokenResponse";
 import {AdminActivateAccountResponse} from "../../interfaces/admin/AdminActivateAccountResponse";
 import {DeleteResponse} from "../../interfaces/DeleteResponse";
+import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
+import {GetRandomRecruiters} from "../../interfaces/recruiter/GetRandomRecruiters";
 
 interface CompanyDto {
   id: number,
@@ -92,5 +94,9 @@ export class RecruiterService {
 
   public addRecruiter(obj: any) {
     return this.httpClient.post<AdminActivateAccountResponse>(`http://localhost:5269/Recruiter`, obj);
+  }
+
+  public getRandomRecruiters(id: number) : Observable<GetRandomRecruiters[]>{
+    return this.httpClient.get<GetRandomRecruiters[]>(`http://localhost:5269/Recruiter/get-random/${id}`);
   }
 }
