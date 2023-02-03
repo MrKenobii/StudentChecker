@@ -34,10 +34,30 @@ public class PostController : Controller
     {
         if (!_postRepository.PostExists(postId))
             return NotFound();
-        var city = _postRepository.GetPostById(postId);
+        var post = _postRepository.GetPostById(postId);
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        return Ok(city);
+        return Ok(post);
+    }
+    [HttpGet("student/{studentId}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<GetPostsByStudentResponse>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetPostsByStudentId(int studentId)
+    {
+        var posts = _postRepository.GetPostByStudentId(studentId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(posts);
+    }
+    [HttpGet("recruiter/{recruiterId}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<GetPostsByRecruiterResponse>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetPostsByRecruiterId(int recruiterId)
+    {
+        var posts = _postRepository.GetPostByRecruiterId(recruiterId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(posts);
     }
 
     [HttpPost("student")]

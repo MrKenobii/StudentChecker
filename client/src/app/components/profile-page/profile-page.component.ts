@@ -5,6 +5,9 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {StudentResponse} from "../../interfaces/student/StudentResponse";
 import {StudentGetTokenResponse} from "../../interfaces/student/StudentGetTokenResponse";
 import {lastValueFrom} from "rxjs";
+import {PostService} from "../../services/post/post.service";
+import {GetPostByIdResponse} from "../../interfaces/post/GetPostByIdResponse";
+import * as moment from "moment/moment";
 
 
 @Component({
@@ -18,7 +21,9 @@ export class ProfilePageComponent implements OnInit{
   courses: any;
   isOwnProfilePage: boolean =false;
   isStudent!: boolean;
-  constructor(private activatedRoute: ActivatedRoute,private studentService: StudentService, private router: Router, private snackBar: MatSnackBar) {
+  posts!: GetPostByIdResponse[];
+  loading!: boolean;
+  constructor(private activatedRoute: ActivatedRoute,private studentService: StudentService, private postService: PostService, private router: Router, private snackBar: MatSnackBar) {
     this.studentId = this.activatedRoute.snapshot.params['studentId'];
     this.activatedRoute.params.subscribe(() => {
       this.studentId = this.activatedRoute.snapshot.params['studentId'];
@@ -45,6 +50,12 @@ export class ProfilePageComponent implements OnInit{
       this.router.navigate(['/not-found']);
     });
 
+    this.fetchPostsByStudentId(this.studentId).then((res: GetPostByIdResponse[]) => {
+      this.loading = true;
+      if(res.length > 0){
+        this.posts = res;
+      }
+    }).finally(() => this.loading = false);
 
     this.fetchTokenByStudentId(this.studentId).then((data: StudentGetTokenResponse) => {
       if(data && data.key){
@@ -66,6 +77,11 @@ export class ProfilePageComponent implements OnInit{
         }
       });
     }
+  }
+
+  private async fetchPostsByStudentId(id: number){
+    let postsByStudentId = this.postService.getPostsByStudentId(id);
+    return await lastValueFrom(postsByStudentId);
   }
   private async fetchStudentById(id: number){
     let studentById = this.studentService.getStudentById(id);
@@ -91,5 +107,9 @@ export class ProfilePageComponent implements OnInit{
 
   chat() {
     this.router.navigate(["/chat-room/" + this.studentId]);
+  }
+
+  formatDate(createdTime: Date) {
+    return moment(new Date(createdTime)).fromNow();
   }
 }

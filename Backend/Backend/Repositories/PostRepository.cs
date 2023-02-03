@@ -140,4 +140,44 @@ public class PostRepository : IPostRepository
 
         return new PostResponse();
     }
+
+    public IEnumerable<GetPostsByStudentResponse> GetPostByStudentId(int studentId)
+    {
+        var posts = _context.Posts.Where(p => p.Student.Id == studentId).ToList();
+        var list = new List<GetPostsByStudentResponse>();
+
+        foreach (var post in posts)
+        {
+            list.Add(new GetPostsByStudentResponse()
+            {
+                CreatedTime = post.CreatedTime,
+                Content = post.Content,
+                Id = post.Id,
+                Title = post.Title
+            });
+        }
+        if(list.Count > 0)
+            return list;
+        return new List<GetPostsByStudentResponse>();
+    }
+
+    public IEnumerable<GetPostsByRecruiterResponse> GetPostByRecruiterId(int recruiterId)
+    {
+        var posts = _context.Posts.Where(p => p.Recruiter.Id == recruiterId).ToList();
+        var list = new List<GetPostsByRecruiterResponse>();
+
+        foreach (var post in posts)
+        {
+            list.Add(new GetPostsByRecruiterResponse()
+            {
+                CreatedTime = post.CreatedTime,
+                Content = post.Content,
+                Id = post.Id,
+                Title = post.Title
+            });
+        }
+        if(list.Count > 0)
+            return list;
+        return new List<GetPostsByRecruiterResponse>();
+    }
 }

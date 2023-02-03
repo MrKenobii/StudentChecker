@@ -4,7 +4,10 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {RecruiterGetResponse} from "../../interfaces/recruiter/RecruiterGetResponse";
 import {RecruiterService} from "../../services/recruiter/recruiter-service.service";
 import {RecruiterGetKeyResponse} from "../../interfaces/recruiter/RecruiterGetKeyResponse";
-import {last, lastValueFrom} from "rxjs";
+import {lastValueFrom} from "rxjs";
+import {PostService} from "../../services/post/post.service";
+import {GetPostByIdResponse} from "../../interfaces/post/GetPostByIdResponse";
+import * as moment from "moment";
 interface CompanyDto {
   id: number,
   name: string;
@@ -27,8 +30,11 @@ export class RecruiterProfilePageComponent {
   isOwnProfilePage: boolean =false;
   companies!: CompanyDto[];
   activeCompany!: CompanyDto;
+  posts!: GetPostByIdResponse[];
+  isLoading!: boolean;
   constructor(private activatedRoute: ActivatedRoute,
               private recruiterService: RecruiterService,
+              private postService: PostService,
               private router: Router,
               private snackBar: MatSnackBar) {
     this.recruiterId = this.activatedRoute.snapshot.params['recruiterId'];
@@ -59,6 +65,12 @@ export class RecruiterProfilePageComponent {
       });
       this.router.navigate(['/not-found']);
     });
+    this.getPostsByRecruiterId(this.recruiterId).then((res: GetPostByIdResponse[]) => {
+      this.isLoading = true;
+      if(res.length > 0){
+        this.posts = res;
+      }
+    }).finally(() => this.isLoading = false);
     this.fetchTokenByRecruiterId(this.recruiterId).then((data: RecruiterGetKeyResponse) => {
       this.isOwnProfilePage = localStorage.getItem("key") !== null && localStorage.getItem("key") == data.key;
     }).catch((error) => {
@@ -67,6 +79,10 @@ export class RecruiterProfilePageComponent {
       });
       this.router.navigate(['/not-found']);
     });
+  }
+  private async getPostsByRecruiterId(id: number){
+    let postsByRecruiterId = this.postService.getPostsByRecruiterId(id);
+    return await lastValueFrom(postsByRecruiterId);
   }
   private async fetchRecruiterById(id: number) {
     let recruiterById = this.recruiterService.getRecruiterById(id);
@@ -110,5 +126,9 @@ export class RecruiterProfilePageComponent {
 
   chatRoom() {
     this.router.navigate(["/chat-room/" + this.recruiterId]);
+  }
+
+  formatDate(createdTime: Date) {
+    return moment(new Date(createdTime)).fromNow();
   }
 }

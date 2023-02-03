@@ -9,4 +9,6 @@ public interface IPostRepository
     bool PostExists(int postId);
     PostResponse CreatePostForStudent(PostCreateRequest request);
     PostResponse CreatePostForRecruiter(PostCreateRequest request);
+    IEnumerable<GetPostsByStudentResponse> GetPostByStudentId(int studentId);
+    IEnumerable<GetPostsByRecruiterResponse> GetPostByRecruiterId(int recruiterId);
 }
