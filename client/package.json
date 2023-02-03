@@ -25,6 +25,8 @@
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "moment": "^2.29.4",
+    "ng2-adsense": "^11.0.0",
+    "ng2-search-filter": "^0.5.1",
     "rxjs": "~7.8.0",
     "tabulator-tables": "^5.4.3",
     "tslib": "^2.3.0",

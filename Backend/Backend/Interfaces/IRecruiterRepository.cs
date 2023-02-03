@@ -23,4 +23,5 @@ public interface IRecruiterRepository
     ChangePasswordResponse ChangePassword(int recruiterId, ChangePasswordRequest request);
     string SendEmail(RecruiterSignupRequest signUpRequest);
     RecruiterVerifyAccountResponse VerifyAccount(int recruiterId, RecruiterVerifyAccountRequest verifyAccountRequest);
+    ICollection<RecruiterRandomResponse> GetRandomRecruiters(int recruiterId);
 }

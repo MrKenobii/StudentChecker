@@ -62,6 +62,9 @@ import { StudentChatRoomComponent } from './components/student-chat-room/student
 import {MatCardModule} from "@angular/material/card";
 import {MatListModule} from "@angular/material/list";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { FeedComponent } from './components/feed/feed.component';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { PipeComponent } from './components/pipe/pipe.component';
 
 
 
@@ -110,6 +113,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     StudentsMessageBoxComponent,
     RecruitersMessageBoxComponent,
     StudentChatRoomComponent,
+    FeedComponent,
+    PipeComponent,
   ],
   imports: [
     BrowserModule,
@@ -134,6 +139,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     MatCardModule,
     MatListModule,
     MatProgressBarModule,
+    Ng2SearchPipeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

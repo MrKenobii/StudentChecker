@@ -27,4 +27,5 @@ public interface IStudentRepository
     StudentGetKeyResponse GetKeyByStudentId(int id);
     StudentEditProfileResponse EditStudentProfile(int studentId, StudentEditProfile studentEditProfile);
     ChangePasswordResponse ChangePassword(int studentId, ChangePasswordRequest request);
+    ICollection<StudentRandomResponse> GetRandomStudents(int studentId);
 }

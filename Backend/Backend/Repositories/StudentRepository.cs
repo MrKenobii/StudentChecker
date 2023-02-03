@@ -396,27 +396,42 @@ public class StudentRepository : IStudentRepository
     public DeleteResponse DeleteStudent(int studentId)
     {
         var student = this.GetStudent(studentId);
-        var sendMessages = _context.SendMessages.Where(s => s.Student.Id == studentId).ToList();
-        var deliveredMessages = _context.DeliveredMessages.Where(s => s.Student.Id == studentId).ToList();
-        Console.WriteLine("Before");
-        Console.WriteLine(sendMessages.Count);
-        Console.WriteLine(deliveredMessages.Count);
-        foreach (var sendMessage in sendMessages)
+        if (student != null)
         {
-            _context.SendMessages.Remove(sendMessage);
+            var sendMessages = _context.SendMessages.Where(s => s.Student.Id == studentId).ToList();
+            var deliveredMessages = _context.DeliveredMessages.Where(s => s.Student.Id == studentId).ToList();
+        
+            foreach (var sendMessage in sendMessages)
+            {
+                Console.WriteLine("SEND MESSAGE : " +sendMessage.Id + " " + sendMessage.Content);
+                var deliveredMessage = _context.DeliveredMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
+                Console.WriteLine("SEND DELIVERED MESSAGE : " +deliveredMessage.Id + " " + deliveredMessage.Content);
+                _context.SendMessages.Remove(sendMessage);
+                _context.DeliveredMessages.Remove(deliveredMessage);
+                _context.SaveChanges();
+            }
+            Console.WriteLine("---------------------------------------");
+            foreach (var deliveredMessage in deliveredMessages)
+            {
+                Console.WriteLine("DELIVERED MESSAGE MESSAGE : " +deliveredMessage.Id + " " + deliveredMessage.Content);
+                var sendMessage = _context.SendMessages.Where(s => s.Id == deliveredMessage.Id).FirstOrDefault();
+                Console.WriteLine("DELIVERED SEND MESSAGE : " +sendMessage.Id + " " + sendMessage.Content);
+                _context.SendMessages.Remove(sendMessage);
+                _context.DeliveredMessages.Remove(deliveredMessage);
+                _context.SaveChanges();
+            }
+        
+            _context.Students.Remove(student);
+            _context.SaveChanges();
+            return new DeleteResponse()
+            {
+                Message = "Student " + student.Name + " " + student.LastName + " was deleted."
+            };    
         }
-        foreach (var deliveredMessage in deliveredMessages)
-        {
-            _context.DeliveredMessages.Remove(deliveredMessage);
-        }
-        Console.WriteLine("After");
-        Console.WriteLine(sendMessages.Count);
-        Console.WriteLine(deliveredMessages.Count);
-        _context.Students.Remove(student);
-        _context.SaveChanges();
+
         return new DeleteResponse()
         {
-            Message = "Student " + student.Name + " " + student.LastName + " was deleted"
+            Message = "Error Student with ID: " + student + " could not be deleted!"
         };
     }
 
@@ -917,5 +932,25 @@ public class StudentRepository : IStudentRepository
             Status = false
         };
 
+    }
+
+    public ICollection<StudentRandomResponse> GetRandomStudents(int studentId)
+    {
+        var students = _context.Students.Where(s => s.Id != studentId && s.IsActivated == true).OrderBy(r => EF.Functions.Random()).Take(6);
+        var studentDtos = new List<StudentRandomResponse>();
+        foreach (var student in students)
+        {
+            studentDtos.Add(new StudentRandomResponse()
+            {
+                Id = student.Id,
+                Name = student.Name,
+                LastName = student.LastName,
+                Image = student.Image
+            });
+        }
+
+        if (studentDtos.Count > 0)
+            return studentDtos;
+        return new List<StudentRandomResponse>();
     }
 }

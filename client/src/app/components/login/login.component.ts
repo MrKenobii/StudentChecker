@@ -94,11 +94,11 @@ export class LoginComponent implements OnInit{
                     return false;
                   }
                   this.router.onSameUrlNavigation = 'reload';
-                  this.router.navigate(['/companies']).then(() => {
+                  this.router.navigate(['/']).then(() => {
                     window.location.reload();
                   });
                 } else {
-                  this.snackBar.open(`Your account has not been enabled yet`, "Ok", {
+                  this.snackBar.open(`Invalid credentials`, "Ok", {
                     duration: 5000
                   })
                 }

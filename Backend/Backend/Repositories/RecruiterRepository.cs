@@ -85,30 +85,45 @@ public class RecruiterRepository : IRecruiterRepository
     public DeleteResponse DeleteRecruiter(int recruiterId)
     {
         var recruiter = this.GetRecruiter(recruiterId);
-        var sendMessages = _context.SendMessages.Where(s => s.Recruiter.Id == recruiterId).ToList();
-        var deliveredMessages = _context.DeliveredMessages.Where(s => s.Recruiter.Id == recruiterId).ToList();
-        Console.WriteLine("Before");
-        Console.WriteLine(sendMessages.Count);
-        Console.WriteLine(deliveredMessages.Count);
-        foreach (var sendMessage in sendMessages)
+        if (recruiter != null)
         {
-            _context.SendMessages.Remove(sendMessage);
+            var sendMessages = _context.SendMessages.Where(s => s.Recruiter.Id == recruiterId).ToList();
+            var deliveredMessages = _context.DeliveredMessages.Where(s => s.Recruiter.Id == recruiterId).ToList();
+        
+            foreach (var sendMessage in sendMessages)
+            {
+                Console.WriteLine("SEND MESSAGE : " +sendMessage.Id + " " + sendMessage.Content);
+                var deliveredMessage = _context.DeliveredMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
+                Console.WriteLine("SEND DELIVERED MESSAGE : " +deliveredMessage.Id + " " + deliveredMessage.Content);
+                _context.SendMessages.Remove(sendMessage);
+                _context.DeliveredMessages.Remove(deliveredMessage);
+                _context.SaveChanges();
+            }
+            Console.WriteLine("---------------------------------------");
+            foreach (var deliveredMessage in deliveredMessages)
+            {
+                Console.WriteLine("DELIVERED MESSAGE MESSAGE : " +deliveredMessage.Id + " " + deliveredMessage.Content);
+                var sendMessage = _context.SendMessages.Where(s => s.Id == deliveredMessage.Id).FirstOrDefault();
+                Console.WriteLine("DELIVERED SEND MESSAGE : " +sendMessage.Id + " " + sendMessage.Content);
+                _context.SendMessages.Remove(sendMessage);
+                _context.DeliveredMessages.Remove(deliveredMessage);
+                _context.SaveChanges();
+            }
+        
+            _context.Recruiters.Remove(recruiter);
+            _context.SaveChanges();
+            return new DeleteResponse()
+            {
+                Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName + " was deleted."
+            };    
         }
-        foreach (var deliveredMessage in deliveredMessages)
-        {
-            _context.DeliveredMessages.Remove(deliveredMessage);
-        }
-        Console.WriteLine("After");
-        Console.WriteLine(sendMessages.Count);
-        Console.WriteLine(deliveredMessages.Count);
-        _context.Recruiters.Remove(recruiter);
-        _context.SaveChanges();
+
         return new DeleteResponse()
         {
-            Message = "Recruiter " + recruiter.Name + " " + recruiter.LastName + " was deleted."
+            Message = "Error Recruiter with ID: " + recruiterId + " could not be deleted!"
         };
-    }
 
+    }
     public RecruiterPostResponse UpdateRecruiter(int recruiterId, RecruiterPostRequest recruiterDto)
     {
         var recruiter = this.GetRecruiter(recruiterId);
@@ -467,6 +482,26 @@ public class RecruiterRepository : IRecruiterRepository
             Email = null,
             Name = null
         };
+    }
+
+    public ICollection<RecruiterRandomResponse> GetRandomRecruiters(int recruiterId)
+    {
+        var recruiters = _context.Recruiters.Where(r => r.Id  != recruiterId && r.IsActivated == true).OrderBy(r => EF.Functions.Random()).Take(6);
+        var recruiterDtos = new List<RecruiterRandomResponse>();
+        foreach (var recruiter in recruiters)
+        {
+            recruiterDtos.Add(new RecruiterRandomResponse()
+            {
+                Id = recruiter.Id,
+                Name = recruiter.Name,
+                LastName = recruiter.LastName,
+                Image = recruiter.Image
+            });
+        }
+
+        if (recruiterDtos.Count > 0)
+            return recruiterDtos;
+        return new List<RecruiterRandomResponse>();
     }
 
     public RecruiterLoginResponse Login(RecruiterLoginRequest loginRequest)

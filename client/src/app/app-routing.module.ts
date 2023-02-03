@@ -57,12 +57,19 @@ import {ChatRoomComponent} from "./components/chat-room/chat-room.component";
 import {StudentChatRoomComponent} from "./components/student-chat-room/student-chat-room.component";
 import {StudentsMessageBoxComponent} from "./components/students-message-box/students-message-box.component";
 import {RecruitersMessageBoxComponent} from "./components/recruiters-message-box/recruiters-message-box.component";
+import {FeedComponent} from "./components/feed/feed.component";
 
 
 
 const routes: Route[] = [
   {
-    path: '', component: HomeComponent
+    path: '', component: FeedComponent
+  },
+  {
+    path: 'feed', redirectTo: ''
+  },
+  {
+    path: 'about', component: HomeComponent
   },
   {
     path: 'students', component: StudentTableComponent

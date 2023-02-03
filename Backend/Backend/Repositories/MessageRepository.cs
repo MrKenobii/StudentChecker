@@ -211,7 +211,6 @@ public class MessageRepository : IMessageRepository
 
     public List<GetSendMessageResponse> GetSendMessageStudentById(int studentId)
     {
-        
         var sendMessages = _context.SendMessages.Where(s => s.Student.Id == studentId).ToList();
         var list = new List<GetSendMessageResponse>();
         foreach (var sendMessage in sendMessages)
@@ -220,8 +219,8 @@ public class MessageRepository : IMessageRepository
             var students = _context.Students.ToList();
             Console.WriteLine(sendMessage.Content);
             var firstOrDefault = _context.DeliveredMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
-            var _stu = _context.Students.Where(s => s.Id == studentId).FirstOrDefault();
-            var _rec = _context.Recruiters.Where(r => r.Id == firstOrDefault.Recruiter.Id).FirstOrDefault();
+            var _rec = _context.Recruiters.Where(s => s.Id == firstOrDefault.Recruiter.Id).FirstOrDefault();
+            var _stu = _context.Students.Where(r => r.Id == studentId).FirstOrDefault();
             list.Add(new GetSendMessageResponse()
             {
                 Content = sendMessage.Content,
@@ -248,22 +247,25 @@ public class MessageRepository : IMessageRepository
 
     public List<GetSendMessageResponse> GetDeliveredMessageStudentById(int studentId)
     {
-        var sendMessages = _context.DeliveredMessages.Where(s => s.Student.Id == studentId).ToList();
+        var deliveredMessages = _context.DeliveredMessages.Where(s => s.Student.Id == studentId).ToList();
         var list = new List<GetSendMessageResponse>();
-        foreach (var sendMessage in sendMessages)
+        foreach (var deliveredMessage in deliveredMessages)
         {
             var recruiters = _context.Recruiters.ToList();
             var students = _context.Students.ToList();
-            Console.WriteLine(sendMessage.Content);
-            var firstOrDefault = _context.SendMessages.Where(s => s.Id == sendMessage.Id).FirstOrDefault();
-            var _stu = _context.Students.Where(s => s.Id == studentId).FirstOrDefault();
-            var _rec = _context.Recruiters.Where(r => r.Id == firstOrDefault.Recruiter.Id).FirstOrDefault();
+            //Console.WriteLine(deliveredMessage.Content);
+            var firstOrDefault = _context.SendMessages.Where(s => s.Id == deliveredMessage.Id).FirstOrDefault();
+            var _rec = _context.Recruiters.Where(s => s.Id == firstOrDefault.Recruiter.Id).FirstOrDefault();
+            var _stu = _context.Students.Where(r => r.Id == studentId).FirstOrDefault();
+            Console.WriteLine("MESSAGE: " + deliveredMessage.Content);
+            Console.WriteLine("STUDENT: " + _stu.Id + " " + _stu.Name + " " + _stu.LastName + " " + _stu.Email);
+            Console.WriteLine("RECRUITER: " + _rec.Id + " " + _rec.Name + " " + _rec.LastName + " " + _rec.Email);
             list.Add(new GetSendMessageResponse()
             {
-                Content = sendMessage.Content,
+                Content = deliveredMessage.Content,
                 StudentId = studentId,
                 RecruiterId = firstOrDefault.Recruiter.Id,
-                DeliveredTime = sendMessage.DeliveredTime,
+                DeliveredTime = deliveredMessage.DeliveredTime,
                 SendTime = null,
                 RecruiterImage = _rec.Image,
                 RecruiterName = _rec.Name,

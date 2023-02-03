@@ -9,21 +9,37 @@ import {AdminService } from "../../services/admin/admin.service";
 import {lastValueFrom} from "rxjs";
 import {AdminGetResponse} from "../../interfaces/admin/AdminGetResponse";
 
+
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+
+export class NavbarComponent implements OnInit{
   student!: StudentResponse;
   recruiter!: RecruiterGetResponse;
   public isCollapsed = false;
   admin!: AdminGetResponse;
+  searchText!: string;
+  heroes = [
+    { id: 11, name: 'Mr. Nice', country: 'India' },
+    { id: 12, name: 'Narco' , country: 'USA'},
+    { id: 13, name: 'Bombasto' , country: 'UK'},
+    { id: 14, name: 'Celeritas' , country: 'Canada' },
+    { id: 15, name: 'Magneta' , country: 'Russia'},
+    { id: 16, name: 'RubberMan' , country: 'China'},
+    { id: 17, name: 'Dynama' , country: 'Germany'},
+    { id: 18, name: 'Dr IQ' , country: 'Hong Kong'},
+    { id: 19, name: 'Magma' , country: 'South Africa'},
+    { id: 20, name: 'Tornado' , country: 'Sri Lanka'}
+  ];
 
   constructor(private router: Router,private studentService: StudentService, private adminService: AdminService,
               private snackBar: MatSnackBar,
               private recruiterService: RecruiterService) {
   }
+
   ngOnInit(): void {
     if(localStorage.getItem("key") !== null){
       this.fetchAdminByToken(localStorage.getItem("key")!).then((adminRes: AdminGetResponse) => {

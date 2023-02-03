@@ -21,6 +21,7 @@ public class Recruiter
     public bool IsActivated { get; set; }
     public string? VerifyToken { get; set; }
     public ICollection<SendMessage> SendMessages { get; set; }
+    public ICollection<Post> Posts { get; set; }
     public ICollection<DeliveredMessage> DeliveredMessages { get; set; }
     public ICollection<RecruiterCompany>? RecruiterCompanies { get; set; }
 }

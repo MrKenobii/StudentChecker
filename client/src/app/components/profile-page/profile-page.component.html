@@ -1,156 +1,142 @@
-<section style="background-color: #eee;">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col">
-        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
-          <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a [routerLink]="'/'">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Student Profile</li>
-          </ol>
-        </nav>
-      </div>
-    </div>
+<div *ngIf="loading">
+  <app-loader></app-loader>
+</div>
 
-    <div class="row">
-      <div class="col-lg-4">
-        <div class="card mb-4">
-          <div *ngIf="student" class="card-body text-center">
-            <img [src]="student.image || 'https://www.example.com/example.png' "
-                 class="rounded-circle img-fluid w-75 h-50">
-            <h5 *ngIf="student && student.name && student.lastName" class="my-3">{{student.name || 'N/A'}} {{student!.lastName || 'N/A'}}</h5>
-            <p class="text-muted mb-1">Full Stack Developer</p>
-            <p class="text-muted mb-4" *ngIf="student && student.cityName && student.address">{{student.cityName || 'N/A'}}, {{student.address || 'N/A'}}</p>
-            <div *ngIf="!isOwnProfilePage && !isStudent" class="d-flex justify-content-center mb-2">
-              <button  type="button" class="btn btn-outline-primary ms-1" (click)="chat()">Message</button>
-            </div>
-            <div *ngIf="isOwnProfilePage" class="d-flex justify-content-center mb-2">
-              <button type="button" class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
-            </div>
-          </div>
-        </div>
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body p-0">
-            <ul *ngFor="let course of courses" class="list-group list-group-flush rounded-3">
-              <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <i class="fas fa-globe fa-lg text-warning"></i>
-                <p class="mb-0" [id]="course?.name + '/'+course.id || 'N/A'" *ngIf="student && course && course.name"> {{course.name || 'N/A'}}</p>
-              </li>
-            </ul>
-          </div>
+<div *ngIf="!loading">
+  <section style="background-image: linear-gradient(#009FFD, #2A2A72);">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col">
+          <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a [routerLink]="'/'">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Student Profile</li>
+            </ol>
+          </nav>
         </div>
       </div>
-      <div class="col-lg-8">
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Full Name</p>
+
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div *ngIf="student" class="card-body text-center">
+              <img [src]="student.image || 'https://www.example.com/example.png' "
+                   class="rounded-circle img-fluid w-75 h-50">
+              <h5 *ngIf="student && student.name && student.lastName" class="my-3 fs-3 fw-bold">{{student.name || 'N/A'}} {{student!.lastName || 'N/A'}}</h5>
+              <p class="text-muted mb-4" *ngIf="student && student.cityName && student.address">{{student.cityName || 'N/A'}}, {{student.address || 'N/A'}}</p>
+              <div *ngIf="!isOwnProfilePage && !isStudent" class="d-flex justify-content-center mb-2">
+                <button  type="button" class="btn btn-outline-primary ms-1" (click)="chat()">Message</button>
               </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0" *ngIf="student && student.name && student.lastName">{{student.name || 'N/A'}} {{student.lastName || 'N/A'}}</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Email</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0" *ngIf="student && student.email">{{student.email || 'N/A'}}</p>
+              <div *ngIf="isOwnProfilePage" class="d-flex justify-content-center mb-2">
+                <button type="button" class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
               </div>
             </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Phone</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0" *ngIf="student && student.phone">{{student.phone || 'N/A'}}</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">City</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0" *ngIf="student && student.cityName">{{student.cityName || 'N/A'}}</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Address</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0" *ngIf="student && student.address">{{student.address || 'N/A'}}</p>
-              </div>
+          </div>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body p-0">
+              <ul *ngFor="let course of courses" class="list-group list-group-flush rounded-3">
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fas fa-globe fa-lg text-warning"></i>
+                  <p class="mb-0" [id]="course?.name + '/'+course.id || 'N/A'" *ngIf="student && course && course.name"> {{course.name || 'N/A'}}</p>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                </p>
-                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Full Name</p>
                 </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" *ngIf="student && student.name && student.lastName">{{student.name || 'N/A'}} {{student.lastName || 'N/A'}}</p>
                 </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
                 </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" *ngIf="student && student.email">{{student.email || 'N/A'}}</p>
                 </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                <div class="progress rounded mb-2" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Phone</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" *ngIf="student && student.phone">{{student.phone || 'N/A'}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">City</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" *ngIf="student && student.cityName">{{student.cityName || 'N/A'}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Address</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" *ngIf="student && student.address">{{student.address || 'N/A'}}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                </p>
-                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
-                       aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
-                       aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
-                       aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55"
-                       aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                <div class="progress rounded mb-2" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="row">
+            <div class="col-md-6" *ngIf="posts && posts.length > 0 && student != null">
+              <div class="card mb-4 mt-2 mb-md-0"  *ngFor="let post of posts">
+
+                    <h5 class="card-header d-flex justify-content-start">
+                      <img [routerLink]="'/profile/student/' + student.id" class="img-fluid" style="max-width: 50%; max-width: 50%; width: 10%; height: 15%;  border-radius: 100% 100% 100% 100%;" *ngIf="post && student && student.image" src="{{student.image || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp'}}">
+                      <a [routerLink]="'/profile/student/' + studentId" class="ms-2 fs-6 text-decoration-none text-black fw-bold">{{student.name + " " + student.lastName}}</a>
+                      <p class="ms-2">{{formatDate(post.createdTime)}}</p>
+                    </h5>
+                    <div class="card-body">
+                      <h5 class="card-title fs-5 fw-bold">{{post.title}}</h5>
+                      <p class="card-text fs-6">{{post.content}}</p>
+                    </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card mb-4 mb-md-0">
+                <div class="card-body">
+                  <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
+                  </p>
+                  <p class="mb-1" style="font-size: .77rem;">Web Design</p>
+                  <div class="progress rounded" style="height: 5px;">
+                    <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
+                  <div class="progress rounded" style="height: 5px;">
+                    <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
+                  <div class="progress rounded" style="height: 5px;">
+                    <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
+                  <div class="progress rounded" style="height: 5px;">
+                    <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
+                  <div class="progress rounded mb-2" style="height: 5px;">
+                    <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -158,5 +144,6 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
+

@@ -178,6 +178,38 @@ namespace Backend.Migrations
                     b.ToTable("DeliveredMessages");
                 });
 
+            modelBuilder.Entity("Backend.Models.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("RecruiterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecruiterId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Posts");
+                });
+
             modelBuilder.Entity("Backend.Models.Recruiter", b =>
                 {
                     b.Property<int>("Id")
@@ -396,6 +428,21 @@ namespace Backend.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("Backend.Models.Post", b =>
+                {
+                    b.HasOne("Backend.Models.Recruiter", "Recruiter")
+                        .WithMany("Posts")
+                        .HasForeignKey("RecruiterId");
+
+                    b.HasOne("Backend.Models.Student", "Student")
+                        .WithMany("Posts")
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Recruiter");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Backend.Models.RecruiterCompany", b =>
                 {
                     b.HasOne("Backend.Models.Company", "Company")
@@ -492,6 +539,8 @@ namespace Backend.Migrations
                 {
                     b.Navigation("DeliveredMessages");
 
+                    b.Navigation("Posts");
+
                     b.Navigation("RecruiterCompanies");
 
                     b.Navigation("SendMessages");
@@ -500,6 +549,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Student", b =>
                 {
                     b.Navigation("DeliveredMessages");
+
+                    b.Navigation("Posts");
 
                     b.Navigation("SendMessages");
 

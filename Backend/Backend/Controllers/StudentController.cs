@@ -45,6 +45,16 @@ public class StudentController : Controller
             return BadRequest(ModelState);
         return Ok(student);
     }
+    [HttpGet("get-random/{studentId}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<StudentRandomResponse>))]
+    [ProducesResponseType(400)]
+    public IActionResult GetRandomStudentsById(int studentId)
+    {
+        var students =  _studentRepository.GetRandomStudents(studentId);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(students);
+    }
     [HttpGet("{studentId}/courses")]
     [ProducesResponseType(200, Type=typeof(IEnumerable<CourseDto>))]
     [ProducesResponseType(400)]

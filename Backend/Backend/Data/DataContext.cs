@@ -13,6 +13,7 @@ public class DataContext : DbContext
     public DbSet<Recruiter> Recruiters { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Post> Posts { get; set; }
     public DbSet<SendMessage> SendMessages { get; set; }
     public DbSet<DeliveredMessage> DeliveredMessages { get; set; }
     public DbSet<RecruiterCompany> RecruiterCompanies { get; set; }

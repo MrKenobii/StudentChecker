@@ -95,7 +95,6 @@ export class RecruiterTableComponent {
     console.log(id);
     this.recruiterService.deleteRecruiter(id).subscribe((data: DeleteResponse) => {
       if(data){
-        this.dumbRecruiters.filter(s => s.id != id);
         this.snackBar.open(data.message, "OK", {
           duration: 4000
         });
@@ -104,6 +103,8 @@ export class RecruiterTableComponent {
           duration: 4000
         });
       }
+      // this.dumbRecruiters =  this.dumbRecruiters.filter(s => s.id != id);
+      // this.recruiters = this.recruiters.filter(s => s.id != id);
     });
   }
 

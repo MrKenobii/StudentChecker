@@ -2,6 +2,7 @@ import {College} from "../college/College";
 import {City} from "../city/City";
 
 export interface Student{
+  id: number;
   name: string;
   lastName: string;
   email: string;

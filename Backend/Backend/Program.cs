@@ -23,6 +23,7 @@ builder.Services.AddScoped<IRecruiterRepository, RecruiterRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 
 builder.Services.AddControllers().AddJsonOptions(options =>

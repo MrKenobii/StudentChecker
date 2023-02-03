@@ -97,6 +97,8 @@ export class AdminStudentTableComponent implements OnInit {
   deleteStudent(id: number) {
     this.studentService.deleteStudent(id).subscribe((res: DeleteResponse) => {
       if(res){
+        this.dumbStudents = this.dumbStudents.filter(s => s.id != id);
+        this.students = this.students.filter(s => s.id != id);
         this.snackBar.open(res.message, "OK", {
           duration: 4000
         });
